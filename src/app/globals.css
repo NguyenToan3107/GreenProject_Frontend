@@ -31,3 +31,25 @@ body {
     text-wrap: balance;
   }
 }
+
+/* Define the transition effect */
+.page-transition {
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.page-transition-enter {
+  opacity: 0;
+}
+
+.page-transition-enter-active {
+  opacity: 1;
+}
+
+.page-transition-exit {
+  opacity: 1;
+}
+
+.page-transition-exit-active {
+  opacity: 0;
+}
