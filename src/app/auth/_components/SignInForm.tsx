@@ -1,14 +1,12 @@
 "use client"
 import Image from "next/image";
-import {loginRequest} from "@/apis/modules/auth";
-import {redirect} from "next/navigation";
+import {getUserInfo, loginRequest} from "@/apis/modules/auth";
 import React, {useState} from "react";
-
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faUser} from "@fortawesome/free-regular-svg-icons";
 import {faKey} from "@fortawesome/free-solid-svg-icons";
-import Link from "next/link";
 import {toast} from "react-toastify";
+import {cookies} from "next/headers";
 
 
 interface SignInFormProps {
@@ -26,6 +24,7 @@ export default function SignInForm({setPathname}: SignInFormProps) {
         setLoading(true);
 
 
+
         try {
             const response = await loginRequest({
                 username: username,
@@ -35,9 +34,11 @@ export default function SignInForm({setPathname}: SignInFormProps) {
             console.log(response);
             if (response.status == 200) {
                 toast.success("Đăng nhập thành công");
-
-
-
+                if(response.data.authorities[0]=="ADMIN"){
+                     window.location.href="/admin"
+                }else if(response.data.authorities[0]=="USER") {
+                    window.location.href="/home"
+                }
 
 
 

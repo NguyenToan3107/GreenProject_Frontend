@@ -23,3 +23,7 @@ export function registerRequest(params: RegisterParams) {
 export function logoutRequest() {
   return api.post(`auth/logout`);
 }
+
+export function getUserInfo() {
+  return api.get(`user-info`);
+}

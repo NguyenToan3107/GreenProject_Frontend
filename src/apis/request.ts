@@ -1,10 +1,11 @@
 import axios, { AxiosError } from "axios";
 // import { deleteCookie, getCookie } from "cookies-next";
 
-export const BASE_URL = process.env.NEXT_PUBLIC_GREEN_PROJECT_BASE_URL;
+export const BASE_URL = "http://localhost:7000/api/";
 
 const api = axios.create({
   baseURL: BASE_URL,
+  withCredentials:true,
   headers: {
     "Content-Type": "application/json",
     "Accept": "application/json",

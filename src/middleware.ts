@@ -1,14 +1,18 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import {cookies} from "next/headers";
+
 
 export function middleware(req: NextRequest) {
     const url = req.nextUrl.clone();
     const token = req.cookies.get('token');
     const loginStatusCookie = req.cookies.get('isLoggedIn');
     const roleCookie = req.cookies.get('role');
+    console.log(loginStatusCookie?.value)
+    console.log(roleCookie?.value)
 
-    console.log(loginStatusCookie)
-    console.log(roleCookie)
+
+
     if (loginStatusCookie?.value === 'true') {
         if (url.pathname.startsWith('/admin') && roleCookie?.value === 'ADMIN') {
             return NextResponse.next();
