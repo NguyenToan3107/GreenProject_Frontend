@@ -7,6 +7,7 @@ import {faUser} from "@fortawesome/free-regular-svg-icons";
 import {faKey} from "@fortawesome/free-solid-svg-icons";
 import {toast} from "react-toastify";
 import {cookies} from "next/headers";
+import {setLocalStorage} from "@/ultis/localStorageUtils";
 
 
 interface SignInFormProps {
@@ -26,17 +27,21 @@ export default function SignInForm({setPathname}: SignInFormProps) {
 
 
         try {
-            const response = await loginRequest({
+            const response:any = await loginRequest({
                 username: username,
                 password: password,
             });
 
             console.log(response);
-            if (response.status == 200) {
-                toast.success("Đăng nhập thành công");
-                if(response.data.authorities[0]=="ADMIN"){
+
+            if (response.code==200) {
+                setLocalStorage("user_data", response.data);
+                const authorities:Array<string>=response.data.authorities;
+                console.log(authorities.at(0))
+
+                if(authorities[0]=="ADMIN"){
                      window.location.href="/admin"
-                }else if(response.data.authorities[0]=="USER") {
+                }else if(authorities[0]=="USER") {
                     window.location.href="/home"
                 }
 

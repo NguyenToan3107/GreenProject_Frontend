@@ -1,5 +1,8 @@
 import axios, { AxiosError } from "axios";
+import {toast} from "react-toastify";
 // import { deleteCookie, getCookie } from "cookies-next";
+import Swal from 'sweetalert2';
+import {removeLocalStorage} from "@/ultis/localStorageUtils";
 
 export const BASE_URL = "http://localhost:7000/api/";
 
@@ -36,21 +39,24 @@ api.interceptors.response.use(
 //     };
 //   },
 (response) => {
-    // if (response.data) {
-    //   return response.data
-    // }
-    // return {
-    //   errorCode: response.data.code,
-    //   errorMessage: response.data.message,
-    // };
-    return response
+
+    return response.data
   },
   (error: AxiosError) => {
+    console.log(error.response)
+    const showAlert = async () => {
+      await Swal.fire({
+        title: 'Phiên đăng nhập hết hạn!',
+        text: '',
+        icon: 'info',
+        confirmButtonText: 'OK'
+      });
+      removeLocalStorage("user_data")
+      window.location.replace("/auth");
+    };
+
     if (error.response?.status === 401) {
-    //   window.location.replace(
-    //     `/cms/login?company_cd=${getCookie("company_cd")}`
-    //   );
-    //   deleteCookie("token");
+      showAlert().then(r => null);
     }
     // check conditions to refresh token if needed
     return Promise.reject({

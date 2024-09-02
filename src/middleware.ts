@@ -6,24 +6,20 @@ import {cookies} from "next/headers";
 export function middleware(req: NextRequest) {
     const url = req.nextUrl.clone();
     const token = req.cookies.get('token');
-    const loginStatusCookie = req.cookies.get('isLoggedIn');
-    const roleCookie = req.cookies.get('role');
-    console.log(loginStatusCookie?.value)
-    console.log(roleCookie?.value)
+    const authority = req.cookies.get('Authority');
 
-
-
-    if (loginStatusCookie?.value === 'true') {
-        if (url.pathname.startsWith('/admin') && roleCookie?.value === 'ADMIN') {
+    if(authority==undefined){
+        return NextResponse.redirect(new URL('/auth', req.url));
+    }else {
+        if (url.pathname.startsWith('/admin') && authority?.value === 'ADMIN') {
             return NextResponse.next();
-        } else if (url.pathname.startsWith('/home') && roleCookie?.value === 'USER') {
+        } else if (url.pathname.startsWith('/home') && authority?.value === 'USER') {
             return NextResponse.next();
         } else {
-            return NextResponse.redirect(new URL('/auth', req.url));
+            return NextResponse.redirect(new URL('/forbidden', req.url));
         }
-    } else {
-        return NextResponse.redirect(new URL('/auth', req.url));
     }
+
 
 
 }
