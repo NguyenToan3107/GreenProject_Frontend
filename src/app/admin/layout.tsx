@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
+import Sidebar from "@/app/admin/_components/Sidebar";
+import Header from "@/app/admin/_components/Header";
+
 
 const roboto = Roboto({ subsets: ["vietnamese"], weight: ["400", "700"] });
 
@@ -9,9 +12,23 @@ export const metadata: Metadata = {
 };
 
 export default function Admin({
-  children,
-}: Readonly<{
+                                children,
+                              }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <main className={roboto.className}>{children}</main>;
+  return (
+
+        <main className={roboto.className}>
+          <div className="flex">
+            <Sidebar/>
+
+            <div className="flex-grow flex flex-col">
+              <Header/>
+
+              {children}
+            </div>
+          </div>
+        </main>
+
+  );
 }

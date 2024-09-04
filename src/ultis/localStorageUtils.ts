@@ -38,6 +38,7 @@ export function getLocalStorage<T>(key: string): T | null {
  */
 export function removeLocalStorage(key: string): void {
     try {
+        if(localStorage.getItem(key)==undefined) return;
         localStorage.removeItem(key);
     } catch (error) {
         console.error("Error removing from localStorage:", error);
