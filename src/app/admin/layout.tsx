@@ -1,5 +1,5 @@
 "use client"
-import type { Metadata } from "next";
+
 import { Roboto } from "next/font/google";
 import React, {useEffect, useState} from 'react';
 import {
@@ -13,6 +13,7 @@ import {
 import type { MenuProps } from 'antd';
 import { Breadcrumb, Layout, Menu, theme } from 'antd';
 import {usePathname, useRouter} from "next/navigation";
+
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -91,7 +92,9 @@ export default function Admin({
         <main className={roboto.className}>
             <Layout style={{ minHeight: '100vh' }}>
 
+
                 <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+                    <Header/>
                     <div className="demo-logo-vertical" />
                     <Menu theme="dark" selectedKeys={[selectedKey]} mode="inline" items={items} onClick={handleMenuClick} />
                 </Sider>

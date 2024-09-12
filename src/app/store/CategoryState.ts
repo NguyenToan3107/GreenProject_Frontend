@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import {
     getAllCategories,
-    createNewCategory, updateCategoryById, deleteCategoryById
+    createNewCategory, updateCategoryById, deleteCategoryById, getAllCategoriesParent
 } from "@/apis/modules/category";
 import { message } from "antd"
     ;
@@ -10,9 +10,11 @@ import {CategoryDto} from "@/app/admin/_components/categories/CategoryForm";
 
 
 interface CategoryState {
-    categories: Category[];
+    categories: any[];
     categoriesWithPagination: Category[];
     loading: boolean;
+    search:string;
+    setSearch:(key:string)=>void;
     fetchCategories: () => Promise<void>;
     getAllCategories: (page: number, size: number) => Promise<void>;
     createCategory: (newCategory: CategoryDto) => Promise<void>;
@@ -27,16 +29,21 @@ export const useCategoryStore = create<CategoryState>((set,get) => ({
     categories: [],
     categoriesWithPagination: [],
     loading: false,
+    search:"",
     current: 1,
-    pageSize: 10,
+    pageSize: 5,
     totalElements: 0,
+    setSearch:(key:string)=>{
+         set({search:key})
+    },
 
     // Fetch categories không phân trang
     fetchCategories: async () => {
         console.log("fetch categories")
         set({ loading: true });
         try {
-            const response = await getAllCategories(null, null); // Gọi API không phân trang
+            const response = await getAllCategoriesParent(); // Gọi API không phân trang
+
             set({
                 categories: response.data,
                 loading: false
@@ -52,7 +59,8 @@ export const useCategoryStore = create<CategoryState>((set,get) => ({
         console.log("fetch categories with pagination")
         set({ loading: true });
         try {
-            const response = await getAllCategories(page, size); // Gọi API phân trang
+            const response = await getAllCategories(page, size,get().search);
+            console.log(response)
             set({
                 categoriesWithPagination: response.data.content,
                 current: page,

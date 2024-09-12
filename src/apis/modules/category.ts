@@ -2,9 +2,18 @@ import api from "@/apis/request";
 import {CategoryDto} from "@/app/admin/_components/categories/CategoryForm";
 
 
-export function getAllCategories(pageNum:any,pageSize:any) {
-    if(pageNum==null||pageSize==null) return  api.get(`categories`);
-    return api.get(`categories?pageNum=${pageNum}&pageSize=${pageSize}`);
+export function getAllCategories(pageNum:any,pageSize:any,search:string) {
+    console.log(pageSize+" "+pageNum)
+    if(search.trim()!=""){
+
+        return api.get(`categories?pageNum=${pageNum}&pageSize=${pageSize}&search=${search.trim()}`);
+    }else {
+        return api.get(`categories?pageNum=${pageNum}&pageSize=${pageSize}`);
+    }
+
+}
+export function getAllCategoriesParent() {
+    return api.get(`categories/parents`);
 }
 
 export function createNewCategory(category:CategoryDto){

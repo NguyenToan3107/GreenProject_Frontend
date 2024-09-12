@@ -1,4 +1,4 @@
-import { Button, Form, Input, Modal, Select, message } from "antd";
+import {Button, Form, Input, Modal, Select, message, TreeSelect} from "antd";
 import React, { useEffect, useState } from "react";
 import { useCategoryStore } from "@/app/store/CategoryState";
 
@@ -52,6 +52,14 @@ export default function CategoryForm({
         form.resetFields();
         if (setIsModalOpen) setIsModalOpen(false);
     };
+    const buildCategoryTree = (categories:any) => {
+        return categories.map((cat:any) => ({
+            title: cat.name,
+            value: cat.id,
+            children: cat.children ? buildCategoryTree(cat.children) : [],
+        }));
+    };
+    const categoryTreeData = buildCategoryTree(categories);
 
     return (
         <Modal title={category ? "Cập nhật danh mục" : "Tạo mới danh mục"} open={isModalOpen} onCancel={handleCancel} footer={null}>
@@ -64,13 +72,12 @@ export default function CategoryForm({
 
                     {/* Danh mục cha */}
                     <Form.Item label="Danh mục cha" name="parentCategory">
-                        <Select placeholder="Chọn danh mục cha" allowClear>
-                            {categories.map((cat) => (
-                                <Select.Option key={cat.id} value={cat.id}>
-                                    {cat.name}
-                                </Select.Option>
-                            ))}
-                        </Select>
+                        <TreeSelect
+                            treeData={categoryTreeData}
+                            placeholder="Chọn danh mục cha"
+                            allowClear
+
+                        />
                     </Form.Item>
 
                     {/* Nút Submit */}

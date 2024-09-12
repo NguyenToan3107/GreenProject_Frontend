@@ -1,31 +1,30 @@
-"use client";
-
+"use client"
 import React, { useEffect, useState } from "react";
-import {Button, Collapse, Drawer, message, Modal, Table, theme} from "antd";
+import { Button, Col, Input, Modal, Row, Table, theme } from "antd";
 import CategoryForm from "@/app/admin/_components/categories/CategoryForm";
 import { Header } from "antd/es/layout/layout";
 import { Category } from "@/app/model/Category";
-import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
-import {useCategoryStore} from "@/app/store/CategoryState";
-import VariationForm from "@/app/admin/_components/categories/VariationForm";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { useCategoryStore } from "@/app/store/CategoryState";
+import { SearchProps } from "antd/es/input";
+
 
 const { confirm } = Modal;
-const { Panel } = Collapse;
+const { Search } = Input;
 
 export default function Page() {
     const {
-        categories,
+        categoriesWithPagination,
         loading,
         fetchCategories,
-        updateCategory,
         deleteCategory,
         getAllCategories,
+        setSearch,
         current,
         pageSize,
         totalElements
     } = useCategoryStore((state) => state);
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-    const [drawerCategory, setDrawerCategory] = useState<Category | null>(null);
+
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [category, setCategory] = useState<Category | null>(null);
@@ -33,8 +32,9 @@ export default function Page() {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
 
-    useEffect( () => {
+    useEffect(() => {
         fetchCategories();
+        getAllCategories(current, pageSize);
     }, []);
 
     const columns = [
@@ -56,30 +56,39 @@ export default function Page() {
             ),
         },
         {
+            title: 'Created At',
+            dataIndex: 'createdAt',
+            key: 'createdAt',
+            render: (text: string) => <span>{new Date(text).toLocaleString()}</span>,
+        },
+        {
+            title: 'Updated At',
+            dataIndex: 'updatedAt',
+            key: 'updatedAt',
+            render: (text: string) => <span>{new Date(text).toLocaleString()}</span>,
+        },
+        {
             title: 'Action',
             key: 'action',
+            align: 'right' as const,
             render: (_: any, record: Category) => (
-                <div style={{ display: 'flex', gap: '8px' }}>
+                <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
                     <Button
-                        type="link"
+                        type="primary"
                         icon={<EditOutlined />}
                         onClick={() => handleEdit(record)}
+
                     >
                         Edit
                     </Button>
                     <Button
-                        type="link"
+                        type="primary"
+                        danger
                         icon={<DeleteOutlined />}
                         onClick={() => handleDelete(record)}
+
                     >
                         Delete
-                    </Button>
-                    <Button
-                        type="link"
-                        icon={<EyeOutlined />}
-                        onClick={() => handleDetail(record)}
-                    >
-                        Detail
                     </Button>
                 </div>
             ),
@@ -102,18 +111,11 @@ export default function Page() {
             onOk: async () => {
                 console.log('Delete:', record);
                 await deleteCategory(record.id);
-
             },
             onCancel() {
                 console.log('Hủy bỏ xóa');
             },
         });
-
-    };
-
-    const handleDetail = (record: Category) => {
-        setDrawerCategory(record);
-        setIsDrawerOpen(true);
     };
 
     const handleTableChange = async (pagination: { current: number; pageSize: number }) => {
@@ -127,6 +129,12 @@ export default function Page() {
     function handleAddButton() {
         setCategory(null);
         showModal();
+    }
+
+    const onSearch: SearchProps['onSearch'] =async (value, _e, info) => {
+        setSearch(value);
+        await getAllCategories(1,pageSize);
+
     }
 
     return (
@@ -149,18 +157,34 @@ export default function Page() {
             <div
                 style={{
                     padding: 24,
+                    paddingInline: 50,
                     minHeight: 360,
                     background: colorBgContainer,
                     borderRadius: borderRadiusLG,
                 }}
             >
-                <Button type="primary" onClick={handleAddButton}>
-                    Thêm mới danh mục
-                </Button>
+                <Row gutter={16} className="flex items-center justify-between mb-4">
+                    <Col>
+                        <Search
+                            placeholder="Tìm kiếm danh mục"
+                            allowClear
+                            onSearch={onSearch}
+                        />
+                    </Col>
+                    <Col className="flex justify-end">
+                        <Button
+                            type="primary"
+                            onClick={handleAddButton}
+                            className="bg-blue-500 text-white hover:bg-blue-600 transition-all duration-200 rounded-md shadow-md"
+                        >
+                            Thêm mới danh mục
+                        </Button>
+                    </Col>
+                </Row>
                 <CategoryForm category={category} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
 
                 <Table
-                    dataSource={categories}
+                    dataSource={categoriesWithPagination}
                     columns={columns}
                     loading={loading}
                     rowKey="id"
@@ -174,22 +198,6 @@ export default function Page() {
                         },
                     }}
                 />
-                <Drawer
-                    title="Thêm biến thể "
-                    placement="right"
-                    closable={true}
-                    onClose={() => {
-                        setDrawerCategory(null);
-                        setIsDrawerOpen(false)}}
-                    open={isDrawerOpen}
-                    width={1000}
-                >
-                    {drawerCategory && (
-                        <div>
-                            <VariationForm category={drawerCategory} />
-                        </div>
-                    )}
-                </Drawer>
             </div>
         </>
     );
