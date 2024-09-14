@@ -2,7 +2,7 @@ import axios, { AxiosError } from "axios";
 import {toast} from "react-toastify";
 // import { deleteCookie, getCookie } from "cookies-next";
 import Swal from 'sweetalert2';
-import {removeLocalStorage} from "@/ultis/localStorageUtils";
+import {removeLocalStorage} from "@/app/util/localStorageUtils";
 
 export const BASE_URL = "http://localhost:7000/api/";
 
@@ -51,7 +51,7 @@ api.interceptors.response.use(
         icon: 'info',
         confirmButtonText: 'OK'
       });
-      removeLocalStorage("user_data")
+
       window.location.replace("/auth");
     };
 

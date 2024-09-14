@@ -1,20 +1,26 @@
 import api from "@/apis/request";
-import {CategoryDto} from "@/app/admin/_components/categories/CategoryForm";
-import {Variation} from "@/app/model/Variation";
-import {CreateVariationRequest, UpdateVariationRequest} from "@/app/admin/_components/categories/VariationForm";
+import {VariationDto} from "@/app/admin/_components/variations/VariationForm";
 
-export function getAllVariations(categoryId:number) {
-    return api.get(`variations/${categoryId}`);
+export function getAllVariations(pageNum:any,pageSize:any,search:string) {
+    if(pageNum==0&&pageSize==0){
+        return api.get(`variations`);
+    }
+
+    if(search.trim()!=""){
+        return api.get(`variations?pageNum=${pageNum}&pageSize=${pageSize}&search=${search.trim()}`);
+    }else {
+        return api.get(`variations?pageNum=${pageNum}&pageSize=${pageSize}`);
+    }
+
 }
-
-export function createVariation(variation:CreateVariationRequest){
+export function createVariation(variation:VariationDto){
     return api.post('variations/create',variation)
 }
 
-export function updateVariation(id:number,variation:UpdateVariationRequest){
+export function updateVariationById(id:number,variation:VariationDto){
     return api.put(`variations/update/${id}`,variation)
 }
 
-export function deleteVariation(id:number){
+export function deleteVariationById(id:number){
     return api.delete(`variations/delete/${id}`)
 }

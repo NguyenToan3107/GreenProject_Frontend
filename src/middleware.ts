@@ -16,6 +16,9 @@ export function middleware(req: NextRequest) {
         } else if (url.pathname.startsWith('/home') && authority?.value === 'USER') {
             return NextResponse.next();
         } else {
+            if(authority?.value === 'ADMIN'){
+                return NextResponse.next();
+            }
             return NextResponse.redirect(new URL('/forbidden', req.url));
         }
     }

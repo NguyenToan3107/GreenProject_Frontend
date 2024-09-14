@@ -7,6 +7,11 @@ import { Category } from "@/app/model/Category";
 import {DeleteOutlined, EditOutlined, UploadOutlined} from "@ant-design/icons";
 import { useCategoryStore } from "@/app/store/CategoryStore";
 import { SearchProps } from "antd/es/input";
+import {useProductStore} from "@/app/store/ProductStore";
+import {Product} from "@/app/model/Product";
+import ProductForm from "@/app/admin/_components/products/ProductForm";
+import UploadImageForm from "@/app/admin/_components/products/UploadImageForm";
+import {useImageStore} from "@/app/store/ImageStore";
 
 
 const { confirm } = Modal;
@@ -14,31 +19,25 @@ const { Search } = Input;
 
 export default function Page() {
     const {
-        categoriesWithPagination,
+        products,
         loading,
-        fetchCategories,
-        deleteCategory,
-        getAllCategories,
+        getAllProducts,
+        deleteProduct,
         setSearch,
         current,
         pageSize,
         totalElements
-    } = useCategoryStore((state) => state);
+    } = useProductStore((state) => state);
+
+    const {setProductId}=useImageStore((state) => state);
 
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [category, setCategory] = useState<Category | null>(null);
+    const [isModalUploadOpen, setIsModalUploadOpen] = useState(false);
+    const [product, setProduct] = useState<Product | null>(null);
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
-
-    useEffect(() => {
-        if(categoriesWithPagination.length==0){
-            getAllCategories(current, pageSize);
-        }
-
-    }, []);
-
     const columns = [
         {
             title: 'Id',
@@ -51,11 +50,22 @@ export default function Page() {
             key: 'name',
         },
         {
-            title: 'Parent Name',
-            key: 'parentName',
-            render: (_: any, record: Category) => (
-                <span>{record.parent ? record.parent.name : 'N/A'}</span>
+            title: 'Description',
+            dataIndex: 'description',
+            key: 'description',
+            render: (text: string) => (
+                <span>{text.length > 50 ? `${text.substring(0, 50)}...` : text}</span>
             ),
+
+        },
+        {
+            title: 'Category',
+            dataIndex: 'category',
+            key: 'category',
+            render: (_: any, record: Product) => (
+                <span>{record.category ? record.category.name : 'N/A'}</span>
+            ),
+
         },
         {
             title: 'Created At',
@@ -73,7 +83,7 @@ export default function Page() {
             title: 'Action',
             key: 'action',
             align: 'right' as const,
-            render: (_: any, record: Category) => (
+            render: (_: any, record: Product) => (
                 <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
                     <Button
                         type="primary"
@@ -93,27 +103,44 @@ export default function Page() {
                         Delete
                     </Button>
 
+                    <Button
+                        icon={<UploadOutlined />}
+                        onClick={() => handleUploadImage(record)}
+                    >Upload</Button>
+
                 </div>
             ),
         },
     ];
 
-    const handleEdit = (record: Category) => {
+    useEffect(() => {
+        if(products.length==0)
+        getAllProducts(current, pageSize);
+    }, []);
+
+    function handleUploadImage(record: Product) {
+        console.log("open")
+        setProductId(record.id)
+        setIsModalUploadOpen(true);
+
+    }
+
+    const handleEdit = (record:Product ) => {
         console.log('Edit:', record);
-        setCategory(record);
-        showModal();
+        setProduct(record);
+        setIsModalOpen(true);
     };
 
-    const handleDelete = async (record: Category) => {
+    const handleDelete = async (record: Product) => {
         confirm({
-            title: 'Bạn có chắc chắn muốn xóa danh mục này?',
+            title: 'Bạn có chắc chắn muốn xóa san pham này?',
             content: 'Hành động này không thể hoàn tác!',
             okText: 'Có',
             okType: 'danger',
             cancelText: 'Không',
             onOk: async () => {
                 console.log('Delete:', record);
-                await deleteCategory(record.id);
+                await deleteProduct(record.id);
             },
             onCancel() {
                 console.log('Hủy bỏ xóa');
@@ -122,21 +149,19 @@ export default function Page() {
     };
 
     const handleTableChange = async (pagination: { current: number; pageSize: number }) => {
-        await getAllCategories(pagination.current, pagination.pageSize);
+        await getAllProducts(pagination.current, pagination.pageSize);
     };
 
-    function showModal() {
-        setIsModalOpen(true);
-    }
+
 
     function handleAddButton() {
-        setCategory(null);
-        showModal();
+        setProduct(null);
+        setIsModalOpen(true);
     }
 
     const onSearch: SearchProps['onSearch'] =async (value, _e, info) => {
         setSearch(value);
-        await getAllCategories(1,pageSize);
+        await getAllProducts(1,pageSize);
 
     }
 
@@ -153,7 +178,7 @@ export default function Page() {
                         fontSize: '24px',
                     }}
                 >
-                    Quản lý danh mục
+                    Quản lý sản phẩm
                 </h1>
             </Header>
 
@@ -169,7 +194,7 @@ export default function Page() {
                 <Row gutter={16} className="flex items-center justify-between mb-4">
                     <Col>
                         <Search
-                            placeholder="Tìm kiếm danh mục"
+                            placeholder="Tìm kiếm sản phẩm"
                             allowClear
                             onSearch={onSearch}
                         />
@@ -180,14 +205,14 @@ export default function Page() {
                             onClick={handleAddButton}
                             className="bg-blue-500 text-white hover:bg-blue-600 transition-all duration-200 rounded-md shadow-md"
                         >
-                            Thêm mới danh mục
+                            Thêm mới sản phẩm
                         </Button>
                     </Col>
                 </Row>
-                <CategoryForm category={category} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
-
+                <ProductForm product={product}  isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
+                <UploadImageForm  isModalUploadOpen={isModalUploadOpen} setIsModalUploadOpen={setIsModalUploadOpen}  />
                 <Table
-                    dataSource={categoriesWithPagination}
+                    dataSource={products}
                     columns={columns}
                     loading={loading}
                     rowKey="id"

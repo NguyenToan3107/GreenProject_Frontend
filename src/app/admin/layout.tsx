@@ -5,8 +5,8 @@ import React, {useEffect, useState} from 'react';
 import {
     AppstoreOutlined,
     DesktopOutlined,
-    FileOutlined, GiftOutlined, HomeOutlined,
-    PieChartOutlined, ShoppingOutlined, SolutionOutlined,
+    FileOutlined, FileTextOutlined, GiftOutlined, HomeOutlined,
+    PieChartOutlined, SettingOutlined, ShoppingOutlined, SolutionOutlined, TagOutlined,
     TeamOutlined,
     UserOutlined,
 } from '@ant-design/icons';
@@ -58,8 +58,14 @@ export default function Admin({
             setSelectedKey('4');
         } else if (pathname === '/admin/vouchers') {
             setSelectedKey('5');
+        } else if (pathname === '/admin/variations') {
+            setSelectedKey('6');
+        }else if (pathname === '/admin/options') {
+            setSelectedKey('7');
+        }else if (pathname === '/admin/productItems') {
+            setSelectedKey('8');
         } else {
-            setSelectedKey('1');
+            setSelectedKey("1")
         }
     }, [pathname]);
     const handleMenuClick: MenuProps['onClick'] = (e) => {
@@ -77,18 +83,28 @@ export default function Admin({
             router.push('/admin/orders');
         } else if (key === '5') {
             router.push('/admin/vouchers');
+        }else if(key=='6'){
+            router.push('/admin/variations');
+        }else if(key=='7'){
+            router.push('/admin/options');
+        }else if(key=='8'){
+            router.push('/admin/productItems');
         }
     };
 
     const items: MenuItem[] = [
         getItem('Trang chủ', '1', <HomeOutlined />),
-        getItem('Quản lý danh mục', '2',  <AppstoreOutlined />),
-        getItem('Quản lý sản phẩm', '3',<ShoppingOutlined />),
-        getItem('Quản lý hóa đơn', '4',<SolutionOutlined />),
+        getItem('Quản lý danh mục', '2', <AppstoreOutlined />),
+        getItem('Quản lý biến thể', '6', <TagOutlined />),
+        getItem('Quản lý tùy chọn biến thể', '7', <SettingOutlined />),
+        getItem('Quản lý sản phẩm', '3', <ShoppingOutlined />),
+        getItem('Quản lý chi tiết sản phẩm', '8', <FileTextOutlined />), // Thêm item mới
+        getItem('Quản lý hóa đơn', '4', <SolutionOutlined />),
         getItem('Quản lý voucher', '5', <GiftOutlined />),
     ];
 
-  return (
+
+    return (
         <main className={roboto.className}>
             <Layout style={{ minHeight: '100vh' }}>
 
@@ -105,7 +121,7 @@ export default function Admin({
 
                     </Content>
                     <Footer style={{ textAlign: 'center' }}>
-                        Ant Design ©{new Date().getFullYear()} Created by Ant UED
+                        
                     </Footer>
                 </Layout>
             </Layout>

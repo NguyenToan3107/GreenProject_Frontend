@@ -1,25 +1,27 @@
 import {Button, Form, Input, Modal, Select, message, TreeSelect} from "antd";
 import React, { useEffect, useState } from "react";
 import { useCategoryStore } from "@/app/store/CategoryStore";
+import {useVariationStore} from "@/app/store/VariationStore";
 
-export interface CategoryDto {
+export interface VariationDto {
     name: string;
-    parentId: number | null | undefined;
+    categoryId: number | null | undefined;
 }
 
-interface CategoryModalProps {
-    category?: any;
+interface VariationModalProps {
+    variation?: any;
     isModalOpen?: boolean;
     setIsModalOpen?: (value: (((prevState: boolean) => boolean) | boolean)) => void;
 }
 
-export default function CategoryForm({
-                                         category,
+export default function VariationForm({
+                                         variation,
                                          isModalOpen,
                                          setIsModalOpen,
-                                     }: CategoryModalProps) {
+                                     }: VariationModalProps) {
     const [form] = Form.useForm();
-    const { categories, createCategory, updateCategory,fetchCategories } = useCategoryStore();
+    const { variations, createVariation, updateVariation } = useVariationStore();
+    const { categories, fetchCategories } = useCategoryStore();
     useEffect(() => {
         if(categories.length==0){
             fetchCategories();
@@ -34,21 +36,23 @@ export default function CategoryForm({
     };
 
     useEffect(() => {
-        if (isModalOpen && category) {
+        if (isModalOpen && variation) {
             form.setFieldsValue({
-                name: category.name,
-                parentId: category.parent ? category.parent.id : null,
+                name: variation.name,
+                categoryId: variation.category ? variation.category.id : null,
             });
         }
-    }, [isModalOpen, category, form]);
+    }, [isModalOpen, variation, form]);
 
     const handleOk = async () => {
         const values = await form.validateFields();
 
-        if (!category) {
-            await createCategory(values);
+        if (!variation) {
+            await createVariation(values);
         } else {
-            await updateCategory(category.id, values);
+            console.log(variation.id)
+            console.log(values)
+            await updateVariation(variation.id, values);
         }
 
         form.resetFields();
@@ -64,7 +68,7 @@ export default function CategoryForm({
     const categoryTreeData = buildCategoryTree(categories);
 
     return (
-        <Modal title={category ? "Cập nhật danh mục" : "Tạo mới danh mục"}
+        <Modal title={variation ? "Cập nhật biến thể" : "Tạo mới biến thể"}
                open={isModalOpen}
                onCancel={handleCancel}
                onOk={handleOk}
@@ -79,7 +83,7 @@ export default function CategoryForm({
                     </Form.Item>
 
 
-                    <Form.Item label="Danh mục cha" name="parentId">
+                    <Form.Item label="Danh mục cha" name="categoryId">
                         <TreeSelect
                             treeData={categoryTreeData}
                             placeholder="Chọn danh mục cha"

@@ -1,113 +1,84 @@
 import {Variation} from "@/app/model/Variation";
 import {create} from "zustand";
 import {message} from "antd";
-import {createVariation, deleteVariation, getAllVariations, updateVariation} from "@/apis/modules/variation";
-import {CreateVariationRequest, UpdateVariationRequest} from "@/app/admin/_components/categories/VariationForm";
+import {
+    createVariation,
+    deleteVariationById,
+    getAllVariations,
+     updateVariationById
+} from "@/apis/modules/variation";
+
+
+import {VariationDto} from "@/app/admin/_components/variations/VariationForm";
+
+import {handleApiRequest} from "@/app/util/utils";
 
 interface VariationState {
-    categoryId:number
-    variationId:number|null
-    loading: boolean
-    variations:Variation[]
-    setCategoryId:(id:number)=>void
-    setVariationId:(id:number)=>void
-    reload:()=>void
-    getVariationsByCategoryId: (categoryId:number) => Promise<void>
-    createVariation: (variation:CreateVariationRequest) => Promise<void>
-    updateVariationById:(id:number,v:UpdateVariationRequest)=>Promise<void>
-    deleteVariationById:(id:number)=>Promise<void>
-
-
+    variations: any[];
+    variationsNoPage: any[];
+    loading: boolean;
+    search: string;
+    setSearch: (key: string) => void;
+    getAllVariations: (page: number, size: number) => Promise<void>;
+    createVariation: (variation: VariationDto) => Promise<void>;
+    updateVariation: (id: number, variation: VariationDto) => Promise<void>;
+    deleteVariation: (id: number) => Promise<void>;
+    current: number;
+    pageSize: number;
+    totalElements: number;
 }
 
-
 export const useVariationStore=create<VariationState>((set,get)=>({
-    categoryId:0,
-    variationId:null,
-    loading: false,
     variations:[],
-    setCategoryId:(id:number)=>{
-        set({categoryId:id})
-
-    },
-    setVariationId:(id:number)=>{
-        set({variationId:id})
-
-    },
-    reload:()=>{
-        get().getVariationsByCategoryId(get().categoryId)
-
+    variationsNoPage:[],
+    loading: false,
+    search:"",
+    current: 1,
+    pageSize: 5,
+    totalElements: 0,
+    setSearch:(s)=>{
+        set({search:s})
     },
 
-    getVariationsByCategoryId: async (categoryId:number) => {
-        set({ loading: true });
-        try {
-            const res:any=await getAllVariations(categoryId);
-            if(res.code==200){
+    getAllVariations: async (page: number, size: number) => {
+        const apiCall = () => getAllVariations(page, size, get().search);
+        const onSuccess = (response: any) => {
+            if(!response.data.content){
                 set({
-                    variations: res.data,
-                    loading: false
+                    variationsNoPage:response.data
+                })
+            }else {
+                set({
+                    variations: response.data.content,
+                    current: page,
+                    pageSize: size,
+                    totalElements: response.data.totalElements,
                 });
-                console.log(res)
-                message.success(res.message);
             }
 
-        } catch (error:any) {
-            message.error(error.response.message);
-            set({ loading: false });
-        }
+
+        };
+        await handleApiRequest(apiCall, onSuccess, (loading:boolean) => set({ loading }));
     },
-
-    // Create category
-    createVariation: async (variation:CreateVariationRequest) => {
-        set({ loading: true });
-        try {
-            const res:any = await createVariation(variation);
-            if(res.code==201){
-                message.success(res.message)
-                get().reload();
-
-
-            }
-
-            set({ loading: false });
-        } catch (error:any) {
-            message.error(error.response.message);
-
-            set({ loading: false });
-        }
+    createVariation: async (variation:VariationDto) => {
+        const apiCall = () => createVariation(variation);
+        const onSuccess = (response: any) => {
+            get().getAllVariations(get().current, get().pageSize);
+        };
+        await handleApiRequest(apiCall, onSuccess, (loading:boolean) => set({ loading }));
     },
-    updateVariationById:async (id:number,v:UpdateVariationRequest)=>{
-        set({ loading: true });
-        try {
-            const res:any = await updateVariation(id,v);
-            if(res.code==200){
-                message.success(res.message)
-                get().reload();
-            }
-
-            set({ loading: false });
-        } catch (error:any) {
-            message.error(error.response.message);
-
-            set({ loading: false });
-        }
+    updateVariation:async (id:number,v:VariationDto)=>{
+        const apiCall = () => updateVariationById(id, v);
+        const onSuccess = (response: any) => {
+            get().getAllVariations(get().current, get().pageSize);
+        };
+        await handleApiRequest(apiCall, onSuccess, (loading:boolean) => set({ loading }));
     },
-    deleteVariationById:async (id:number)=>{
-        set({ loading: true });
-        try {
-            const res:any = await deleteVariation(id);
-            console.log(res)
-            if(res.code==200){
-                message.success(res.message)
-                get().reload();
-            }
-
-            set({ loading: false });
-        } catch (error:any) {
-            message.error(error.response.message);
-
-            set({ loading: false });
-        }
+    deleteVariation:async (id:number)=>{
+        const apiCall = () => deleteVariationById(id);
+        const onSuccess = (response: any) => {
+            get().getAllVariations(get().current, get().pageSize);
+        };
+        await handleApiRequest(apiCall, onSuccess, (loading:boolean) => set({ loading }));
     }
 }))

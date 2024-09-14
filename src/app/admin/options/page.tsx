@@ -1,12 +1,15 @@
 "use client"
 import React, { useEffect, useState } from "react";
 import {Button, Col, Input, Modal, Row, Table, theme, Upload} from "antd";
-import CategoryForm from "@/app/admin/_components/categories/CategoryForm";
+
 import { Header } from "antd/es/layout/layout";
 import { Category } from "@/app/model/Category";
-import {DeleteOutlined, EditOutlined, UploadOutlined} from "@ant-design/icons";
-import { useCategoryStore } from "@/app/store/CategoryStore";
+import {DeleteOutlined, EditOutlined} from "@ant-design/icons";
+
 import { SearchProps } from "antd/es/input";
+
+import {useVariationOptionStore} from "@/app/store/VariationOptionStore";
+import OptionForm from "@/app/admin/_components/options/OptionForm";
 
 
 const { confirm } = Modal;
@@ -14,27 +17,28 @@ const { Search } = Input;
 
 export default function Page() {
     const {
-        categoriesWithPagination,
+        variationOptions,
         loading,
-        fetchCategories,
-        deleteCategory,
-        getAllCategories,
         setSearch,
+        getAllVariationOptions,
+        deleteVariationOption,
         current,
         pageSize,
         totalElements
-    } = useCategoryStore((state) => state);
+    } = useVariationOptionStore((state) => state);
+
+
 
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [category, setCategory] = useState<Category | null>(null);
+    const [variationOption, setVariationOption] = useState<any | null>(null);
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
 
     useEffect(() => {
-        if(categoriesWithPagination.length==0){
-            getAllCategories(current, pageSize);
+        if(variationOptions.length==0){
+            getAllVariationOptions(current, pageSize);
         }
 
     }, []);
@@ -46,15 +50,15 @@ export default function Page() {
             key: 'id',
         },
         {
-            title: 'Name',
-            dataIndex: 'name',
-            key: 'name',
+            title: 'Value',
+            dataIndex: 'value',
+            key: 'value',
         },
         {
-            title: 'Parent Name',
-            key: 'parentName',
-            render: (_: any, record: Category) => (
-                <span>{record.parent ? record.parent.name : 'N/A'}</span>
+            title: 'Variation',
+            key: 'variation',
+            render: (_: any, record: any) => (
+                <span>{record.variation ? record.variation.name : 'N/A'}</span>
             ),
         },
         {
@@ -98,22 +102,22 @@ export default function Page() {
         },
     ];
 
-    const handleEdit = (record: Category) => {
+    const handleEdit = (record: any) => {
         console.log('Edit:', record);
-        setCategory(record);
-        showModal();
+        setVariationOption(record);
+        setIsModalOpen(true);
     };
 
-    const handleDelete = async (record: Category) => {
+    const handleDelete = async (record: any) => {
         confirm({
-            title: 'Bạn có chắc chắn muốn xóa danh mục này?',
+            title: 'Bạn có chắc chắn muốn xóa tùy chọn này?',
             content: 'Hành động này không thể hoàn tác!',
             okText: 'Có',
             okType: 'danger',
             cancelText: 'Không',
             onOk: async () => {
                 console.log('Delete:', record);
-                await deleteCategory(record.id);
+                await deleteVariationOption(record.id);
             },
             onCancel() {
                 console.log('Hủy bỏ xóa');
@@ -122,21 +126,19 @@ export default function Page() {
     };
 
     const handleTableChange = async (pagination: { current: number; pageSize: number }) => {
-        await getAllCategories(pagination.current, pagination.pageSize);
+        await getAllVariationOptions(pagination.current, pagination.pageSize);
     };
 
-    function showModal() {
-        setIsModalOpen(true);
-    }
+
 
     function handleAddButton() {
-        setCategory(null);
-        showModal();
+        setVariationOption(null);
+        setIsModalOpen(true);
     }
 
     const onSearch: SearchProps['onSearch'] =async (value, _e, info) => {
         setSearch(value);
-        await getAllCategories(1,pageSize);
+        await getAllVariationOptions(1,pageSize);
 
     }
 
@@ -153,7 +155,7 @@ export default function Page() {
                         fontSize: '24px',
                     }}
                 >
-                    Quản lý danh mục
+                    Quản lý tùy chọn
                 </h1>
             </Header>
 
@@ -169,7 +171,7 @@ export default function Page() {
                 <Row gutter={16} className="flex items-center justify-between mb-4">
                     <Col>
                         <Search
-                            placeholder="Tìm kiếm danh mục"
+                            placeholder="Tìm kiếm biến thể"
                             allowClear
                             onSearch={onSearch}
                         />
@@ -180,14 +182,14 @@ export default function Page() {
                             onClick={handleAddButton}
                             className="bg-blue-500 text-white hover:bg-blue-600 transition-all duration-200 rounded-md shadow-md"
                         >
-                            Thêm mới danh mục
+                            Thêm mới tùy chọn
                         </Button>
                     </Col>
                 </Row>
-                <CategoryForm category={category} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
+                <OptionForm variationOption={variationOption} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
 
                 <Table
-                    dataSource={categoriesWithPagination}
+                    dataSource={variationOptions}
                     columns={columns}
                     loading={loading}
                     rowKey="id"

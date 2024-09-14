@@ -7,6 +7,9 @@ import { Category } from "@/app/model/Category";
 import {DeleteOutlined, EditOutlined, UploadOutlined} from "@ant-design/icons";
 import { useCategoryStore } from "@/app/store/CategoryStore";
 import { SearchProps } from "antd/es/input";
+import {useVariationStore} from "@/app/store/VariationStore";
+import {Variation} from "@/app/model/Variation";
+import VariationForm from "@/app/admin/_components/variations/VariationForm";
 
 
 const { confirm } = Modal;
@@ -14,27 +17,28 @@ const { Search } = Input;
 
 export default function Page() {
     const {
-        categoriesWithPagination,
+        variations,
         loading,
-        fetchCategories,
-        deleteCategory,
-        getAllCategories,
         setSearch,
+        getAllVariations,
+        deleteVariation,
         current,
         pageSize,
         totalElements
-    } = useCategoryStore((state) => state);
+    } = useVariationStore((state) => state);
+
+
 
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [category, setCategory] = useState<Category | null>(null);
+    const [variation, setVariation] = useState<any | null>(null);
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
 
     useEffect(() => {
-        if(categoriesWithPagination.length==0){
-            getAllCategories(current, pageSize);
+        if(variations.length==0){
+            getAllVariations(current, pageSize);
         }
 
     }, []);
@@ -51,10 +55,10 @@ export default function Page() {
             key: 'name',
         },
         {
-            title: 'Parent Name',
-            key: 'parentName',
-            render: (_: any, record: Category) => (
-                <span>{record.parent ? record.parent.name : 'N/A'}</span>
+            title: 'Category',
+            key: 'category',
+            render: (_: any, record: any) => (
+                <span>{record.category ? record.category.name : 'N/A'}</span>
             ),
         },
         {
@@ -98,13 +102,13 @@ export default function Page() {
         },
     ];
 
-    const handleEdit = (record: Category) => {
+    const handleEdit = (record: any) => {
         console.log('Edit:', record);
-        setCategory(record);
-        showModal();
+        setVariation(record);
+        setIsModalOpen(true);
     };
 
-    const handleDelete = async (record: Category) => {
+    const handleDelete = async (record: any) => {
         confirm({
             title: 'Bạn có chắc chắn muốn xóa danh mục này?',
             content: 'Hành động này không thể hoàn tác!',
@@ -113,7 +117,7 @@ export default function Page() {
             cancelText: 'Không',
             onOk: async () => {
                 console.log('Delete:', record);
-                await deleteCategory(record.id);
+                await deleteVariation(record.id);
             },
             onCancel() {
                 console.log('Hủy bỏ xóa');
@@ -122,21 +126,19 @@ export default function Page() {
     };
 
     const handleTableChange = async (pagination: { current: number; pageSize: number }) => {
-        await getAllCategories(pagination.current, pagination.pageSize);
+        await getAllVariations(pagination.current, pagination.pageSize);
     };
 
-    function showModal() {
-        setIsModalOpen(true);
-    }
+
 
     function handleAddButton() {
-        setCategory(null);
-        showModal();
+        setVariation(null);
+        setIsModalOpen(true);
     }
 
     const onSearch: SearchProps['onSearch'] =async (value, _e, info) => {
         setSearch(value);
-        await getAllCategories(1,pageSize);
+        await getAllVariations(1,pageSize);
 
     }
 
@@ -153,7 +155,7 @@ export default function Page() {
                         fontSize: '24px',
                     }}
                 >
-                    Quản lý danh mục
+                    Quản lý biến thể
                 </h1>
             </Header>
 
@@ -169,7 +171,7 @@ export default function Page() {
                 <Row gutter={16} className="flex items-center justify-between mb-4">
                     <Col>
                         <Search
-                            placeholder="Tìm kiếm danh mục"
+                            placeholder="Tìm kiếm biến thể"
                             allowClear
                             onSearch={onSearch}
                         />
@@ -180,14 +182,14 @@ export default function Page() {
                             onClick={handleAddButton}
                             className="bg-blue-500 text-white hover:bg-blue-600 transition-all duration-200 rounded-md shadow-md"
                         >
-                            Thêm mới danh mục
+                            Thêm mới biến thể
                         </Button>
                     </Col>
                 </Row>
-                <CategoryForm category={category} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
+                <VariationForm variation={variation} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
 
                 <Table
-                    dataSource={categoriesWithPagination}
+                    dataSource={variations}
                     columns={columns}
                     loading={loading}
                     rowKey="id"
