@@ -12,8 +12,8 @@ import { CategoryDto } from "@/app/admin/_components/categories/CategoryForm";
 import {handleApiRequest} from "@/app/util/utils";
 
 interface CategoryState {
-    categories: any[];
-    categoriesWithPagination: Category[];
+    categoriesNoPage: any[];
+    categories: Category[];
     loading: boolean;
     search: string;
     setSearch: (key: string) => void;
@@ -25,27 +25,36 @@ interface CategoryState {
     current: number;
     pageSize: number;
     totalElements: number;
+    isUpdated:boolean;
 }
 
 export const useCategoryStore = create<CategoryState>((set, get) => ({
+    categoriesNoPage: [],
     categories: [],
-    categoriesWithPagination: [],
     loading: false,
     search: "",
     current: 1,
     pageSize: 5,
     totalElements: 0,
+    isUpdated:false,
+
+
 
     setSearch: (key: string) => {
         set({ search: key });
     },
 
-    // Fetch categories không phân trang
+
     fetchCategories: async () => {
+        if(get().isUpdated){
+            return;
+        }
+
         const apiCall = () => getAllCategoriesParent();
         const onSuccess = (response: any) => {
             set({
-                categories: response.data,
+                categoriesNoPage: response.data,
+                isUpdated:true,
             });
         };
         await handleApiRequest(apiCall, onSuccess, (loading:boolean) => set({ loading }));
@@ -56,7 +65,7 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
         const apiCall = () => getAllCategories(page, size, get().search);
         const onSuccess = (response: any) => {
             set({
-                categoriesWithPagination: response.data.content,
+                categories: response.data.content,
                 current: page,
                 pageSize: size,
                 totalElements: response.data.totalElements,
@@ -69,8 +78,10 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
     createCategory: async (newCategory: CategoryDto) => {
         const apiCall = () => createNewCategory(newCategory);
         const onSuccess = (response: any) => {
-            get().fetchCategories();
             get().getAllCategories(get().current, get().pageSize);
+            set({
+                isUpdated:false
+            })
         };
         await handleApiRequest(apiCall, onSuccess, (loading:boolean) => set({ loading }));
     },
@@ -79,18 +90,22 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
     updateCategory: async (id: number, category: CategoryDto) => {
         const apiCall = () => updateCategoryById(id, category);
         const onSuccess = (response: any) => {
-            get().fetchCategories();
             get().getAllCategories(get().current, get().pageSize);
+            set({
+                isUpdated:false
+            })
         };
         await handleApiRequest(apiCall, onSuccess, (loading:boolean) => set({ loading }));
     },
 
-    // Delete category
+
     deleteCategory: async (id: number) => {
         const apiCall = () => deleteCategoryById(id);
         const onSuccess = (response: any) => {
-            get().fetchCategories();
-            get().getAllCategories(get().current, get().pageSize);
+            get().getAllCategories(1, get().pageSize);
+            set({
+                isUpdated:false
+            })
         };
         await handleApiRequest(apiCall, onSuccess, (loading:boolean) => set({ loading }));
     },

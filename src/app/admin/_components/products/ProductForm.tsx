@@ -21,8 +21,14 @@ interface ProductModalProps {
 export default function ProductForm({isModalOpen, setIsModalOpen, product}: ProductModalProps) {
     const [form] = Form.useForm();
 
-    const {categories, fetchCategories} = useCategoryStore();
+    const {categoriesNoPage, fetchCategories} = useCategoryStore();
     const {createProduct,updateProduct} = useProductStore();
+    useEffect(() => {
+        if (isModalOpen) {
+            fetchCategories();
+        }
+
+    }, [isModalOpen]);
 
 
 
@@ -36,12 +42,7 @@ export default function ProductForm({isModalOpen, setIsModalOpen, product}: Prod
         }
     }, [isModalOpen, product, form]);
 
-    useEffect(() => {
-        if (categories.length == 0) {
-            fetchCategories();
-        }
 
-    }, []);
 
     const handleOk = async () => {
         try {
@@ -70,16 +71,14 @@ export default function ProductForm({isModalOpen, setIsModalOpen, product}: Prod
         }
     };
 
-    const categoryTreeData = categories.map(category => ({
-        title: category.name,
-        value: category.id,
-        key: category.id,
-        children: category.children ? category.children.map((child: any) => ({
-            title: child.name,
-            value: child.id,
-            key: child.id,
-        })) : [],
-    }));
+    const buildCategoryTree = (categories:any) => {
+        return categories.map((cat:any) => ({
+            title: cat.name,
+            value: cat.id,
+            children: cat.children ? buildCategoryTree(cat.children) : [],
+        }));
+    };
+    const categoryTreeData = buildCategoryTree(categoriesNoPage);
 
     return (
         <>

@@ -14,9 +14,8 @@ const { Search } = Input;
 
 export default function Page() {
     const {
-        categoriesWithPagination,
+        categories,
         loading,
-        fetchCategories,
         deleteCategory,
         getAllCategories,
         setSearch,
@@ -33,7 +32,7 @@ export default function Page() {
     } = theme.useToken();
 
     useEffect(() => {
-        if(categoriesWithPagination.length==0){
+        if(categories.length==0){
             getAllCategories(current, pageSize);
         }
 
@@ -187,7 +186,7 @@ export default function Page() {
                 <CategoryForm category={category} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
 
                 <Table
-                    dataSource={categoriesWithPagination}
+                    dataSource={categories}
                     columns={columns}
                     loading={loading}
                     rowKey="id"

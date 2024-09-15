@@ -13,6 +13,11 @@ export function getAllVariations(pageNum:any,pageSize:any,search:string) {
     }
 
 }
+export function getAllVariationsByproductId(productId:number) {
+    return api.get(`variations/${productId}`);
+}
+
+
 export function createVariation(variation:VariationDto){
     return api.post('variations/create',variation)
 }

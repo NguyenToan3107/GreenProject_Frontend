@@ -8,6 +8,7 @@ export const handleApiRequest = async (
 ) => {
     setLoading(true);
     try {
+        console.log("call api")
         const response = await apiCall();
         if (response.code === 200 || response.code === 201) {
             message.success(response.message);

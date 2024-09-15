@@ -19,12 +19,12 @@ export default function CategoryForm({
                                          setIsModalOpen,
                                      }: CategoryModalProps) {
     const [form] = Form.useForm();
-    const { categories, createCategory, updateCategory,fetchCategories } = useCategoryStore();
+    const { categoriesNoPage, createCategory, updateCategory,fetchCategories } = useCategoryStore();
     useEffect(() => {
-        if(categories.length==0){
+        if(isModalOpen){
             fetchCategories();
         }
-    }, []);
+    }, [isModalOpen]);
 
     const handleCancel = () => {
         if (isModalOpen && setIsModalOpen) {
@@ -61,7 +61,7 @@ export default function CategoryForm({
             children: cat.children ? buildCategoryTree(cat.children) : [],
         }));
     };
-    const categoryTreeData = buildCategoryTree(categories);
+    const categoryTreeData = buildCategoryTree(categoriesNoPage);
 
     return (
         <Modal title={category ? "Cập nhật danh mục" : "Tạo mới danh mục"}

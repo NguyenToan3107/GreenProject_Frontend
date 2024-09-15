@@ -4,6 +4,9 @@ import {ProductDto} from "@/app/admin/_components/products/ProductForm";
 
 
 export function getAllProducts(pageNum:any,pageSize:any,search:string) {
+    if(pageNum==0&&pageSize==0){
+        return api.get("products");
+    }
 
     if(search.trim()!=""){
         return api.get(`products?pageNum=${pageNum}&pageSize=${pageSize}&search=${search.trim()}`);

@@ -20,13 +20,13 @@ export default function VariationForm({
                                          setIsModalOpen,
                                      }: VariationModalProps) {
     const [form] = Form.useForm();
-    const { variations, createVariation, updateVariation } = useVariationStore();
-    const { categories, fetchCategories } = useCategoryStore();
+    const { createVariation, updateVariation } = useVariationStore();
+    const { categoriesNoPage, fetchCategories } = useCategoryStore();
     useEffect(() => {
-        if(categories.length==0){
+        if(isModalOpen){
             fetchCategories();
         }
-    }, []);
+    }, [isModalOpen]);
 
     const handleCancel = () => {
         if (isModalOpen && setIsModalOpen) {
@@ -65,7 +65,7 @@ export default function VariationForm({
             children: cat.children ? buildCategoryTree(cat.children) : [],
         }));
     };
-    const categoryTreeData = buildCategoryTree(categories);
+    const categoryTreeData = buildCategoryTree(categoriesNoPage);
 
     return (
         <Modal title={variation ? "Cập nhật biến thể" : "Tạo mới biến thể"}
@@ -78,15 +78,15 @@ export default function VariationForm({
             <div style={{ margin: '0 auto', backgroundColor: '#fafafa', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
                 <Form layout="vertical" name="add-category" form={form} autoComplete="off">
 
-                    <Form.Item label="Tên danh mục" name="name" rules={[{ required: true, message: 'Vui lòng nhập tên danh mục!' }]}>
-                        <Input placeholder="Nhập tên danh mục" />
+                    <Form.Item label="Tên biến thể " name="name" rules={[{ required: true, message: 'Vui lòng nhập tên danh mục!' }]}>
+                        <Input placeholder="Nhập tên biến thể " />
                     </Form.Item>
 
 
-                    <Form.Item label="Danh mục cha" name="categoryId">
+                    <Form.Item label="Danh mục" name="categoryId">
                         <TreeSelect
                             treeData={categoryTreeData}
-                            placeholder="Chọn danh mục cha"
+                            placeholder="Chọn danh mục"
                             allowClear
 
                         />

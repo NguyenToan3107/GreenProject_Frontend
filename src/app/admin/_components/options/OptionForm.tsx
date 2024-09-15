@@ -25,11 +25,11 @@ export default function OptionForm({
 
 
     useEffect(() => {
-        if(variationsNoPage.length==0){
+        if(isModalOpen){
             getAllVariations(0,0);
         }
 
-    }, []);
+    }, [isModalOpen]);
 
     const handleCancel = () => {
         if (isModalOpen && setIsModalOpen) {
@@ -63,7 +63,7 @@ export default function OptionForm({
 
 
     return (
-        <Modal title={variationOption ? "Cập nhật option" : "Tạo mới option"}
+        <Modal title={variationOption ? "Cập nhật tùy chọn" : "Tạo mới tùy chọn"}
                open={isModalOpen}
                onCancel={handleCancel}
                onOk={handleOk}
@@ -73,8 +73,8 @@ export default function OptionForm({
             <div style={{ margin: '0 auto', backgroundColor: '#fafafa', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
                 <Form layout="vertical" name="add-category" form={form} autoComplete="off">
 
-                    <Form.Item label="Nhập tùy chon " name="value" rules={[{ required: true, message: 'Vui lòng nhập tên danh mục!' }]}>
-                        <Input placeholder="Nhập option" />
+                    <Form.Item label="Nhập tùy chọn " name="value" rules={[{ required: true, message: 'Vui lòng nhập tên danh mục!' }]}>
+                        <Input placeholder="Nhập tùy chọn" />
                     </Form.Item>
 
 

@@ -25,14 +25,14 @@ const { Dragger } = Upload;
 
 export default function UploadImageForm({ isModalUploadOpen, setIsModalUploadOpen }: UploadImageFormProps) {
     const [files, setFiles] = useState({});
-    const { createImage, getAllImages, productId, deleteImage, setProductId, images } = useImageStore();
+    const { getAllImages, productId, deleteImage, setProductId, images } = useImageStore();
     const [showDeleteIcon, setShowDeleteIcon] = useState<number | null>(null);
     const [fileList, setFileList] = useState<any[]>([]);
     useEffect(() => {
         if (isModalUploadOpen) {
             getAllImages();
         }
-    }, []);
+    }, [isModalUploadOpen]);
     const handleFileChange: UploadProps['onChange'] = ({ fileList }) => {
         setFileList(fileList); // Update the file list state
     };

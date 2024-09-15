@@ -74,21 +74,21 @@ export default function Admin({
 
         // Điều hướng sử dụng router mà không tải lại trang
         if (key === '1') {
-            router.push('/admin');
+            router.replace('/admin');
         } else if (key === '2') {
-            router.push('/admin/categories');
+            router.replace('/admin/categories');
         } else if (key === '3') {
-            router.push('/admin/products');
+            router.replace('/admin/products');
         } else if (key === '4') {
-            router.push('/admin/orders');
+            router.replace('/admin/orders');
         } else if (key === '5') {
-            router.push('/admin/vouchers');
+            router.replace('/admin/vouchers');
         }else if(key=='6'){
-            router.push('/admin/variations');
+            router.replace('/admin/variations');
         }else if(key=='7'){
-            router.push('/admin/options');
+            router.replace('/admin/options');
         }else if(key=='8'){
-            router.push('/admin/productItems');
+            router.replace('/admin/productItems');
         }
     };
 

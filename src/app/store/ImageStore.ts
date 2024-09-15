@@ -25,9 +25,7 @@ export const useImageStore=create<ImageState>((set,get)=>({
         set({
             productId:id
         })
-        if(id!=0){
-            get().getAllImages();
-        }
+
 
     },
     getAllImages: async ()=>{

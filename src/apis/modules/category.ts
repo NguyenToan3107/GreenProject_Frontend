@@ -3,9 +3,7 @@ import {CategoryDto} from "@/app/admin/_components/categories/CategoryForm";
 
 
 export function getAllCategories(pageNum:any,pageSize:any,search:string) {
-    console.log(pageSize+" "+pageNum)
     if(search.trim()!=""){
-
         return api.get(`categories?pageNum=${pageNum}&pageSize=${pageSize}&search=${search.trim()}`);
     }else {
         return api.get(`categories?pageNum=${pageNum}&pageSize=${pageSize}`);
