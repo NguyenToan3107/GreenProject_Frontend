@@ -21,7 +21,7 @@ export default function OptionForm({
                                       }: VariationOptionModalProps) {
     const [form] = Form.useForm();
     const { variationsNoPage,getAllVariations } = useVariationStore();
-    const { updateVariationOption,createVariationOption } = useVariationOptionStore();
+    const { updateVariationOption,createVariationOption,isUpdated } = useVariationOptionStore();
 
 
     useEffect(() => {
@@ -57,8 +57,11 @@ export default function OptionForm({
             await updateVariationOption(variationOption.id, values);
         }
 
-        form.resetFields();
-        if (setIsModalOpen) setIsModalOpen(false);
+
+        if (setIsModalOpen&&!isUpdated){
+            form.resetFields();
+            setIsModalOpen(false);
+        }
     };
 
 

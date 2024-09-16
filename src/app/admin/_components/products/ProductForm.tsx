@@ -22,7 +22,7 @@ export default function ProductForm({isModalOpen, setIsModalOpen, product}: Prod
     const [form] = Form.useForm();
 
     const {categoriesNoPage, fetchCategories} = useCategoryStore();
-    const {createProduct,updateProduct} = useProductStore();
+    const {createProduct,updateProduct,isUpdated} = useProductStore();
     useEffect(() => {
         if (isModalOpen) {
             fetchCategories();
@@ -54,9 +54,9 @@ export default function ProductForm({isModalOpen, setIsModalOpen, product}: Prod
             }
 
 
-            form.resetFields();
-            if (setIsModalOpen) {
+            if (setIsModalOpen&&!isUpdated){
                 setIsModalOpen(false);
+                form.resetFields();
             }
         } catch (error) {
             console.error('Error creating product:', error);

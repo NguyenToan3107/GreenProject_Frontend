@@ -9,6 +9,7 @@ import {
 
 interface VariationOptionState {
     variationOptions: any[];
+    isUpdated:boolean;
     loading: boolean;
     search: string;
     setSearch: (key: string) => void;
@@ -19,10 +20,12 @@ interface VariationOptionState {
     current: number;
     pageSize: number;
     totalElements: number;
+
 }
 
 export const useVariationOptionStore=create<VariationOptionState>((set,get)=>({
     variationOptions:[],
+    isUpdated:false,
     loading: false,
     search:"",
     current: 1,
@@ -40,6 +43,7 @@ export const useVariationOptionStore=create<VariationOptionState>((set,get)=>({
                 current: page,
                 pageSize: size,
                 totalElements: response.data.totalElements,
+                isUpdated:true,
             });
         };
         await handleApiRequest(apiCall, onSuccess, (loading:boolean) => set({ loading }));
@@ -47,21 +51,27 @@ export const useVariationOptionStore=create<VariationOptionState>((set,get)=>({
     createVariationOption: async (option:VariationOptionDto) => {
         const apiCall = () => createVariationOption(option);
         const onSuccess = (response: any) => {
-            get().getAllVariationOptions(get().current, get().pageSize);
+            set({
+                isUpdated:false
+            })
         };
         await handleApiRequest(apiCall, onSuccess, (loading:boolean) => set({ loading }));
     },
     updateVariationOption:async (id:number,option:VariationOptionDto)=>{
         const apiCall = () => updateVariationOptionById(id, option);
         const onSuccess = (response: any) => {
-            get().getAllVariationOptions(get().current, get().pageSize);
+            set({
+                isUpdated:false
+            })
         };
         await handleApiRequest(apiCall, onSuccess, (loading:boolean) => set({ loading }));
     },
     deleteVariationOption:async (id:number)=>{
         const apiCall = () => deleteVariationOptionById(id);
         const onSuccess = (response: any) => {
-            get().getAllVariationOptions(1, get().pageSize);
+            set({
+                isUpdated:false
+            })
         };
         await handleApiRequest(apiCall, onSuccess, (loading:boolean) => set({ loading }));
     }

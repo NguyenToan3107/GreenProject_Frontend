@@ -1,15 +1,16 @@
 "use client";
-import { useEffect, useState } from "react";
+
 import SignUpForm from "@/app/auth/_components/SignUpForm";
 import { motion, AnimatePresence } from "framer-motion";
 import SignInForm from "@/app/auth/_components/SignInForm";
+import {useAuthStore} from "@/app/store/AuthStore";
+
 
 export default function page() {
-  const [pathname, setPathname] = useState("");
+  const {pathname}=useAuthStore(state => state);
 
-  useEffect(() => {
-    setPathname("/login");
-  }, []);
+
+
   return (
     <div className="flex flex-col md:flex-row justify-center items-center bg-white lg:shadow-lg rounded-xl lg:my-10 my-6 mx-4 lg:mx-0">
       {/* Form Section */}
@@ -28,7 +29,7 @@ export default function page() {
                   ĐĂNG KÝ TÀI KHOẢN
                 </h1>
               </div>
-              <SignUpForm setPathname={setPathname} />
+              <SignUpForm  />
             </motion.div>
           )}
 
@@ -43,7 +44,7 @@ export default function page() {
               <h1 className="text-custom-black-color font-semibold text-2xl mb-6 text-center">
                 ĐĂNG NHẬP
               </h1>
-              <SignInForm setPathname={setPathname} />
+              <SignInForm  />
             </motion.div>
           )}
         </AnimatePresence>

@@ -110,7 +110,6 @@ export default function Admin({
 
 
                 <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
-                    <Header/>
                     <div className="demo-logo-vertical" />
                     <Menu theme="dark" selectedKeys={[selectedKey]} mode="inline" items={items} onClick={handleMenuClick} />
                 </Sider>

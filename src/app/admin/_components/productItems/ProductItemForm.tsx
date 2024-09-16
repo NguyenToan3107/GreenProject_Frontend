@@ -18,7 +18,7 @@ export default function ProductItemForm({productItem, isModalOpen, setIsModalOpe
     const [form] = Form.useForm();
     const {productsNoPage,getAllProducts}=useProductStore();
     const {getAllVariationsByProductId,variationsByproductId,setVariationsByproductId}=useVariationStore();
-    const {createProductItem,updateProductItem}=useProductItemStore()
+    const {createProductItem,updateProductItem,isUpdated}=useProductItemStore()
     useEffect(() => {
         if(isModalOpen){
             getAllProducts(0,0);
@@ -70,9 +70,12 @@ export default function ProductItemForm({productItem, isModalOpen, setIsModalOpe
             await updateProductItem(productItem.id, updatedValues);
         }
 
-        form.resetFields();
-        setVariationsByproductId([])
-        if (setIsModalOpen) setIsModalOpen(false);
+
+        if (setIsModalOpen&&!isUpdated){
+            form.resetFields();
+            setVariationsByproductId([])
+            setIsModalOpen(false);
+        }
 
     }
 

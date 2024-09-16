@@ -19,6 +19,7 @@ export default function Page() {
     const {
         variationOptions,
         loading,
+        isUpdated,
         setSearch,
         getAllVariationOptions,
         deleteVariationOption,
@@ -37,11 +38,11 @@ export default function Page() {
     } = theme.useToken();
 
     useEffect(() => {
-        if(variationOptions.length==0){
+        if(!isUpdated){
             getAllVariationOptions(current, pageSize);
         }
 
-    }, []);
+    }, [isUpdated]);
 
     const columns = [
         {

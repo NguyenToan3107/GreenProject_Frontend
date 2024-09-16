@@ -7,16 +7,13 @@ import { faKey } from "@fortawesome/free-solid-svg-icons";
 import {useAuthStore} from "@/app/store/AuthStore";
 import { Input, Button } from "antd";  // Import Ant Design components
 
-interface SignInFormProps {
-  setPathname?: (value: ((prevState: string) => string) | string) => void;
-}
 
-export default function SignInForm({ setPathname }: SignInFormProps) {
+export default function SignInForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const { login } = useAuthStore(state => state);
+  const { login ,setPathname} = useAuthStore();
 
   const loginUser = async (event: any) => {
     event.preventDefault();
@@ -136,7 +133,7 @@ export default function SignInForm({ setPathname }: SignInFormProps) {
         <p className="text-brand-gray text-center mt-5">
           Bạn chưa có tài khoản?
           <a
-              onClick={() => setPathname?.("/register")}
+              onClick={() => setPathname("/register")}
               className="text-brand-primary ml-2 cursor-pointer"
           >
             Đăng ký

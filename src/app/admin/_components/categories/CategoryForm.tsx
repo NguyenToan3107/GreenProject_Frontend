@@ -19,7 +19,7 @@ export default function CategoryForm({
                                          setIsModalOpen,
                                      }: CategoryModalProps) {
     const [form] = Form.useForm();
-    const { categoriesNoPage, createCategory, updateCategory,fetchCategories } = useCategoryStore();
+    const { categoriesNoPage, createCategory, updateCategory,fetchCategories,isUpdated } = useCategoryStore();
     useEffect(() => {
         if(isModalOpen){
             fetchCategories();
@@ -51,8 +51,11 @@ export default function CategoryForm({
             await updateCategory(category.id, values);
         }
 
-        form.resetFields();
-        if (setIsModalOpen) setIsModalOpen(false);
+
+        if (setIsModalOpen&&!isUpdated){
+            form.resetFields();
+            setIsModalOpen(false);
+        }
     };
     const buildCategoryTree = (categories:any) => {
         return categories.map((cat:any) => ({

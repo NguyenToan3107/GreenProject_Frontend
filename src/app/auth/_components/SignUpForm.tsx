@@ -1,29 +1,23 @@
 "use client";
-import { redirect } from "next/navigation";
+
 import React, { useState } from "react";
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faEnvelope } from "@fortawesome/free-regular-svg-icons";
 import { faKey } from "@fortawesome/free-solid-svg-icons";
-import Link from "next/link";
-import { registerRequest } from "@/apis/modules/auth";
 import { useAuthStore } from "@/app/store/AuthStore";
-import { Input, Button } from "antd"; // Import Ant Design components
+import { Input, Button } from "antd";
 
-interface SignUpFormProps {
-  setPathname?: (value: ((prevState: string) => string) | string) => void;
-}
 
-export default function SignUpForm({ setPathname }: SignUpFormProps) {
+export default function SignUpForm() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const { register } = useAuthStore((state) => state);
+  const { register,setPathname } = useAuthStore((state) => state);
 
   const registerUser = async (event: any) => {
     event.preventDefault();
@@ -116,7 +110,7 @@ export default function SignUpForm({ setPathname }: SignUpFormProps) {
           Bạn đã có tài khoản?
           <a
               className="text-brand-primary ml-2 cursor-pointer"
-              onClick={() => setPathname?.("/login")}
+              onClick={() => setPathname("/login")}
           >
             Đăng nhập
           </a>

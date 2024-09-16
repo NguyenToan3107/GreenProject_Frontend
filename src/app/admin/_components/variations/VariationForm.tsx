@@ -20,7 +20,7 @@ export default function VariationForm({
                                          setIsModalOpen,
                                      }: VariationModalProps) {
     const [form] = Form.useForm();
-    const { createVariation, updateVariation } = useVariationStore();
+    const { createVariation, updateVariation ,isUpdated} = useVariationStore();
     const { categoriesNoPage, fetchCategories } = useCategoryStore();
     useEffect(() => {
         if(isModalOpen){
@@ -55,8 +55,10 @@ export default function VariationForm({
             await updateVariation(variation.id, values);
         }
 
-        form.resetFields();
-        if (setIsModalOpen) setIsModalOpen(false);
+        if (setIsModalOpen&&!isUpdated){
+            setIsModalOpen(false);
+            form.resetFields();
+        }
     };
     const buildCategoryTree = (categories:any) => {
         return categories.map((cat:any) => ({

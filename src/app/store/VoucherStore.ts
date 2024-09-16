@@ -15,6 +15,7 @@ interface VoucherState {
     current: number;
     pageSize: number;
     totalElements: number;
+    isUpdated:boolean
 
 }
 
@@ -25,6 +26,7 @@ export const useVoucherStore=create<VoucherState>((set,get)=>({
     current: 1,
     pageSize: 5,
     totalElements: 0,
+    isUpdated:false,
 
     setSearch:(s)=>{
         set({search:s})
@@ -50,6 +52,9 @@ export const useVoucherStore=create<VoucherState>((set,get)=>({
         const apiCall = () => createVoucher(voucher);
         const onSuccess = (response: any) => {
             get().getAllVouchers(get().current, get().pageSize);
+            set({
+                isUpdated:false
+            })
 
         };
         await handleApiRequest(apiCall, onSuccess, (loading:boolean) => set({ loading }));
@@ -58,6 +63,9 @@ export const useVoucherStore=create<VoucherState>((set,get)=>({
         const apiCall = () => updateVoucherById(id, voucher);
         const onSuccess = (response: any) => {
             get().getAllVouchers(get().current, get().pageSize);
+            set({
+                isUpdated:false
+            })
 
         };
         await handleApiRequest(apiCall, onSuccess, (loading:boolean) => set({ loading }));
@@ -66,6 +74,9 @@ export const useVoucherStore=create<VoucherState>((set,get)=>({
         const apiCall = () => deleteVoucherById(id);
         const onSuccess = (response: any) => {
             get().getAllVouchers(1, get().pageSize);
+            set({
+                isUpdated:false
+            })
 
         };
         await handleApiRequest(apiCall, onSuccess, (loading:boolean) => set({ loading }));

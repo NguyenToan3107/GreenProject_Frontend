@@ -20,6 +20,7 @@ interface ProductItemState {
     current: number;
     pageSize: number;
     totalElements: number;
+    isUpdated:boolean;
 }
 
 export const useProductItemStore = create<ProductItemState>((set, get) => ({
@@ -29,6 +30,7 @@ export const useProductItemStore = create<ProductItemState>((set, get) => ({
     current: 1,
     pageSize: 5,
     totalElements: 0,
+    isUpdated:false,
 
     setSearch: (key: string) => {
         set({ search: key });
@@ -42,6 +44,7 @@ export const useProductItemStore = create<ProductItemState>((set, get) => ({
                     current: page,
                     pageSize: size,
                     totalElements: response.data.totalElements,
+                    isUpdated:true,
                 });
 
         };
@@ -51,7 +54,9 @@ export const useProductItemStore = create<ProductItemState>((set, get) => ({
     createProductItem: async (productItem: any) => {
         const apiCall = () => createNewProductItem(productItem);
         const onSuccess = (response: any) =>{
-            get().getAllProductItems(get().current, get().pageSize);
+           set({
+               isUpdated:false
+           })
 
         }
         await handleApiRequest(apiCall, onSuccess, (loading:boolean) => set({ loading }));
@@ -60,7 +65,9 @@ export const useProductItemStore = create<ProductItemState>((set, get) => ({
     updateProductItem: async (id: number, productItem: any) => {
         const apiCall = () => updateProductItemById(id, productItem);
         const onSuccess = (response: any) => {
-            get().getAllProductItems(get().current, get().pageSize);
+            set({
+                isUpdated:false
+            })
         }
         await handleApiRequest(apiCall, onSuccess, (loading:boolean) => set({ loading }));
     },
@@ -68,7 +75,9 @@ export const useProductItemStore = create<ProductItemState>((set, get) => ({
     deleteProductItem: async (id: number) => {
         const apiCall = () => deleteProductItemById(id);
         const onSuccess = (response: any) => {
-            get().getAllProductItems(1, get().pageSize);
+            set({
+                isUpdated:false
+            })
         }
         await handleApiRequest(apiCall, onSuccess, (loading:boolean) => set({ loading }));
     },

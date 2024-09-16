@@ -26,6 +26,7 @@ export default function Page() {
         getAllProductItems,
         deleteProductItem,
         setSearch,
+        isUpdated,
         current,
         pageSize,
         totalElements
@@ -115,9 +116,9 @@ export default function Page() {
     ];
 
     useEffect(() => {
-        if(productItems.length==0)
+        if(!isUpdated)
             getAllProductItems(current, pageSize);
-    }, []);
+    }, [isUpdated]);
 
 
 
