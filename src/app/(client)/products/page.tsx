@@ -12,7 +12,7 @@ import "../../../app/globals.css";
 import "antd/dist/reset.css";
 
 const products = [
-  // Dữ liệu sản phẩm mẫu
+
   {
     id: 1,
     name: "Sản phẩm 1",
