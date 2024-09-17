@@ -15,6 +15,10 @@ export default function HomeLayout({
 }>) {
   return (
     <div className="flex flex-col min-h-screen">
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+      />
       <Header />
       <main className="flex-grow container mx-auto px-4">{children}</main>
       <Footer />

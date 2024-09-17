@@ -10,6 +10,7 @@ import { faHeart as faHeartFilled } from "@fortawesome/free-solid-svg-icons";
 import { Button, Dropdown, Menu, Checkbox } from "antd";
 import "../../../app/globals.css";
 import "antd/dist/reset.css";
+import { useProductStore } from "@/app/store/ProductStore";
 
 const products = [
   {
@@ -129,6 +130,7 @@ const categoryMenu = (
 );
 
 export default function page() {
+  const { getAllProducts } = useProductStore((state: any) => state);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeButton, setActiveButton] = useState("popular");
   const [likedProducts, setLikedProducts] = useState(new Set());
@@ -138,7 +140,7 @@ export default function page() {
     setActiveButton(buttonType);
   };
 
-  const filteredProducts = products.filter((product) =>
+  const filteredProducts = products.filter((product: { name: string }) =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 

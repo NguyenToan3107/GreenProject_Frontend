@@ -73,10 +73,12 @@ export default function Header() {
               5
             </span>
           </div>
-          <FontAwesomeIcon
-            icon={faUser}
-            className="text-xl ml-6 cursor-pointer"
-          />
+          <Link href="/profile/account">
+            <FontAwesomeIcon
+              icon={faUser}
+              className="text-xl ml-6 cursor-pointer"
+            />
+          </Link>
         </div>
       </div>
     </header>
