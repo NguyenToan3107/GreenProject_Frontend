@@ -2,6 +2,7 @@ import Footer from "@/app/(client)/_components/Footer";
 import Header from "@/app/(client)/_components/Header";
 import type { Metadata } from "next";
 import React from "react";
+import "./client.css";
 
 export const metadata: Metadata = {
   title: "trang chủ",

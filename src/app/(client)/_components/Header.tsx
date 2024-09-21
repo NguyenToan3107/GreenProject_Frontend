@@ -67,12 +67,14 @@ export default function Header() {
             icon={faMagnifyingGlass}
             className="text-xl mr-6 cursor-pointer"
           />
-          <div className="relative cursor-pointer">
-            <FontAwesomeIcon icon={faCartShopping} className="text-xl" />
-            <span className="absolute top-[-20px] right-[-20px] -translate-x-1/2 translate-y-1/2 bg-brand-primary text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-              5
-            </span>
-          </div>
+          <Link href="/cart">
+            <div className="relative cursor-pointer">
+              <FontAwesomeIcon icon={faCartShopping} className="text-xl" />
+              <span className="absolute top-[-20px] right-[-20px] -translate-x-1/2 translate-y-1/2 bg-brand-primary text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                5
+              </span>
+            </div>
+          </Link>
           <Link href="/profile/account">
             <FontAwesomeIcon
               icon={faUser}
