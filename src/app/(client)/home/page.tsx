@@ -17,11 +17,6 @@ export default function page() {
 
   return (
     <div>
-      <Button type="primary" onClick={logout}>
-        Log out
-      </Button>
-      <button onClick={getCategories}>Get category</button>
-      
       <div className="container" style={{ width: '1200px', marginRight: 'auto', marginLeft: 'auto' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'start', justifyContent: 'center', maxWidth: '550px' }}>

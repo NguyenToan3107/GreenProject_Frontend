@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import {useVariationStore} from "@/app/store/VariationStore";
 import {useVariationOptionStore} from "@/app/store/VariationOptionStore";
 
+
 export interface VariationOptionDto {
     name: string;
     variationId: number | null | undefined;
@@ -20,46 +21,54 @@ export default function OptionForm({
                                           setIsModalOpen,
                                       }: VariationOptionModalProps) {
     const [form] = Form.useForm();
-    const { variationsNoPage,getAllVariations } = useVariationStore();
-    const { updateVariationOption,createVariationOption,isUpdated } = useVariationOptionStore();
+    const { variationsSelect,getAllVariations } = useVariationStore();
+    const { updateVariationOption,createVariationOption } = useVariationOptionStore();
+    const [loading,setLoading]=useState(false);
 
 
     useEffect(() => {
-        if(isModalOpen){
-            getAllVariations(0,0);
+        if(variationsSelect.length==0){
+            getAllVariations(0);
         }
 
-    }, [isModalOpen]);
+    }, []);
 
     const handleCancel = () => {
         if (isModalOpen && setIsModalOpen) {
-            form.resetFields();
             setIsModalOpen(false);
         }
     };
 
     useEffect(() => {
-        if (isModalOpen && variationOption) {
-            form.setFieldsValue({
-                value: variationOption.value,
-                variationId: variationOption.variation ?variationOption.variation.id : null,
-            });
+        if (!isModalOpen) {
+           return;
         }
-    }, [isModalOpen, variationOption, form]);
+        if (!variationOption){
+            form.resetFields();
+            return;
+        }
+        form.setFieldsValue({
+            value: variationOption.value,
+            variationId: variationOption.variation ?variationOption.variation.id : null,
+        });
+
+    }, [isModalOpen]);
 
     const handleOk = async () => {
-        const values = await form.validateFields();
 
+        const values = await form.validateFields();
+        let res;
+        setLoading(true);
         if (!variationOption) {
-            await createVariationOption(values);
+            res= await createVariationOption(values);
         } else {
 
-            await updateVariationOption(variationOption.id, values);
+            res=await updateVariationOption(variationOption.id, values);
         }
+        setLoading(false);
 
 
-        if (setIsModalOpen&&!isUpdated){
-            form.resetFields();
+        if (setIsModalOpen&&res){
             setIsModalOpen(false);
         }
     };
@@ -72,9 +81,10 @@ export default function OptionForm({
                onOk={handleOk}
                okText="Lưu"
                cancelText="Hủy"
+               confirmLoading={loading}
         >
             <div style={{ margin: '0 auto', backgroundColor: '#fafafa', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
-                <Form layout="vertical" name="add-category" form={form} autoComplete="off">
+                <Form layout="vertical" form={form} autoComplete="off">
 
                     <Form.Item label="Nhập tùy chọn " name="value" rules={[{ required: true, message: 'Vui lòng nhập tên danh mục!' }]}>
                         <Input placeholder="Nhập tùy chọn" />
@@ -84,14 +94,12 @@ export default function OptionForm({
                     <Form.Item label="Chọn biến thể" name="variationId" rules={[{ required: true, message: 'Vui lòng chọn biến thể!' }]}>
                         <Select
                             placeholder="Chọn biến thể"
-                            options={variationsNoPage.map((variation: any) => ({
+                            options={variationsSelect.map((variation: any) => ({
                                 label: variation.name,
                                 value: variation.id,
                             }))}
                         />
                     </Form.Item>
-
-
                 </Form>
             </div>
         </Modal>

@@ -5,7 +5,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-regular-svg-icons";
 import { faKey } from "@fortawesome/free-solid-svg-icons";
 import {useAuthStore} from "@/app/store/AuthStore";
-import { Input, Button } from "antd";  // Import Ant Design components
+import { Input, Button } from "antd";
+import {LockOutlined, UserOutlined} from "@ant-design/icons";  // Import Ant Design components
 
 
 export default function SignInForm() {
@@ -41,6 +42,9 @@ export default function SignInForm() {
 
   return (
       <div className="flex flex-col items-center w-full max-w-lg mx-auto">
+        <h1 className="text-custom-black-color font-semibold text-2xl mb-6 text-center">
+          ĐĂNG NHẬP
+        </h1>
         <form className="mt-6 w-full px-5 lg:px-0" onSubmit={loginUser}>
           <div className="mt-2">
             <Input
@@ -48,9 +52,9 @@ export default function SignInForm() {
                 placeholder="Tên đăng nhập"
                 onChange={handleUsernameChange}
                 required
-                prefix={<FontAwesomeIcon icon={faUser} className="mr-3 text-[18px]" />}
-                style={{ height: "48px" }}  // Adjust height using style
-                className="flex-1 py-[3px]"  // Optional Tailwind styling
+                prefix={<UserOutlined className="mr-3 text-[18px]"/>} // Ant Design User icon
+                style={{height: "48px"}} // Adjust height using style
+                className="flex-1 py-[3px]" // Optional Tailwind styling
             />
           </div>
 
@@ -59,9 +63,9 @@ export default function SignInForm() {
                 placeholder="Mật khẩu"
                 onChange={handlePasswordChange}
                 required
-                prefix={<FontAwesomeIcon icon={faKey} className="mr-3 text-[18px]" />}
-                style={{ height: "48px" }}  // Adjust height using style
-                className="flex-1 py-[3px]"  // Optional Tailwind styling
+                prefix={<LockOutlined className="mr-3 text-[18px]"/>} // Ant Design Lock icon
+                style={{height: "48px"}} // Adjust height using style
+                className="flex-1 py-[3px]" // Optional Tailwind styling
             />
           </div>
 
@@ -73,8 +77,8 @@ export default function SignInForm() {
               type="primary"
               htmlType="submit"
               className="mt-5 w-full bg-brand-primary text-white rounded-md"
-              style={{ height: "48px" }}  // Adjust button height
-              loading={loading}  // Optionally, show loading indicator
+              style={{height: "48px"}} // Adjust button height
+              loading={loading} // Optionally, show loading indicator
           >
             Đăng nhập
           </Button>
@@ -99,7 +103,7 @@ export default function SignInForm() {
             <Button
                 onClick={loginWithGoogle}
                 className="flex-1 flex items-center justify-center border border-gray-300 bg-white text-black py-2 px-4 rounded-md mr-2"
-                style={{ height: "48px" }}  // Adjust button height
+                style={{height: "48px"}} // Adjust button height
             >
               <Image
                   className="rounded-xl mr-2"
@@ -115,7 +119,7 @@ export default function SignInForm() {
             <Button
                 onClick={loginWithGithub}
                 className="flex-1 flex items-center justify-center border border-gray-300 bg-white text-black py-2 px-4 rounded-md ml-2"
-                style={{ height: "48px" }}  // Adjust button height
+                style={{height: "48px"}} // Adjust button height
             >
               <Image
                   className="rounded-xl mr-2"

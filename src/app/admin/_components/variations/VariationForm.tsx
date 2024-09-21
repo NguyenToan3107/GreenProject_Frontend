@@ -20,44 +20,51 @@ export default function VariationForm({
                                          setIsModalOpen,
                                      }: VariationModalProps) {
     const [form] = Form.useForm();
-    const { createVariation, updateVariation ,isUpdated} = useVariationStore();
-    const { categoriesNoPage, fetchCategories } = useCategoryStore();
+    const { createVariation, updateVariation } = useVariationStore();
+    const { categoriesTree, fetchCategories } = useCategoryStore();
+    const [loading,setLoading]=useState(false);
     useEffect(() => {
-        if(isModalOpen){
+        if(categoriesTree.length==0){
             fetchCategories();
         }
-    }, [isModalOpen]);
+    }, []);
 
     const handleCancel = () => {
         if (isModalOpen && setIsModalOpen) {
-            form.resetFields();
             setIsModalOpen(false);
         }
     };
 
     useEffect(() => {
-        if (isModalOpen && variation) {
-            form.setFieldsValue({
-                name: variation.name,
-                categoryId: variation.category ? variation.category.id : null,
-            });
+        if (!isModalOpen) {
+            return;
         }
-    }, [isModalOpen, variation, form]);
+        if(!variation){
+            form.resetFields();
+            return;
+        }
+        form.setFieldsValue({
+            name: variation.name,
+            categoryId: variation.category ? variation.category.id : null,
+        });
+    }, [isModalOpen]);
 
     const handleOk = async () => {
+
         const values = await form.validateFields();
+        let res;
+        setLoading(true)
 
         if (!variation) {
-            await createVariation(values);
+            res=await createVariation(values);
         } else {
-            console.log(variation.id)
-            console.log(values)
-            await updateVariation(variation.id, values);
+            res=await updateVariation(variation.id, values);
         }
+        setLoading(false)
 
-        if (setIsModalOpen&&!isUpdated){
+        if (setIsModalOpen&&res){
             setIsModalOpen(false);
-            form.resetFields();
+
         }
     };
     const buildCategoryTree = (categories:any) => {
@@ -67,7 +74,7 @@ export default function VariationForm({
             children: cat.children ? buildCategoryTree(cat.children) : [],
         }));
     };
-    const categoryTreeData = buildCategoryTree(categoriesNoPage);
+    const categoryTreeData = buildCategoryTree(categoriesTree);
 
     return (
         <Modal title={variation ? "Cập nhật biến thể" : "Tạo mới biến thể"}
@@ -76,9 +83,10 @@ export default function VariationForm({
                onOk={handleOk}
                okText="Lưu"
                cancelText="Hủy"
+               confirmLoading={loading}
         >
             <div style={{ margin: '0 auto', backgroundColor: '#fafafa', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
-                <Form layout="vertical" name="add-category" form={form} autoComplete="off">
+                <Form layout="vertical" form={form} autoComplete="off">
 
                     <Form.Item label="Tên biến thể " name="name" rules={[{ required: true, message: 'Vui lòng nhập tên danh mục!' }]}>
                         <Input placeholder="Nhập tên biến thể " />

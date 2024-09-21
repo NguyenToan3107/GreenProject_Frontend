@@ -10,6 +10,7 @@ import { SearchProps } from "antd/es/input";
 import OptionForm from "@/app/admin/_components/options/OptionForm";
 import {useVoucherStore} from "@/app/store/VoucherStore";
 import VoucherForm from "@/app/admin/_components/vouchers/VoucherForm";
+import {PAGE_SIZE} from "@/app/util/constant";
 
 
 
@@ -19,12 +20,10 @@ const { Search } = Input;
 export default function Page() {
     const {
         vouchers,
-        loading,
         setSearch,
         getAllVouchers,
         deleteVoucher,
         current,
-        pageSize,
         totalElements
     } = useVoucherStore((state) => state);
 
@@ -36,11 +35,15 @@ export default function Page() {
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
+    const [loading,setLoading]=useState(false);
 
     useEffect(() => {
         if(vouchers.length==0){
-            getAllVouchers(current, pageSize);
-            console.log(vouchers)
+            setLoading(true);
+            const res =  getAllVouchers(current);
+            if(res!=null){
+                setLoading(false);
+            }
         }
 
     }, []);
@@ -131,7 +134,7 @@ export default function Page() {
     ];
 
     const handleEdit = (record: any) => {
-        console.log('Edit:', record);
+
         setVoucher(record);
         setIsModalOpen(true);
     };
@@ -144,7 +147,7 @@ export default function Page() {
             okType: 'danger',
             cancelText: 'Không',
             onOk: async () => {
-                console.log('Delete:', record);
+
                 await deleteVoucher(record.id);
             },
             onCancel() {
@@ -154,7 +157,7 @@ export default function Page() {
     };
 
     const handleTableChange = async (pagination: { current: number; pageSize: number }) => {
-        await getAllVouchers(pagination.current, pagination.pageSize);
+        await getAllVouchers(pagination.current);
     };
 
 
@@ -166,7 +169,7 @@ export default function Page() {
 
     const onSearch: SearchProps['onSearch'] =async (value, _e, info) => {
         setSearch(value);
-        await getAllVouchers(1,pageSize);
+        await getAllVouchers(1);
 
     }
 
@@ -223,7 +226,7 @@ export default function Page() {
                     rowKey="id"
                     pagination={{
                         current,
-                        pageSize,
+                        pageSize:PAGE_SIZE,
                         total: totalElements,
                         showSizeChanger: true,
                         onChange: (page, size) => {

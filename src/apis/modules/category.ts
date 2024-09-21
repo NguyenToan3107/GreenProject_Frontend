@@ -1,12 +1,13 @@
 import api from "@/apis/request";
 import {CategoryDto} from "@/app/admin/_components/categories/CategoryForm";
+import {PAGE_SIZE} from "@/app/util/constant";
 
 
-export function getAllCategories(pageNum:any,pageSize:any,search:string) {
+export function getAllCategories(pageNum:any,search:string) {
     if(search.trim()!=""){
-        return api.get(`categories?pageNum=${pageNum}&pageSize=${pageSize}&search=${search.trim()}`);
+        return api.get(`categories?pageNum=${pageNum}&pageSize=${PAGE_SIZE}&search=${search.trim()}`);
     }else {
-        return api.get(`categories?pageNum=${pageNum}&pageSize=${pageSize}`);
+        return api.get(`categories?pageNum=${pageNum}&pageSize=${PAGE_SIZE}`);
     }
 
 }

@@ -12,6 +12,7 @@ import {Product} from "@/app/model/Product";
 import ProductForm from "@/app/admin/_components/products/ProductForm";
 import UploadImageForm from "@/app/admin/_components/products/UploadImageForm";
 import {useImageStore} from "@/app/store/ImageStore";
+import {PAGE_SIZE} from "@/app/util/constant";
 
 
 const { confirm } = Modal;
@@ -20,14 +21,13 @@ const { Search } = Input;
 export default function Page() {
     const {
         products,
-        loading,
         getAllProducts,
         deleteProduct,
         setSearch,
         current,
-        pageSize,
         totalElements
     } = useProductStore((state) => state);
+    const [loading,setLoading]=useState(false);
 
     const {setProductId}=useImageStore((state) => state);
 
@@ -114,19 +114,23 @@ export default function Page() {
     ];
 
     useEffect(() => {
-        if(products.length==0)
-        getAllProducts(current, pageSize);
+        if(products.length==0){
+            setLoading(true);
+            const res = getAllProducts(current);
+            if(res!=null){
+                setLoading(false);
+            }
+        }
+
     }, []);
 
     function handleUploadImage(record: Product) {
-        console.log("open")
         setProductId(record.id)
         setIsModalUploadOpen(true);
 
     }
 
     const handleEdit = (record:Product ) => {
-        console.log('Edit:', record);
         setProduct(record);
         setIsModalOpen(true);
     };
@@ -139,7 +143,6 @@ export default function Page() {
             okType: 'danger',
             cancelText: 'Không',
             onOk: async () => {
-                console.log('Delete:', record);
                 await deleteProduct(record.id);
             },
             onCancel() {
@@ -149,7 +152,7 @@ export default function Page() {
     };
 
     const handleTableChange = async (pagination: { current: number; pageSize: number }) => {
-        await getAllProducts(pagination.current, pagination.pageSize);
+        await getAllProducts(pagination.current);
     };
 
 
@@ -161,7 +164,7 @@ export default function Page() {
 
     const onSearch: SearchProps['onSearch'] =async (value, _e, info) => {
         setSearch(value);
-        await getAllProducts(1,pageSize);
+        await getAllProducts(1);
 
     }
 
@@ -218,11 +221,11 @@ export default function Page() {
                     rowKey="id"
                     pagination={{
                         current,
-                        pageSize,
+                        pageSize:PAGE_SIZE,
                         total: totalElements,
                         showSizeChanger: true,
-                        onChange: (page, size) => {
-                            handleTableChange({ current: page, pageSize: size });
+                        onChange: async (page, size) => {
+                           await handleTableChange({ current: page, pageSize: size });
                         },
                     }}
                 />

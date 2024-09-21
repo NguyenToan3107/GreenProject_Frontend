@@ -8,6 +8,7 @@ import { faUser, faEnvelope } from "@fortawesome/free-regular-svg-icons";
 import { faKey } from "@fortawesome/free-solid-svg-icons";
 import { useAuthStore } from "@/app/store/AuthStore";
 import { Input, Button } from "antd";
+import {LockOutlined, MailOutlined, UserOutlined} from "@ant-design/icons";
 
 
 export default function SignUpForm() {
@@ -44,6 +45,9 @@ export default function SignUpForm() {
 
   return (
       <div className="flex flex-col items-center w-full max-w-lg mx-auto px-4">
+        <h1 className="text-custom-black-color font-semibold text-2xl mb-6 text-center">
+          ĐĂNG KÝ TÀI KHOẢN
+        </h1>
         <form className="mt-4 w-full lg:px-0 px-4" onSubmit={registerUser}>
           <div className="mt-2">
             <Input
@@ -51,8 +55,8 @@ export default function SignUpForm() {
                 placeholder="Họ và tên"
                 onChange={handleUsernameChange}
                 required
-                prefix={<FontAwesomeIcon icon={faUser} className="mr-2" />}
-                style={{ height: "48px" }} // Adjust height for consistency
+                prefix={<UserOutlined/>} // Ant Design icon
+                style={{height: "48px"}} // Adjust height for consistency
             />
           </div>
 
@@ -62,8 +66,8 @@ export default function SignUpForm() {
                 placeholder="Email"
                 onChange={handleEmailChange}
                 required
-                prefix={<FontAwesomeIcon icon={faEnvelope} className="mr-2" />}
-                style={{ height: "48px" }} // Adjust height for consistency
+                prefix={<MailOutlined/>} // Ant Design icon
+                style={{height: "48px"}} // Adjust height for consistency
             />
           </div>
 
@@ -72,8 +76,8 @@ export default function SignUpForm() {
                 placeholder="Mật khẩu"
                 onChange={handlePasswordChange}
                 required
-                prefix={<FontAwesomeIcon icon={faKey} className="mr-2" />}
-                style={{ height: "48px" }} // Adjust height for consistency
+                prefix={<LockOutlined/>} // Ant Design icon
+                style={{height: "48px"}} // Adjust height for consistency
             />
           </div>
 
@@ -82,28 +86,21 @@ export default function SignUpForm() {
                 placeholder="Nhập lại mật khẩu"
                 onChange={handlePasswordConfirmChange}
                 required
-                prefix={<FontAwesomeIcon icon={faKey} className="mr-2" />}
-                style={{ height: "48px" }} // Adjust height for consistency
+                prefix={<LockOutlined/>} // Ant Design icon
+                style={{height: "48px"}} // Adjust height for consistency
             />
           </div>
-
-
 
           <Button
               type="primary"
               htmlType="submit"
               className="mt-5 w-full bg-brand-primary text-white rounded-md"
-              style={{ height: "48px" }} // Adjust button height
+              style={{height: "48px"}} // Adjust button height
               loading={loading}
           >
             Đăng ký
           </Button>
 
-          {error && (
-              <p className="mt-4 text-red-600 bg-red-100 border border-red-300 rounded-md p-2 text-sm">
-                {error}
-              </p>
-          )}
         </form>
 
         <p className="text-brand-gray text-center mt-5">

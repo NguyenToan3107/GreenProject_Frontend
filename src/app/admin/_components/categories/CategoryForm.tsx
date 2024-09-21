@@ -19,41 +19,46 @@ export default function CategoryForm({
                                          setIsModalOpen,
                                      }: CategoryModalProps) {
     const [form] = Form.useForm();
-    const { categoriesNoPage, createCategory, updateCategory,fetchCategories,isUpdated } = useCategoryStore();
+    const { categoriesTree, createCategory, updateCategory,fetchCategories } = useCategoryStore();
+    const [loading,setLoading]=useState(false);
     useEffect(() => {
-        if(isModalOpen){
+        if(categoriesTree.length==0){
             fetchCategories();
         }
-    }, [isModalOpen]);
+    }, []);
 
     const handleCancel = () => {
         if (isModalOpen && setIsModalOpen) {
-            form.resetFields();
             setIsModalOpen(false);
         }
     };
 
     useEffect(() => {
-        if (isModalOpen && category) {
-            form.setFieldsValue({
-                name: category.name,
-                parentId: category.parent ? category.parent.id : null,
-            });
+        if(!isModalOpen){
+            return;
         }
-    }, [isModalOpen, category, form]);
+        if(!category){
+            form.resetFields();
+            return;
+        }
+        form.setFieldsValue({
+            name: category.name,
+            parentId: category.parent ? category.parent.id : null,
+        });
+    }, [isModalOpen]);
 
     const handleOk = async () => {
+
         const values = await form.validateFields();
-
+        let res;
+        setLoading(true);
         if (!category) {
-            await createCategory(values);
+            res = await createCategory(values);
         } else {
-            await updateCategory(category.id, values);
+            res = await updateCategory(category.id, values);
         }
-
-
-        if (setIsModalOpen&&!isUpdated){
-            form.resetFields();
+        setLoading(false);
+        if (setIsModalOpen&&res){
             setIsModalOpen(false);
         }
     };
@@ -64,7 +69,7 @@ export default function CategoryForm({
             children: cat.children ? buildCategoryTree(cat.children) : [],
         }));
     };
-    const categoryTreeData = buildCategoryTree(categoriesNoPage);
+    const categoryTreeData = buildCategoryTree(categoriesTree);
 
     return (
         <Modal title={category ? "Cập nhật danh mục" : "Tạo mới danh mục"}
@@ -73,6 +78,7 @@ export default function CategoryForm({
                onOk={handleOk}
                okText="Lưu"
                cancelText="Hủy"
+               confirmLoading={loading}
         >
             <div style={{ margin: '0 auto', backgroundColor: '#fafafa', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
                 <Form layout="vertical" name="add-category" form={form} autoComplete="off">

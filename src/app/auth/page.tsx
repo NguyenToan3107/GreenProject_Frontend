@@ -24,11 +24,7 @@ export default function page() {
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.3 }}
             >
-              <div className="w-full">
-                <h1 className="text-custom-black-color font-semibold text-2xl mb-6 text-center">
-                  ĐĂNG KÝ TÀI KHOẢN
-                </h1>
-              </div>
+
               <SignUpForm  />
             </motion.div>
           )}
@@ -41,9 +37,7 @@ export default function page() {
               exit={{ opacity: 0, x: 20 }}
               transition={{ duration: 0.3 }}
             >
-              <h1 className="text-custom-black-color font-semibold text-2xl mb-6 text-center">
-                ĐĂNG NHẬP
-              </h1>
+
               <SignInForm  />
             </motion.div>
           )}

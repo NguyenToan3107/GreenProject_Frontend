@@ -1,7 +1,7 @@
 import {Product} from "@/app/model/Product";
 import {Col, Form, Input, Modal, Row, Select, TreeSelect} from "antd";
 import TextArea from "antd/es/input/TextArea";
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {useProductStore} from "@/app/store/ProductStore";
 import {useCategoryStore} from "@/app/store/CategoryStore";
 import {useVariationStore} from "@/app/store/VariationStore";
@@ -16,39 +16,50 @@ interface ProductItemFormProps {
 export default function ProductItemForm({productItem, isModalOpen, setIsModalOpen}: ProductItemFormProps) {
 
     const [form] = Form.useForm();
-    const {productsNoPage,getAllProducts}=useProductStore();
+    const {productsSelect,getAllProducts}=useProductStore();
     const {getAllVariationsByProductId,variationsByproductId,setVariationsByproductId}=useVariationStore();
-    const {createProductItem,updateProductItem,isUpdated}=useProductItemStore()
+    const {createProductItem,updateProductItem}=useProductItemStore()
+    const [loading,setLoading]=useState(false);
     useEffect(() => {
-        if(isModalOpen){
-            getAllProducts(0,0);
+        if(productsSelect.length==0){
+            getAllProducts(0);
         }
+
+    }, []);
+    useEffect(() => {
+
+        if (!isModalOpen) {
+            return;
+
+        }
+        if(!productItem){
+            form.resetFields();
+            setVariationsByproductId([])
+            return;
+
+        }
+        const initialFormValues: any = {
+            productId: productItem.product.id,
+            quantity: productItem.quantity,
+            price: productItem.price,
+        };
+
+        // Set variation fields (variation_X)
+        productItem.variationOptions.forEach((variationOption: any) => {
+            initialFormValues[`variation_${variationOption.variation.id}`] = variationOption.id;
+        });
+
+
+        form.setFieldsValue(initialFormValues);
+
+
+        getAllVariationsByProductId(productItem.product.id);
 
     }, [isModalOpen]);
-    useEffect(() => {
-        if (isModalOpen && productItem) {
-            console.log(productItem)
-            const initialFormValues: any = {
-                productId: productItem.product.id,
-                quantity: productItem.quantity,
-                price: productItem.price,
-            };
-
-            // Set variation fields (variation_X)
-            productItem.variationOptions.forEach((variationOption: any) => {
-                initialFormValues[`variation_${variationOption.variation.id}`] = variationOption.id;
-            });
-
-            // Set form fields with the initial values
-            form.setFieldsValue(initialFormValues);
-
-            // Load variations by the product ID to populate variation options
-            getAllVariationsByProductId(productItem.product.id);
-        }
-    }, [isModalOpen, productItem, form]);
 
 
     async function handleOk() {
+
         const values = await form.validateFields();
         console.log(values)
         const productConfig = Object.keys(values)
@@ -64,16 +75,17 @@ export default function ProductItemForm({productItem, isModalOpen, setIsModalOpe
         };
 
         console.log(updatedValues);
+        let res;
+        setLoading(true)
         if (!productItem) {
-            await createProductItem(updatedValues);
+            res=await createProductItem(updatedValues);
         } else {
-            await updateProductItem(productItem.id, updatedValues);
+            res=await updateProductItem(productItem.id, updatedValues);
         }
+        setLoading(false)
 
 
-        if (setIsModalOpen&&!isUpdated){
-            form.resetFields();
-            setVariationsByproductId([])
+        if (setIsModalOpen&&res){
             setIsModalOpen(false);
         }
 
@@ -81,9 +93,7 @@ export default function ProductItemForm({productItem, isModalOpen, setIsModalOpe
 
     function handleCancel() {
         if (isModalOpen && setIsModalOpen) {
-            form.resetFields();
             setIsModalOpen(false);
-            setVariationsByproductId([])
 
         }
     }
@@ -109,6 +119,7 @@ export default function ProductItemForm({productItem, isModalOpen, setIsModalOpe
                 cancelText="Hủy"
                 width={800}
                 centered
+                confirmLoading={loading}
             >
                 <Form
                     form={form}
@@ -128,7 +139,7 @@ export default function ProductItemForm({productItem, isModalOpen, setIsModalOpe
                                     onChange={handleChangeSelect}
                                     disabled={!!productItem}
                                     placeholder="Chọn sản phẩm"
-                                    options={productsNoPage.map((p: any) => ({
+                                    options={productsSelect.map((p: any) => ({
                                         label: p.name,
                                         value: p.id,
                                     }))}

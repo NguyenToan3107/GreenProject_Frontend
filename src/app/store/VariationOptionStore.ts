@@ -9,70 +9,58 @@ import {
 
 interface VariationOptionState {
     variationOptions: any[];
-    isUpdated:boolean;
-    loading: boolean;
     search: string;
     setSearch: (key: string) => void;
-    getAllVariationOptions: (page: number, size: number) => Promise<void>;
+    getAllVariationOptions: (page: number) => Promise<void>;
     createVariationOption: (option: VariationOptionDto) => Promise<void>;
     updateVariationOption: (id: number, option: VariationOptionDto) => Promise<void>;
     deleteVariationOption: (id: number) => Promise<void>;
     current: number;
-    pageSize: number;
     totalElements: number;
 
 }
 
 export const useVariationOptionStore=create<VariationOptionState>((set,get)=>({
     variationOptions:[],
-    isUpdated:false,
-    loading: false,
     search:"",
     current: 1,
-    pageSize: 5,
     totalElements: 0,
     setSearch:(s)=>{
         set({search:s})
     },
 
-    getAllVariationOptions: async (page: number, size: number) => {
-        const apiCall = () => getAllVariationOptions(page, size, get().search);
+    getAllVariationOptions: async (page: number) => {
+        const apiCall = () => getAllVariationOptions(page, get().search);
         const onSuccess = (response: any) => {
             set({
                 variationOptions: response.data.content,
                 current: page,
-                pageSize: size,
                 totalElements: response.data.totalElements,
-                isUpdated:true,
+
             });
         };
-        await handleApiRequest(apiCall, onSuccess, (loading:boolean) => set({ loading }));
+        return await handleApiRequest(apiCall, onSuccess);
     },
     createVariationOption: async (option:VariationOptionDto) => {
         const apiCall = () => createVariationOption(option);
         const onSuccess = (response: any) => {
-            set({
-                isUpdated:false
-            })
+            get().getAllVariationOptions(get().current);
+
         };
-        await handleApiRequest(apiCall, onSuccess, (loading:boolean) => set({ loading }));
+        return await handleApiRequest(apiCall, onSuccess);
     },
     updateVariationOption:async (id:number,option:VariationOptionDto)=>{
         const apiCall = () => updateVariationOptionById(id, option);
         const onSuccess = (response: any) => {
-            set({
-                isUpdated:false
-            })
+            get().getAllVariationOptions(get().current);
         };
-        await handleApiRequest(apiCall, onSuccess, (loading:boolean) => set({ loading }));
+        return await handleApiRequest(apiCall, onSuccess);
     },
     deleteVariationOption:async (id:number)=>{
         const apiCall = () => deleteVariationOptionById(id);
         const onSuccess = (response: any) => {
-            set({
-                isUpdated:false
-            })
+            get().getAllVariationOptions(1);
         };
-        await handleApiRequest(apiCall, onSuccess, (loading:boolean) => set({ loading }));
+        return await handleApiRequest(apiCall, onSuccess);
     }
 }))

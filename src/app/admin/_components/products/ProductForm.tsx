@@ -20,52 +20,61 @@ interface ProductModalProps {
 
 export default function ProductForm({isModalOpen, setIsModalOpen, product}: ProductModalProps) {
     const [form] = Form.useForm();
+    const [loading,setLoading]=useState(false);
 
-    const {categoriesNoPage, fetchCategories} = useCategoryStore();
-    const {createProduct,updateProduct,isUpdated} = useProductStore();
+    const {categoriesTree, fetchCategories} = useCategoryStore();
+    const {createProduct,updateProduct} = useProductStore();
     useEffect(() => {
-        if (isModalOpen) {
+        if (categoriesTree.length==0) {
             fetchCategories();
         }
+
+    }, []);
+
+
+
+    useEffect(() => {
+        if (!isModalOpen) {
+            return;
+
+        }
+        if(!product){
+            form.resetFields();
+            return;
+        }
+        form.setFieldsValue({
+            name: product.name,
+            description:product.description,
+            categoryId: product.category ? product.category.id : null
+        });
 
     }, [isModalOpen]);
 
 
 
-    useEffect(() => {
-        if (isModalOpen && product) {
-            form.setFieldsValue({
-                name: product.name,
-                description:product.description,
-                categoryId: product.category ? product.category.id : null
-            });
-        }
-    }, [isModalOpen, product, form]);
-
-
 
     const handleOk = async () => {
-        try {
-            const values = await form.validateFields();
-            if(!product){
-                await createProduct(values);
-            }else {
-                await updateProduct(product.id,values);
-            }
 
-
-            if (setIsModalOpen&&!isUpdated){
-                setIsModalOpen(false);
-                form.resetFields();
-            }
-        } catch (error) {
-            console.error('Error creating product:', error);
-            message.error('Failed to add product.');
+        const values = await form.validateFields();
+        let res;
+        setLoading(true);
+        if(!product){
+            res= await createProduct(values);
+        }else {
+            res=await updateProduct(product.id,values);
         }
+        setLoading(false);
+
+
+        if (setIsModalOpen&&res){
+            setIsModalOpen(false);
+
+        }
+
+
     };
 
     const handleCancel = () => {
-        form.resetFields();
         if (setIsModalOpen) {
             setIsModalOpen(false);
         }
@@ -78,7 +87,7 @@ export default function ProductForm({isModalOpen, setIsModalOpen, product}: Prod
             children: cat.children ? buildCategoryTree(cat.children) : [],
         }));
     };
-    const categoryTreeData = buildCategoryTree(categoriesNoPage);
+    const categoryTreeData = buildCategoryTree(categoriesTree);
 
     return (
         <>
@@ -90,6 +99,7 @@ export default function ProductForm({isModalOpen, setIsModalOpen, product}: Prod
                 onCancel={handleCancel}
                 okText="Lưu"
                 cancelText="Hủy"
+                confirmLoading={loading}
             >
                 <Form
                     form={form}

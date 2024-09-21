@@ -14,6 +14,7 @@ import UploadImageForm from "@/app/admin/_components/products/UploadImageForm";
 import {useImageStore} from "@/app/store/ImageStore";
 import ProductItemForm from "@/app/admin/_components/productItems/ProductItemForm";
 import {useProductItemStore} from "@/app/store/ProductItemStore";
+import {PAGE_SIZE} from "@/app/util/constant";
 
 
 const { confirm } = Modal;
@@ -22,18 +23,16 @@ const { Search } = Input;
 export default function Page() {
     const {
         productItems,
-        loading,
         getAllProductItems,
         deleteProductItem,
         setSearch,
-        isUpdated,
         current,
-        pageSize,
         totalElements
     } = useProductItemStore((state) => state);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [productItem, setProductItem] = useState<any | null>(null);
+    const [loading,setLoading]=useState(false);
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
@@ -116,14 +115,19 @@ export default function Page() {
     ];
 
     useEffect(() => {
-        if(!isUpdated)
-            getAllProductItems(current, pageSize);
-    }, [isUpdated]);
+        if(productItems.length==0){
+            setLoading(true);
+            const res =  getAllProductItems(current);
+            if(res!=null){
+                setLoading(false);
+            }
+        }
+
+    }, []);
 
 
 
     const handleEdit = (record:any ) => {
-        console.log('Edit:', record);
         setProductItem(record);
         setIsModalOpen(true);
     };
@@ -136,7 +140,7 @@ export default function Page() {
             okType: 'danger',
             cancelText: 'Không',
             onOk: async () => {
-                console.log('Delete:', record);
+
                 await deleteProductItem(record.id);
             },
             onCancel() {
@@ -146,7 +150,7 @@ export default function Page() {
     };
 
     const handleTableChange = async (pagination: { current: number; pageSize: number }) => {
-        await getAllProductItems(pagination.current, pagination.pageSize);
+        await getAllProductItems(pagination.current);
     };
 
 
@@ -158,7 +162,7 @@ export default function Page() {
 
     const onSearch: SearchProps['onSearch'] =async (value, _e, info) => {
         setSearch(value);
-        await getAllProductItems(1,pageSize);
+        await getAllProductItems(1);
 
     }
 
@@ -215,11 +219,11 @@ export default function Page() {
                     rowKey="id"
                     pagination={{
                         current,
-                        pageSize,
+                        pageSize:PAGE_SIZE,
                         total: totalElements,
                         showSizeChanger: true,
-                        onChange: (page, size) => {
-                            handleTableChange({ current: page, pageSize: size });
+                        onChange:async (page, size) => {
+                            await handleTableChange({ current: page, pageSize: size });
                         },
                     }}
                 />

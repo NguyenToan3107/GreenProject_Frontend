@@ -12,31 +12,31 @@ import { CategoryDto } from "@/app/admin/_components/categories/CategoryForm";
 import {handleApiRequest} from "@/app/util/utils";
 
 interface CategoryState {
-    categoriesNoPage: any[];
+    categoriesTree: any[];
     categories: Category[];
     loading: boolean;
     search: string;
+    current: number;
+    totalElements: number;
     setSearch: (key: string) => void;
     fetchCategories: () => Promise<void>;
-    getAllCategories: (page: number, size: number) => Promise<void>;
+    getAllCategories: (page: number) => Promise<void>;
     createCategory: (newCategory: CategoryDto) => Promise<void>;
     updateCategory: (id: number, category: CategoryDto) => Promise<void>;
     deleteCategory: (id: number) => Promise<void>;
-    current: number;
-    pageSize: number;
-    totalElements: number;
-    isUpdated:boolean;
+
+
 }
 
 export const useCategoryStore = create<CategoryState>((set, get) => ({
-    categoriesNoPage: [],
+    categoriesTree: [],
     categories: [],
     loading: false,
     search: "",
     current: 1,
-    pageSize: 5,
     totalElements: 0,
-    isUpdated:false,
+
+
 
 
 
@@ -46,67 +46,57 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
 
 
     fetchCategories: async () => {
-        if(get().isUpdated){
-            return;
-        }
-
         const apiCall = () => getAllCategoriesParent();
         const onSuccess = (response: any) => {
             set({
-                categoriesNoPage: response.data,
-                isUpdated:true,
+                categoriesTree: response.data,
             });
         };
-        await handleApiRequest(apiCall, onSuccess, (loading:boolean) => set({ loading }));
+        return await handleApiRequest(apiCall, onSuccess);
     },
 
-    // Fetch categories có phân trang
-    getAllCategories: async (page: number, size: number) => {
-        const apiCall = () => getAllCategories(page, size, get().search);
+
+    getAllCategories: async (page: number) => {
+        const apiCall = () => getAllCategories(page, get().search);
         const onSuccess = (response: any) => {
             set({
                 categories: response.data.content,
                 current: page,
-                pageSize: size,
                 totalElements: response.data.totalElements,
             });
         };
-        await handleApiRequest(apiCall, onSuccess, (loading:boolean) => set({ loading }));
+        return await handleApiRequest(apiCall, onSuccess);
     },
 
     // Create category
     createCategory: async (newCategory: CategoryDto) => {
         const apiCall = () => createNewCategory(newCategory);
         const onSuccess = (response: any) => {
-            get().getAllCategories(get().current, get().pageSize);
-            set({
-                isUpdated:false
-            })
+            get().getAllCategories(get().current);
+            get().fetchCategories();
+
         };
-        await handleApiRequest(apiCall, onSuccess, (loading:boolean) => set({ loading }));
+        return await handleApiRequest(apiCall, onSuccess);
     },
 
     // Update category
     updateCategory: async (id: number, category: CategoryDto) => {
         const apiCall = () => updateCategoryById(id, category);
         const onSuccess = (response: any) => {
-            get().getAllCategories(get().current, get().pageSize);
-            set({
-                isUpdated:false
-            })
+            get().getAllCategories(get().current);
+            get().fetchCategories();
+
         };
-        await handleApiRequest(apiCall, onSuccess, (loading:boolean) => set({ loading }));
+        return await handleApiRequest(apiCall, onSuccess);
     },
 
 
     deleteCategory: async (id: number) => {
         const apiCall = () => deleteCategoryById(id);
         const onSuccess = (response: any) => {
-            get().getAllCategories(1, get().pageSize);
-            set({
-                isUpdated:false
-            })
+            get().getAllCategories(1);
+            get().fetchCategories();
         };
-        await handleApiRequest(apiCall, onSuccess, (loading:boolean) => set({ loading }));
+        return await handleApiRequest(apiCall, onSuccess);
     },
 }));

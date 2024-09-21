@@ -2,13 +2,13 @@
 import api from "@/apis/request";
 
 import {VariationOptionDto} from "@/app/admin/_components/options/OptionForm";
+import {PAGE_SIZE} from "@/app/util/constant";
 
-export function getAllVariationOptions(pageNum:any,pageSize:any,search:string) {
-    console.log(pageSize+" "+pageNum)
+export function getAllVariationOptions(pageNum:number,search:string) {
     if(search.trim()!=""){
-        return api.get(`variation_options?pageNum=${pageNum}&pageSize=${pageSize}&search=${search.trim()}`);
+        return api.get(`variation_options?pageNum=${pageNum}&pageSize=${PAGE_SIZE}&search=${search.trim()}`);
     }else {
-        return api.get(`variation_options?pageNum=${pageNum}&pageSize=${pageSize}`);
+        return api.get(`variation_options?pageNum=${pageNum}&pageSize=${PAGE_SIZE}`);
     }
 
 }

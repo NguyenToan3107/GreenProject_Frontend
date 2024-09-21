@@ -1,15 +1,16 @@
 import api from "@/apis/request";
 import {VariationDto} from "@/app/admin/_components/variations/VariationForm";
+import {PAGE_SIZE} from "@/app/util/constant";
 
-export function getAllVariations(pageNum:any,pageSize:any,search:string) {
-    if(pageNum==0&&pageSize==0){
+export function getAllVariations(pageNum:any,search:string) {
+    if(pageNum==0){
         return api.get(`variations`);
     }
 
     if(search.trim()!=""){
-        return api.get(`variations?pageNum=${pageNum}&pageSize=${pageSize}&search=${search.trim()}`);
+        return api.get(`variations?pageNum=${pageNum}&pageSize=${PAGE_SIZE}&search=${search.trim()}`);
     }else {
-        return api.get(`variations?pageNum=${pageNum}&pageSize=${pageSize}`);
+        return api.get(`variations?pageNum=${pageNum}&pageSize=${PAGE_SIZE}`);
     }
 
 }

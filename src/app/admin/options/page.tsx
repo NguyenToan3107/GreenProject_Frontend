@@ -10,6 +10,7 @@ import { SearchProps } from "antd/es/input";
 
 import {useVariationOptionStore} from "@/app/store/VariationOptionStore";
 import OptionForm from "@/app/admin/_components/options/OptionForm";
+import {PAGE_SIZE} from "@/app/util/constant";
 
 
 const { confirm } = Modal;
@@ -18,13 +19,10 @@ const { Search } = Input;
 export default function Page() {
     const {
         variationOptions,
-        loading,
-        isUpdated,
         setSearch,
         getAllVariationOptions,
         deleteVariationOption,
         current,
-        pageSize,
         totalElements
     } = useVariationOptionStore((state) => state);
 
@@ -33,16 +31,22 @@ export default function Page() {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [variationOption, setVariationOption] = useState<any | null>(null);
+    const [loading,setLoading]=useState(false);
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
-
     useEffect(() => {
-        if(!isUpdated){
-            getAllVariationOptions(current, pageSize);
+        if(variationOptions.length==0){
+            setLoading(true);
+            const res =   getAllVariationOptions(current);
+            if(res!=null){
+                setLoading(false);
+            }
         }
 
-    }, [isUpdated]);
+    }, []);
+
+
 
     const columns = [
         {
@@ -104,7 +108,6 @@ export default function Page() {
     ];
 
     const handleEdit = (record: any) => {
-        console.log('Edit:', record);
         setVariationOption(record);
         setIsModalOpen(true);
     };
@@ -117,7 +120,6 @@ export default function Page() {
             okType: 'danger',
             cancelText: 'Không',
             onOk: async () => {
-                console.log('Delete:', record);
                 await deleteVariationOption(record.id);
             },
             onCancel() {
@@ -127,7 +129,7 @@ export default function Page() {
     };
 
     const handleTableChange = async (pagination: { current: number; pageSize: number }) => {
-        await getAllVariationOptions(pagination.current, pagination.pageSize);
+        await getAllVariationOptions(pagination.current);
     };
 
 
@@ -139,7 +141,7 @@ export default function Page() {
 
     const onSearch: SearchProps['onSearch'] =async (value, _e, info) => {
         setSearch(value);
-        await getAllVariationOptions(1,pageSize);
+        await getAllVariationOptions(1);
 
     }
 
@@ -196,11 +198,11 @@ export default function Page() {
                     rowKey="id"
                     pagination={{
                         current,
-                        pageSize,
+                        pageSize:PAGE_SIZE,
                         total: totalElements,
                         showSizeChanger: true,
-                        onChange: (page, size) => {
-                            handleTableChange({ current: page, pageSize: size });
+                        onChange:async (page, size) => {
+                            await handleTableChange({ current: page, pageSize: size });
                         },
                     }}
                 />
