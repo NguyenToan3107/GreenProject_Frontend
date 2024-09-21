@@ -17,15 +17,10 @@ export default function page() {
 
   return (
     <div>
-      <Button type="primary" onClick={logout}>
-        Log out
-      </Button>
-      <button onClick={getCategories}>Get category</button>
-      
       <div className="container" style={{ width: '1200px', marginRight: 'auto', marginLeft: 'auto' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'start', justifyContent: 'center', maxWidth: '550px' }}>
-          <h1 style={{ fontSize: '4rem', marginBottom: '1rem' }}>
+          <h1 style={{ fontSize: '4rem', marginBottom: '1rem',fontWeight:700,lineHeight:1.1 }}>
             Increase Your Modern Life With <span style={{ color: '#4BAF47', whiteSpace: 'nowrap' }}>Recycling</span>
           </h1>
           <div style={{ fontSize: '1rem', fontWeight: '400', marginBottom: '1rem' }}>
@@ -37,17 +32,17 @@ export default function page() {
         </div>
         <div className="grid-container">
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
-            <div className="grid-item"><img src="images/ẢNH BÌA.jpg" className="image" alt="Product 1" /></div>
-            <div className="grid-item"><img src="images/ẢNH BÌA.jpg" className="image" alt="Product 2" /></div>
+            <div className="grid-item"><img src="images/image.jpg" className="image" alt="Product 1" /></div>
+            <div className="grid-item"><img src="images/image.jpg" className="image" alt="Product 2" /></div>
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
-            <div className="grid-item"><img src="images/ẢNH BÌA.jpg" className="image" alt="Product 3" /></div>
-            <div className="grid-item"><img src="images/ẢNH BÌA.jpg" className="image" alt="Product 4" /></div>
-            <div className="grid-item"><img src="images/ẢNH BÌA.jpg" className="image" alt="Product 5" /></div>
+            <div className="grid-item"><img src="images/image.jpg" className="image" alt="Product 3" /></div>
+            <div className="grid-item"><img src="images/image.jpg" className="image" alt="Product 4" /></div>
+            <div className="grid-item"><img src="images/introduce.jpg" className="image" alt="Product 5" /></div>
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
-            <div className="grid-item"><img src="images/ẢNH BÌA.jpg" className="image" alt="Product 6" /></div>
-            <div className="grid-item"><img src="images/ẢNH BÌA.jpg" className="image" alt="Product 7" /></div>
+            <div className="grid-item"><img src="images/image.jpg" className="image" alt="Product 6" /></div>
+            <div className="grid-item"><img src="images/introduce.jpg" className="image" alt="Product 7" /></div>
           </div>
         </div>
       </div>
@@ -100,17 +95,20 @@ export default function page() {
       </div>
 
       <div className="blog-info-container">
-        <div style={{ gridArea: 'image1', display: 'flex' }}>
-          <img src="images/ẢNH BÌA.jpg" style={{ objectFit: 'cover', borderRadius: '0.2rem',width:'100%', height:'285px' }} alt="Blog 1" />
+        <div style={{ gridArea: 'image1', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundImage: "url('client/products/blog_2.jpeg')", objectFit: 'contain' ,objectPosition:'center'}}>
+          <div className="flex flex-col items-center">
+            <h2>40 Trieu</h2>
+            <p style={{zIndex:'9999'}}>Ong hut duoc thay the</p>
+          </div>
         </div>
         <div style={{ gridArea: 'image2', display: 'flex' }}>
-          <img src="images/ẢNH BÌA.jpg" style={{ objectFit: 'cover', borderRadius: '0.2rem',width:'100%', height:'285px' }} alt="Blog 1" />
+          <img src="client/products/blog_3.jpg" style={{ objectFit: 'cover', borderRadius: '0.2rem',width:'100%', height:'285px' }} alt="Blog 1" />
         </div>
         <div style={{ gridArea: 'image3', display: 'flex' }}>
-          <img src="images/ẢNH BÌA.jpg" style={{ objectFit: 'cover', borderRadius: '0.2rem',width:'100%', height:'285px' }} alt="Blog 1" />
+          <img src="client/products/blog_1.jpg" style={{ objectFit: 'cover', borderRadius: '0.2rem',width:'100%', height:'285px' }} alt="Blog 1" />
         </div>
         <div style={{ gridArea: 'image4', display: 'flex' }}>
-          <img src="images/ẢNH BÌA.jpg" style={{ objectFit: 'cover', borderRadius: '0.2rem',width:'100%', height:'285px' }} alt="Blog 1" />
+          <img src="client/products/blog_4.jpeg" style={{ objectFit: 'cover', borderRadius: '0.2rem',width:'100%', height:'285px' }} alt="Blog 1" />
         </div>
         {/* Repeat other images */}
       </div>
@@ -131,7 +129,7 @@ export default function page() {
         <div className="best-seller-cards">
         <div className="best-seller-card-item">
             <a style={{ display: 'flex' }}>
-              <img src="images/ẢNH BÌA.jpg" style={{ borderRadius: '6px', objectFit: 'contain',width:'100%' ,height:'250px' }} alt="Best Seller 1" />
+              <img src="client/products/product2.png" style={{ borderRadius: '6px', objectFit: 'contain',width:'100%' ,height:'250px' }} alt="Best Seller 1" />
             </a>
             <div>
               <div style={{ fontSize: '1.2rem', fontWeight: '600' }}>Khay tre tiện lợi</div>
@@ -152,7 +150,7 @@ export default function page() {
           </div>
           <div className="best-seller-card-item">
             <a style={{ display: 'flex' }}>
-              <img src="images/ẢNH BÌA.jpg" style={{ borderRadius: '6px', objectFit: 'contain',width:'100%' ,height:'250px' }} alt="Best Seller 1" />
+              <img src="client/products/product2.png" style={{ borderRadius: '6px', objectFit: 'contain',width:'100%' ,height:'250px' }} alt="Best Seller 1" />
             </a>
             <div>
               <div style={{ fontSize: '1.2rem', fontWeight: '600' }}>Khay tre tiện lợi</div>
@@ -173,7 +171,7 @@ export default function page() {
           </div>
           <div className="best-seller-card-item">
             <a style={{ display: 'flex' }}>
-              <img src="images/ẢNH BÌA.jpg" style={{ borderRadius: '6px', objectFit: 'contain',width:'100%' ,height:'250px' }} alt="Best Seller 1" />
+              <img src="client/products/product2.png" style={{ borderRadius: '6px', objectFit: 'contain',width:'100%' ,height:'250px' }} alt="Best Seller 1" />
             </a>
             <div>
               <div style={{ fontSize: '1.2rem', fontWeight: '600' }}>Khay tre tiện lợi</div>
@@ -194,7 +192,7 @@ export default function page() {
           </div>
           <div className="best-seller-card-item">
             <a style={{ display: 'flex' }}>
-              <img src="images/ẢNH BÌA.jpg" style={{ borderRadius: '6px', objectFit: 'contain',width:'100%' ,height:'250px' }} alt="Best Seller 1" />
+              <img src="client/products/product2.png" style={{ borderRadius: '6px', objectFit: 'contain',width:'100%' ,height:'250px' }} alt="Best Seller 1" />
             </a>
             <div>
               <div style={{ fontSize: '1.2rem', fontWeight: '600' }}>Khay tre tiện lợi</div>

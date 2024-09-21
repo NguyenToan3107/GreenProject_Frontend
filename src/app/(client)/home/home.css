@@ -1,4 +1,4 @@
-@import '/public/images/ẢNH\ BÌA.jpg';
+@import '/public/images/image.jpg';
 *{
     margin: 0;
     padding: 0;
@@ -93,7 +93,7 @@ a{
     flex-direction: column;
     justify-content: center;
     gap: 1.2rem;
-    background-image: url('/public/images/ẢNH\ BÌA.jpg');
+    background-image: url('https://media-cdn-v2.laodong.vn/storage/newsportal/2023/8/26/1233821/Giai-Nhi-1--Nang-Tre.jpg');
     background-position: center;
 }
 
