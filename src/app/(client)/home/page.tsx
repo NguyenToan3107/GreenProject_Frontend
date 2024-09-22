@@ -1,13 +1,13 @@
 "use client";
 
 import "./home.css";
-import { register } from 'swiper/element/bundle';
-import { Pagination, Navigation } from 'swiper/modules';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
-import 'swiper/css/pagination';
-import 'swiper/css/navigation';
-import { Button, Divider, Flex, Radio,Col, Row,Card } from 'antd';
+import { register } from "swiper/element/bundle";
+import { Pagination, Navigation } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
+import { Button, Divider, Flex, Radio, Col, Row, Card } from "antd";
 // register Swiper custom elements
 register();
 
@@ -62,10 +62,7 @@ export default function page() {
               Lorem ipsum dolor sit amet consectetur, adipisicing elit.
               Repudiandae eius dolor fugiat aperiam quas,
             </div>
-            <button
-              className="common-button">
-              Mua ngay
-            </button>
+            <button className="common-button">Mua ngay</button>
           </div>
           <div className="grid-container">
             <div
@@ -235,50 +232,116 @@ export default function page() {
               justifyContent: "center",
               alignItems: "center",
               backgroundImage: "url('client/products/blog_2.jpeg')",
-              objectFit: "contain",
-              objectPosition: "center",
+              backgroundSize: "cover", // Hiển thị ảnh sao cho nó chứa toàn bộ trong khung
+              backgroundPosition: "center", // Căn giữa ảnh
+              backgroundRepeat: "no-repeat", // Không lặp lại ảnh nếu khung lớn hơn ảnh
             }}
           >
             <div className="flex flex-col items-center">
-              <h2>40 Trieu</h2>
-              <p style={{ zIndex: "9999" }}>Ong hut duoc thay the</p>
+              <h2
+                className="text-4xl text-white font-bold"
+                style={{ textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)" }}
+              >
+                40 Triệu
+              </h2>
+              <p
+                className="text-[1.3rem] text-white font-bold"
+                style={{ textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)" }}
+              >
+                Ống hút được thay thế
+              </p>
             </div>
           </div>
+
           <div style={{ gridArea: "image2", display: "flex" }}>
-            <img
-              src="client/products/blog_3.jpg"
+            <div
               style={{
-                objectFit: "cover",
+                backgroundImage: "url('client/products/blog_3.jpg')",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
                 borderRadius: "0.2rem",
                 width: "100%",
                 height: "285px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
               }}
-              alt="Blog 1"
-            />
+            >
+              <div className="flex flex-col items-center">
+                <h2
+                  className="text-4xl text-white font-bold"
+                  style={{ textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)" }}
+                >
+                  20 Tấn
+                </h2>{" "}
+                <p
+                  className="text-[1.3rem] text-white font-bold"
+                  style={{ textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)" }}
+                >
+                  Rác thải nhựa được giảm thiểu
+                </p>
+              </div>
+            </div>
           </div>
           <div style={{ gridArea: "image3", display: "flex" }}>
-            <img
-              src="client/products/blog_1.jpg"
+            <div
               style={{
-                objectFit: "cover",
+                backgroundImage: "url('client/products/blog_1.jpg')",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
                 borderRadius: "0.2rem",
                 width: "100%",
                 height: "285px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
               }}
-              alt="Blog 1"
-            />
+            >
+              <div className="flex flex-col items-center">
+                <h2
+                  className="text-4xl text-white font-bold"
+                  style={{ textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)" }}
+                >
+                  50 Tấn
+                </h2>{" "}
+                <p
+                  className="text-[1.3rem] text-white font-bold"
+                  style={{ textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)" }}
+                >
+                  CO2 được giảm thiểu
+                </p>
+              </div>
+            </div>
           </div>
           <div style={{ gridArea: "image4", display: "flex" }}>
-            <img
-              src="client/products/blog_4.jpeg"
+            <div
               style={{
-                objectFit: "cover",
+                backgroundImage: "url('client/products/blog_4.jpeg')",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
                 borderRadius: "0.2rem",
                 width: "100%",
                 height: "285px",
+                display: "flex", // Sử dụng Flexbox để căn giữa nội dung
+                justifyContent: "center",
+                alignItems: "center",
               }}
-              alt="Blog 1"
-            />
+            >
+              <div className="flex flex-col items-center">
+                <h2
+                  className="text-4xl text-white font-bold"
+                  style={{ textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)" }}
+                >
+                  100
+                </h2>{" "}
+                <p
+                  className="text-[1.3rem] text-white font-bold"
+                  style={{ textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)" }}
+                >
+                  Việc làm cho bà con nông dân
+                </p>{" "}
+              </div>
+            </div>
           </div>
           {/* Repeat other images */}
         </div>
@@ -291,10 +354,17 @@ export default function page() {
               alignItems: "center",
             }}
           >
-            <h2 style={{ textTransform: "uppercase", color: "#fff" ,fontSize:'2rem',fontWeight:'600'}}>
+            <h2
+              style={{
+                textTransform: "uppercase",
+                color: "#fff",
+                fontSize: "2rem",
+                fontWeight: "600",
+              }}
+            >
               Best Selling Products
             </h2>
-            <Flex  gap={"middle"} justify="space-between" align="center">
+            <Flex gap={"middle"} justify="space-between" align="center">
               <div className="swiper-button-prev">
                 <img
                   src="images/left-arrow.png"
@@ -313,17 +383,17 @@ export default function page() {
             </Flex>
           </div>
           <Swiper
-          style={{marginBottom:'2rem'}}
-          spaceBetween={10}
-          slidesPerView={4}
-          navigation={{
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev'
-          }}
-          loop={true}
-          className="mySwiper"
+            style={{ marginBottom: "2rem" }}
+            spaceBetween={10}
+            slidesPerView={4}
+            navigation={{
+              nextEl: ".swiper-button-next",
+              prevEl: ".swiper-button-prev",
+            }}
+            loop={true}
+            className="mySwiper"
           >
-             <SwiperSlide>
+            <SwiperSlide>
               <Card hoverable>
                 <div className="best-seller-card-item">
                   <a style={{ display: "flex" }}>
@@ -339,7 +409,15 @@ export default function page() {
                     />
                   </a>
                   <Flex vertical align="start">
-                    <div style={{ fontSize: "1.2rem", fontWeight: "600",whiteSpace:'nowrap',textOverflow:'ellipsis',overflow:'hidden'}}>
+                    <div
+                      style={{
+                        fontSize: "1.2rem",
+                        fontWeight: "600",
+                        whiteSpace: "nowrap",
+                        textOverflow: "ellipsis",
+                        overflow: "hidden",
+                      }}
+                    >
                       Khay tre tiện lợi
                     </div>
                     <div style={{ color: "#4BAF47", fontWeight: "600" }}>
@@ -348,21 +426,41 @@ export default function page() {
                     <div className="item-description">
                       Lorem ipsum dolor sit amet consectetur adipisicing elit.
                       Molestiae, illo saepe. Repellendus dolores ad odit
-                      voluptatibus ipsum corrupti, dicta harum dolore, numquam illum
-                      sapiente maxime nostrum mollitia officiis illo nam.
+                      voluptatibus ipsum corrupti, dicta harum dolore, numquam
+                      illum sapiente maxime nostrum mollitia officiis illo nam.
                     </div>
                     <div className="star">
-                      <img src="images/star.png" style={{width:'1rem'}} alt="Star 1" />
-                      <img src="images/star.png" style={{width:'1rem'}} alt="Star 2" />
-                      <img src="images/star.png" style={{width:'1rem'}} alt="Star 3" />
-                      <img src="images/star.png" style={{width:'1rem'}} alt="Star 4" />
-                      <img src="images/no-star.png" style={{width:'1rem'}} alt="No Star" />
+                      <img
+                        src="images/star.png"
+                        style={{ width: "1rem" }}
+                        alt="Star 1"
+                      />
+                      <img
+                        src="images/star.png"
+                        style={{ width: "1rem" }}
+                        alt="Star 2"
+                      />
+                      <img
+                        src="images/star.png"
+                        style={{ width: "1rem" }}
+                        alt="Star 3"
+                      />
+                      <img
+                        src="images/star.png"
+                        style={{ width: "1rem" }}
+                        alt="Star 4"
+                      />
+                      <img
+                        src="images/no-star.png"
+                        style={{ width: "1rem" }}
+                        alt="No Star"
+                      />
                     </div>
                   </Flex>
                 </div>
               </Card>
-             </SwiperSlide>
-             <SwiperSlide>
+            </SwiperSlide>
+            <SwiperSlide>
               <Card hoverable>
                 <div className="best-seller-card-item">
                   <a style={{ display: "flex" }}>
@@ -378,7 +476,15 @@ export default function page() {
                     />
                   </a>
                   <Flex vertical align="start">
-                    <div style={{ fontSize: "1.2rem", fontWeight: "600",whiteSpace:'nowrap',textOverflow:'ellipsis',overflow:'hidden'}}>
+                    <div
+                      style={{
+                        fontSize: "1.2rem",
+                        fontWeight: "600",
+                        whiteSpace: "nowrap",
+                        textOverflow: "ellipsis",
+                        overflow: "hidden",
+                      }}
+                    >
                       Khay tre tiện lợi
                     </div>
                     <div style={{ color: "#4BAF47", fontWeight: "600" }}>
@@ -387,21 +493,41 @@ export default function page() {
                     <div className="item-description">
                       Lorem ipsum dolor sit amet consectetur adipisicing elit.
                       Molestiae, illo saepe. Repellendus dolores ad odit
-                      voluptatibus ipsum corrupti, dicta harum dolore, numquam illum
-                      sapiente maxime nostrum mollitia officiis illo nam.
+                      voluptatibus ipsum corrupti, dicta harum dolore, numquam
+                      illum sapiente maxime nostrum mollitia officiis illo nam.
                     </div>
                     <div className="star">
-                      <img src="images/star.png" style={{width:'1rem'}} alt="Star 1" />
-                      <img src="images/star.png" style={{width:'1rem'}} alt="Star 2" />
-                      <img src="images/star.png" style={{width:'1rem'}} alt="Star 3" />
-                      <img src="images/star.png" style={{width:'1rem'}} alt="Star 4" />
-                      <img src="images/no-star.png" style={{width:'1rem'}} alt="No Star" />
+                      <img
+                        src="images/star.png"
+                        style={{ width: "1rem" }}
+                        alt="Star 1"
+                      />
+                      <img
+                        src="images/star.png"
+                        style={{ width: "1rem" }}
+                        alt="Star 2"
+                      />
+                      <img
+                        src="images/star.png"
+                        style={{ width: "1rem" }}
+                        alt="Star 3"
+                      />
+                      <img
+                        src="images/star.png"
+                        style={{ width: "1rem" }}
+                        alt="Star 4"
+                      />
+                      <img
+                        src="images/no-star.png"
+                        style={{ width: "1rem" }}
+                        alt="No Star"
+                      />
                     </div>
                   </Flex>
                 </div>
               </Card>
-             </SwiperSlide>
-             <SwiperSlide>
+            </SwiperSlide>
+            <SwiperSlide>
               <Card hoverable>
                 <div className="best-seller-card-item">
                   <a style={{ display: "flex" }}>
@@ -417,7 +543,15 @@ export default function page() {
                     />
                   </a>
                   <Flex vertical align="start">
-                    <div style={{ fontSize: "1.2rem", fontWeight: "600",whiteSpace:'nowrap',textOverflow:'ellipsis',overflow:'hidden'}}>
+                    <div
+                      style={{
+                        fontSize: "1.2rem",
+                        fontWeight: "600",
+                        whiteSpace: "nowrap",
+                        textOverflow: "ellipsis",
+                        overflow: "hidden",
+                      }}
+                    >
                       Khay tre tiện lợi
                     </div>
                     <div style={{ color: "#4BAF47", fontWeight: "600" }}>
@@ -426,21 +560,41 @@ export default function page() {
                     <div className="item-description">
                       Lorem ipsum dolor sit amet consectetur adipisicing elit.
                       Molestiae, illo saepe. Repellendus dolores ad odit
-                      voluptatibus ipsum corrupti, dicta harum dolore, numquam illum
-                      sapiente maxime nostrum mollitia officiis illo nam.
+                      voluptatibus ipsum corrupti, dicta harum dolore, numquam
+                      illum sapiente maxime nostrum mollitia officiis illo nam.
                     </div>
                     <div className="star">
-                      <img src="images/star.png" style={{width:'1rem'}} alt="Star 1" />
-                      <img src="images/star.png" style={{width:'1rem'}} alt="Star 2" />
-                      <img src="images/star.png" style={{width:'1rem'}} alt="Star 3" />
-                      <img src="images/star.png" style={{width:'1rem'}} alt="Star 4" />
-                      <img src="images/no-star.png" style={{width:'1rem'}} alt="No Star" />
+                      <img
+                        src="images/star.png"
+                        style={{ width: "1rem" }}
+                        alt="Star 1"
+                      />
+                      <img
+                        src="images/star.png"
+                        style={{ width: "1rem" }}
+                        alt="Star 2"
+                      />
+                      <img
+                        src="images/star.png"
+                        style={{ width: "1rem" }}
+                        alt="Star 3"
+                      />
+                      <img
+                        src="images/star.png"
+                        style={{ width: "1rem" }}
+                        alt="Star 4"
+                      />
+                      <img
+                        src="images/no-star.png"
+                        style={{ width: "1rem" }}
+                        alt="No Star"
+                      />
                     </div>
                   </Flex>
                 </div>
               </Card>
-             </SwiperSlide>
-             <SwiperSlide>
+            </SwiperSlide>
+            <SwiperSlide>
               <Card hoverable>
                 <div className="best-seller-card-item">
                   <a style={{ display: "flex" }}>
@@ -456,7 +610,15 @@ export default function page() {
                     />
                   </a>
                   <Flex vertical align="start">
-                    <div style={{ fontSize: "1.2rem", fontWeight: "600",whiteSpace:'nowrap',textOverflow:'ellipsis',overflow:'hidden'}}>
+                    <div
+                      style={{
+                        fontSize: "1.2rem",
+                        fontWeight: "600",
+                        whiteSpace: "nowrap",
+                        textOverflow: "ellipsis",
+                        overflow: "hidden",
+                      }}
+                    >
                       Khay tre tiện lợi
                     </div>
                     <div style={{ color: "#4BAF47", fontWeight: "600" }}>
@@ -465,21 +627,41 @@ export default function page() {
                     <div className="item-description">
                       Lorem ipsum dolor sit amet consectetur adipisicing elit.
                       Molestiae, illo saepe. Repellendus dolores ad odit
-                      voluptatibus ipsum corrupti, dicta harum dolore, numquam illum
-                      sapiente maxime nostrum mollitia officiis illo nam.
+                      voluptatibus ipsum corrupti, dicta harum dolore, numquam
+                      illum sapiente maxime nostrum mollitia officiis illo nam.
                     </div>
                     <div className="star">
-                      <img src="images/star.png" style={{width:'1rem'}} alt="Star 1" />
-                      <img src="images/star.png" style={{width:'1rem'}} alt="Star 2" />
-                      <img src="images/star.png" style={{width:'1rem'}} alt="Star 3" />
-                      <img src="images/star.png" style={{width:'1rem'}} alt="Star 4" />
-                      <img src="images/no-star.png" style={{width:'1rem'}} alt="No Star" />
+                      <img
+                        src="images/star.png"
+                        style={{ width: "1rem" }}
+                        alt="Star 1"
+                      />
+                      <img
+                        src="images/star.png"
+                        style={{ width: "1rem" }}
+                        alt="Star 2"
+                      />
+                      <img
+                        src="images/star.png"
+                        style={{ width: "1rem" }}
+                        alt="Star 3"
+                      />
+                      <img
+                        src="images/star.png"
+                        style={{ width: "1rem" }}
+                        alt="Star 4"
+                      />
+                      <img
+                        src="images/no-star.png"
+                        style={{ width: "1rem" }}
+                        alt="No Star"
+                      />
                     </div>
                   </Flex>
                 </div>
               </Card>
-             </SwiperSlide>
-             <SwiperSlide>
+            </SwiperSlide>
+            <SwiperSlide>
               <Card hoverable>
                 <div className="best-seller-card-item">
                   <a style={{ display: "flex" }}>
@@ -495,7 +677,15 @@ export default function page() {
                     />
                   </a>
                   <Flex vertical align="start">
-                    <div style={{ fontSize: "1.2rem", fontWeight: "600",whiteSpace:'nowrap',textOverflow:'ellipsis',overflow:'hidden'}}>
+                    <div
+                      style={{
+                        fontSize: "1.2rem",
+                        fontWeight: "600",
+                        whiteSpace: "nowrap",
+                        textOverflow: "ellipsis",
+                        overflow: "hidden",
+                      }}
+                    >
                       Khay tre tiện lợi
                     </div>
                     <div style={{ color: "#4BAF47", fontWeight: "600" }}>
@@ -504,125 +694,155 @@ export default function page() {
                     <div className="item-description">
                       Lorem ipsum dolor sit amet consectetur adipisicing elit.
                       Molestiae, illo saepe. Repellendus dolores ad odit
-                      voluptatibus ipsum corrupti, dicta harum dolore, numquam illum
-                      sapiente maxime nostrum mollitia officiis illo nam.
+                      voluptatibus ipsum corrupti, dicta harum dolore, numquam
+                      illum sapiente maxime nostrum mollitia officiis illo nam.
                     </div>
                     <div className="star">
-                      <img src="images/star.png" style={{width:'1rem'}} alt="Star 1" />
-                      <img src="images/star.png" style={{width:'1rem'}} alt="Star 2" />
-                      <img src="images/star.png" style={{width:'1rem'}} alt="Star 3" />
-                      <img src="images/star.png" style={{width:'1rem'}} alt="Star 4" />
-                      <img src="images/no-star.png" style={{width:'1rem'}} alt="No Star" />
+                      <img
+                        src="images/star.png"
+                        style={{ width: "1rem" }}
+                        alt="Star 1"
+                      />
+                      <img
+                        src="images/star.png"
+                        style={{ width: "1rem" }}
+                        alt="Star 2"
+                      />
+                      <img
+                        src="images/star.png"
+                        style={{ width: "1rem" }}
+                        alt="Star 3"
+                      />
+                      <img
+                        src="images/star.png"
+                        style={{ width: "1rem" }}
+                        alt="Star 4"
+                      />
+                      <img
+                        src="images/no-star.png"
+                        style={{ width: "1rem" }}
+                        alt="No Star"
+                      />
                     </div>
                   </Flex>
                 </div>
               </Card>
-             </SwiperSlide>
+            </SwiperSlide>
           </Swiper>
         </div>
 
-        <h2 style={{textTransform:'uppercase',fontSize:'2rem',fontWeight:'600',textAlign:'center',marginTop:'4rem'}}>project team</h2>
+        <h2
+          style={{
+            textTransform: "uppercase",
+            fontSize: "2rem",
+            fontWeight: "600",
+            textAlign: "center",
+            marginTop: "4rem",
+          }}
+        >
+          project team
+        </h2>
         <Swiper
-        style={{marginBottom:'2rem',padding:'1rem'}}
-        spaceBetween={20}
-        slidesPerView={4}
-        navigation={true}
-        pagination={{
-          clickable:true
-        }}
-        modules={[Pagination, Navigation]}
-         className="teamSwiper"
-      >
-        <SwiperSlide>
-          <Card hoverable >
-            <div className="box">
-                  <img src="/client/products/product2.png" alt="Developer 1"/>
-                  <div className="box-content">
-                      <div className="box-name">Anna Laura</div>
-                      <div>Developer</div>
-                  </div>
-            </div>
-          </Card>
-        </SwiperSlide>
-        <SwiperSlide>
-          <Card hoverable>
-            <div className="box">
-                  <img src="/client/products/product2.png" alt="Developer 1"/>
-                  <div className="box-content">
-                      <div className="box-name">Anna Laura</div>
-                      <div>Developer</div>
-                  </div>
-            </div>
-          </Card>
-        </SwiperSlide>
-        <SwiperSlide>
-          <Card hoverable>
-            <div className="box">
-                  <img src="/client/products/product2.png" alt="Developer 1"/>
-                  <div className="box-content">
-                      <div className="box-name">Anna Laura</div>
-                      <div>Developer</div>
-                  </div>
-            </div>
-          </Card>
-        </SwiperSlide>
-        <SwiperSlide>
-          <Card hoverable>
-            <div className="box">
-                  <img src="/client/products/product2.png" alt="Developer 1"/>
-                  <div className="box-content">
-                      <div className="box-name">Anna Laura</div>
-                      <div>Developer</div>
-                  </div>
-            </div>
-          </Card>
-        </SwiperSlide>
-        <SwiperSlide>
-          <Card hoverable>
-            <div className="box">
-                  <img src="/client/products/product2.png" alt="Developer 1"/>
-                  <div className="box-content">
-                      <div className="box-name">Anna Laura</div>
-                      <div>Developer</div>
-                  </div>
-            </div>
-          </Card>
-        </SwiperSlide>
-        <SwiperSlide>
-          <Card hoverable>
-            <div className="box">
-                  <img src="/client/products/product2.png" alt="Developer 1"/>
-                  <div className="box-content">
-                      <div className="box-name">Anna Laura</div>
-                      <div>Developer</div>
-                  </div>
-            </div>
-          </Card>
-        </SwiperSlide>
-        <SwiperSlide>
-          <Card hoverable>
-            <div className="box">
-                  <img src="/client/products/product2.png" alt="Developer 1"/>
-                  <div className="box-content">
-                      <div className="box-name">Anna Laura</div>
-                      <div>Developer</div>
-                  </div>
-            </div>
-          </Card>
-        </SwiperSlide>
-        <SwiperSlide>
-          <Card hoverable>
-            <div className="box">
-                  <img src="/client/products/product2.png" alt="Developer 1"/>
-                  <div className="box-content">
-                      <div className="box-name">Anna Laura</div>
-                      <div>Developer</div>
-                  </div>
-            </div>
-          </Card>
-        </SwiperSlide>
-      </Swiper>
-        </div>
+          style={{ marginBottom: "2rem", padding: "1rem" }}
+          spaceBetween={20}
+          slidesPerView={4}
+          navigation={true}
+          pagination={{
+            clickable: true,
+          }}
+          modules={[Pagination, Navigation]}
+          className="teamSwiper"
+        >
+          <SwiperSlide>
+            <Card hoverable>
+              <div className="box">
+                <img src="/client/products/product2.png" alt="Developer 1" />
+                <div className="box-content">
+                  <div className="box-name">Anna Laura</div>
+                  <div>Developer</div>
+                </div>
+              </div>
+            </Card>
+          </SwiperSlide>
+          <SwiperSlide>
+            <Card hoverable>
+              <div className="box">
+                <img src="/client/products/product2.png" alt="Developer 1" />
+                <div className="box-content">
+                  <div className="box-name">Anna Laura</div>
+                  <div>Developer</div>
+                </div>
+              </div>
+            </Card>
+          </SwiperSlide>
+          <SwiperSlide>
+            <Card hoverable>
+              <div className="box">
+                <img src="/client/products/product2.png" alt="Developer 1" />
+                <div className="box-content">
+                  <div className="box-name">Anna Laura</div>
+                  <div>Developer</div>
+                </div>
+              </div>
+            </Card>
+          </SwiperSlide>
+          <SwiperSlide>
+            <Card hoverable>
+              <div className="box">
+                <img src="/client/products/product2.png" alt="Developer 1" />
+                <div className="box-content">
+                  <div className="box-name">Anna Laura</div>
+                  <div>Developer</div>
+                </div>
+              </div>
+            </Card>
+          </SwiperSlide>
+          <SwiperSlide>
+            <Card hoverable>
+              <div className="box">
+                <img src="/client/products/product2.png" alt="Developer 1" />
+                <div className="box-content">
+                  <div className="box-name">Anna Laura</div>
+                  <div>Developer</div>
+                </div>
+              </div>
+            </Card>
+          </SwiperSlide>
+          <SwiperSlide>
+            <Card hoverable>
+              <div className="box">
+                <img src="/client/products/product2.png" alt="Developer 1" />
+                <div className="box-content">
+                  <div className="box-name">Anna Laura</div>
+                  <div>Developer</div>
+                </div>
+              </div>
+            </Card>
+          </SwiperSlide>
+          <SwiperSlide>
+            <Card hoverable>
+              <div className="box">
+                <img src="/client/products/product2.png" alt="Developer 1" />
+                <div className="box-content">
+                  <div className="box-name">Anna Laura</div>
+                  <div>Developer</div>
+                </div>
+              </div>
+            </Card>
+          </SwiperSlide>
+          <SwiperSlide>
+            <Card hoverable>
+              <div className="box">
+                <img src="/client/products/product2.png" alt="Developer 1" />
+                <div className="box-content">
+                  <div className="box-name">Anna Laura</div>
+                  <div>Developer</div>
+                </div>
+              </div>
+            </Card>
+          </SwiperSlide>
+        </Swiper>
+      </div>
     </div>
   );
 }
