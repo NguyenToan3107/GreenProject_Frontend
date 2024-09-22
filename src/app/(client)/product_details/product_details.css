@@ -14,7 +14,7 @@
     "image quantity"
     "mini_image button"
     "review info";
-    grid-template-columns: 430px 1fr;
+    grid-template-columns: 600px 1fr;
     row-gap: 10px;
     column-gap: 4rem;
 }
@@ -66,3 +66,103 @@ input[type="number"] {
     box-shadow: none;
     border-color: #40a9ff; 
   } */
+
+
+  .ant-pagination-options{
+    display: none !important;
+  }
+
+  .ant-pagination-item-active{
+    border: 1px solid #4BAF47 !important;
+    a{
+
+      color: #4BAF47 !important;
+    }
+  }
+
+  .ant-pagination-prev, .ant-pagination-next {
+      border: 1px solid #4BAF47 !important;
+      background-color: #4BAF47;
+      border-radius: 50% !important;
+      .anticon{
+        color: #fff;
+      }
+  }
+
+  .ant-pagination-disabled{
+    border-radius: 50% !important;
+    background-color: #fff;
+    border: 1px solid #aeaeae90 !important;
+    .anticon{
+      color: #aeaeae90;
+    }
+  }
+
+  .ant-radio-button-wrapper{
+      border-radius: 6px !important;
+  }
+
+  .ant-radio-button-wrapper:not(:first-child)::before {
+    width: 0 !important;
+  }
+
+  .ant-radio-button-wrapper-checked{
+    background-color: #4BAF47 !important;
+    color: #fff !important;
+  }
+
+
+  .common-button{
+    display: inline-block;
+    background-color: #65cb62;
+    color:#fff;
+    padding: 1rem 2rem;
+    border:1px solid #4BAF47;
+    border-radius: 0.3rem;
+    width: auto;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.common-button:hover{
+    background-color: #fff;
+    border:1px solid #4BAF47;
+    color: #4BAF47;
+}
+
+.review-button{
+  display: inline-block;
+  background-color: #4BAF47;
+  color:#fff;
+  padding: 0.6rem 1rem;
+  border:1px solid #4BAF47;
+  border-radius: 0.3rem;
+  width: auto;
+  transition: all 0.3s;
+}
+
+.review-button:hover{
+  background-color: #fff;
+  border:1px solid #4BAF47;
+  color: #4BAF47;
+}
+
+.add_to_cart-button{
+  display: inline-block;
+  background-color: #fff;
+  color: #4BAF47;;
+  padding: 1rem 3rem;
+  border:1px solid #4BAF47;
+  border-radius: 0.3rem;
+  width: auto;
+  transition: all 0.3s;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.add_to_cart-button:hover{
+  background-color: #4BAF47;
+  border:1px solid #4BAF47;
+  color: #fff;
+}

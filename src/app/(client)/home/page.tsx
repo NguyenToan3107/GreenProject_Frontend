@@ -1,13 +1,15 @@
 "use client";
-import { logoutRequest } from "@/apis/modules/auth";
-import { getAllCategories } from "@/apis/modules/category";
-import Footer from "@/app/(client)/_components/Footer";
+
 import "./home.css";
-import {
-  getLocalStorage,
-  removeLocalStorage,
-} from "@/app/util/localStorageUtils";
-import { Button } from "antd";
+import { register } from 'swiper/element/bundle';
+import { Pagination, Navigation } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
+import { Button, Divider, Flex, Radio,Col, Row,Card } from 'antd';
+// register Swiper custom elements
+register();
 
 export default function page() {
   async function logout() {}
@@ -61,16 +63,7 @@ export default function page() {
               Repudiandae eius dolor fugiat aperiam quas,
             </div>
             <button
-              style={{
-                display: "inline-block",
-                backgroundColor: "#4BAF47",
-                color: "#fff",
-                padding: "0.6rem 1rem",
-                borderStyle: "none",
-                borderRadius: "0.3rem",
-                width: "auto",
-              }}
-            >
+              className="common-button">
               Mua ngay
             </button>
           </div>
@@ -298,18 +291,18 @@ export default function page() {
               alignItems: "center",
             }}
           >
-            <h2 style={{ textTransform: "uppercase", color: "#fff" }}>
+            <h2 style={{ textTransform: "uppercase", color: "#fff" ,fontSize:'2rem',fontWeight:'600'}}>
               Best Selling Products
             </h2>
-            <div className="slider-btn">
-              <div className="btn-left">
+            <Flex  gap={"middle"} justify="space-between" align="center">
+              <div className="swiper-button-prev">
                 <img
                   src="images/left-arrow.png"
                   width="32px"
                   alt="Left Arrow"
                 />
               </div>
-              <div className="btn-right">
+              <div className="swiper-button-next">
                 <img
                   src="images/right-arrow.png"
                   width="32px"
@@ -317,188 +310,319 @@ export default function page() {
                   alt="Right Arrow"
                 />
               </div>
-            </div>
+            </Flex>
           </div>
-
-          <div className="best-seller-cards">
-            <div className="best-seller-card-item">
-              <a style={{ display: "flex" }}>
-                <img
-                  src="client/products/product2.png"
-                  style={{
-                    borderRadius: "6px",
-                    objectFit: "contain",
-                    width: "100%",
-                    height: "250px",
-                  }}
-                  alt="Best Seller 1"
-                />
-              </a>
-              <div>
-                <div style={{ fontSize: "1.2rem", fontWeight: "600" }}>
-                  Khay tre tiện lợi
+          <Swiper
+          style={{marginBottom:'2rem'}}
+          spaceBetween={10}
+          slidesPerView={4}
+          navigation={{
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev'
+          }}
+          loop={true}
+          className="mySwiper"
+          >
+             <SwiperSlide>
+              <Card hoverable>
+                <div className="best-seller-card-item">
+                  <a style={{ display: "flex" }}>
+                    <img
+                      src="client/products/product2.png"
+                      style={{
+                        borderRadius: "6px",
+                        objectFit: "contain",
+                        width: "100%",
+                        height: "250px",
+                      }}
+                      alt="Best Seller 1"
+                    />
+                  </a>
+                  <Flex vertical align="start">
+                    <div style={{ fontSize: "1.2rem", fontWeight: "600",whiteSpace:'nowrap',textOverflow:'ellipsis',overflow:'hidden'}}>
+                      Khay tre tiện lợi
+                    </div>
+                    <div style={{ color: "#4BAF47", fontWeight: "600" }}>
+                      300,000đ
+                    </div>
+                    <div className="item-description">
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                      Molestiae, illo saepe. Repellendus dolores ad odit
+                      voluptatibus ipsum corrupti, dicta harum dolore, numquam illum
+                      sapiente maxime nostrum mollitia officiis illo nam.
+                    </div>
+                    <div className="star">
+                      <img src="images/star.png" style={{width:'1rem'}} alt="Star 1" />
+                      <img src="images/star.png" style={{width:'1rem'}} alt="Star 2" />
+                      <img src="images/star.png" style={{width:'1rem'}} alt="Star 3" />
+                      <img src="images/star.png" style={{width:'1rem'}} alt="Star 4" />
+                      <img src="images/no-star.png" style={{width:'1rem'}} alt="No Star" />
+                    </div>
+                  </Flex>
                 </div>
-                <div style={{ color: "#4BAF47", fontWeight: "600" }}>
-                  300,000đ
+              </Card>
+             </SwiperSlide>
+             <SwiperSlide>
+              <Card hoverable>
+                <div className="best-seller-card-item">
+                  <a style={{ display: "flex" }}>
+                    <img
+                      src="client/products/product2.png"
+                      style={{
+                        borderRadius: "6px",
+                        objectFit: "contain",
+                        width: "100%",
+                        height: "250px",
+                      }}
+                      alt="Best Seller 1"
+                    />
+                  </a>
+                  <Flex vertical align="start">
+                    <div style={{ fontSize: "1.2rem", fontWeight: "600",whiteSpace:'nowrap',textOverflow:'ellipsis',overflow:'hidden'}}>
+                      Khay tre tiện lợi
+                    </div>
+                    <div style={{ color: "#4BAF47", fontWeight: "600" }}>
+                      300,000đ
+                    </div>
+                    <div className="item-description">
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                      Molestiae, illo saepe. Repellendus dolores ad odit
+                      voluptatibus ipsum corrupti, dicta harum dolore, numquam illum
+                      sapiente maxime nostrum mollitia officiis illo nam.
+                    </div>
+                    <div className="star">
+                      <img src="images/star.png" style={{width:'1rem'}} alt="Star 1" />
+                      <img src="images/star.png" style={{width:'1rem'}} alt="Star 2" />
+                      <img src="images/star.png" style={{width:'1rem'}} alt="Star 3" />
+                      <img src="images/star.png" style={{width:'1rem'}} alt="Star 4" />
+                      <img src="images/no-star.png" style={{width:'1rem'}} alt="No Star" />
+                    </div>
+                  </Flex>
                 </div>
-                <div className="item-description">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Molestiae, illo saepe. Repellendus dolores ad odit
-                  voluptatibus ipsum corrupti, dicta harum dolore, numquam illum
-                  sapiente maxime nostrum mollitia officiis illo nam.
+              </Card>
+             </SwiperSlide>
+             <SwiperSlide>
+              <Card hoverable>
+                <div className="best-seller-card-item">
+                  <a style={{ display: "flex" }}>
+                    <img
+                      src="client/products/product2.png"
+                      style={{
+                        borderRadius: "6px",
+                        objectFit: "contain",
+                        width: "100%",
+                        height: "250px",
+                      }}
+                      alt="Best Seller 1"
+                    />
+                  </a>
+                  <Flex vertical align="start">
+                    <div style={{ fontSize: "1.2rem", fontWeight: "600",whiteSpace:'nowrap',textOverflow:'ellipsis',overflow:'hidden'}}>
+                      Khay tre tiện lợi
+                    </div>
+                    <div style={{ color: "#4BAF47", fontWeight: "600" }}>
+                      300,000đ
+                    </div>
+                    <div className="item-description">
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                      Molestiae, illo saepe. Repellendus dolores ad odit
+                      voluptatibus ipsum corrupti, dicta harum dolore, numquam illum
+                      sapiente maxime nostrum mollitia officiis illo nam.
+                    </div>
+                    <div className="star">
+                      <img src="images/star.png" style={{width:'1rem'}} alt="Star 1" />
+                      <img src="images/star.png" style={{width:'1rem'}} alt="Star 2" />
+                      <img src="images/star.png" style={{width:'1rem'}} alt="Star 3" />
+                      <img src="images/star.png" style={{width:'1rem'}} alt="Star 4" />
+                      <img src="images/no-star.png" style={{width:'1rem'}} alt="No Star" />
+                    </div>
+                  </Flex>
                 </div>
-                <div className="star">
-                  <img src="images/star.png" alt="Star 1" />
-                  <img src="images/star.png" alt="Star 2" />
-                  <img src="images/star.png" alt="Star 3" />
-                  <img src="images/star.png" alt="Star 4" />
-                  <img src="images/no-star.png" alt="No Star" />
+              </Card>
+             </SwiperSlide>
+             <SwiperSlide>
+              <Card hoverable>
+                <div className="best-seller-card-item">
+                  <a style={{ display: "flex" }}>
+                    <img
+                      src="client/products/product2.png"
+                      style={{
+                        borderRadius: "6px",
+                        objectFit: "contain",
+                        width: "100%",
+                        height: "250px",
+                      }}
+                      alt="Best Seller 1"
+                    />
+                  </a>
+                  <Flex vertical align="start">
+                    <div style={{ fontSize: "1.2rem", fontWeight: "600",whiteSpace:'nowrap',textOverflow:'ellipsis',overflow:'hidden'}}>
+                      Khay tre tiện lợi
+                    </div>
+                    <div style={{ color: "#4BAF47", fontWeight: "600" }}>
+                      300,000đ
+                    </div>
+                    <div className="item-description">
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                      Molestiae, illo saepe. Repellendus dolores ad odit
+                      voluptatibus ipsum corrupti, dicta harum dolore, numquam illum
+                      sapiente maxime nostrum mollitia officiis illo nam.
+                    </div>
+                    <div className="star">
+                      <img src="images/star.png" style={{width:'1rem'}} alt="Star 1" />
+                      <img src="images/star.png" style={{width:'1rem'}} alt="Star 2" />
+                      <img src="images/star.png" style={{width:'1rem'}} alt="Star 3" />
+                      <img src="images/star.png" style={{width:'1rem'}} alt="Star 4" />
+                      <img src="images/no-star.png" style={{width:'1rem'}} alt="No Star" />
+                    </div>
+                  </Flex>
                 </div>
-              </div>
-            </div>
-            <div className="best-seller-card-item">
-              <a style={{ display: "flex" }}>
-                <img
-                  src="client/products/product2.png"
-                  style={{
-                    borderRadius: "6px",
-                    objectFit: "contain",
-                    width: "100%",
-                    height: "250px",
-                  }}
-                  alt="Best Seller 1"
-                />
-              </a>
-              <div>
-                <div style={{ fontSize: "1.2rem", fontWeight: "600" }}>
-                  Khay tre tiện lợi
+              </Card>
+             </SwiperSlide>
+             <SwiperSlide>
+              <Card hoverable>
+                <div className="best-seller-card-item">
+                  <a style={{ display: "flex" }}>
+                    <img
+                      src="client/products/product2.png"
+                      style={{
+                        borderRadius: "6px",
+                        objectFit: "contain",
+                        width: "100%",
+                        height: "250px",
+                      }}
+                      alt="Best Seller 1"
+                    />
+                  </a>
+                  <Flex vertical align="start">
+                    <div style={{ fontSize: "1.2rem", fontWeight: "600",whiteSpace:'nowrap',textOverflow:'ellipsis',overflow:'hidden'}}>
+                      Khay tre tiện lợi
+                    </div>
+                    <div style={{ color: "#4BAF47", fontWeight: "600" }}>
+                      300,000đ
+                    </div>
+                    <div className="item-description">
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                      Molestiae, illo saepe. Repellendus dolores ad odit
+                      voluptatibus ipsum corrupti, dicta harum dolore, numquam illum
+                      sapiente maxime nostrum mollitia officiis illo nam.
+                    </div>
+                    <div className="star">
+                      <img src="images/star.png" style={{width:'1rem'}} alt="Star 1" />
+                      <img src="images/star.png" style={{width:'1rem'}} alt="Star 2" />
+                      <img src="images/star.png" style={{width:'1rem'}} alt="Star 3" />
+                      <img src="images/star.png" style={{width:'1rem'}} alt="Star 4" />
+                      <img src="images/no-star.png" style={{width:'1rem'}} alt="No Star" />
+                    </div>
+                  </Flex>
                 </div>
-                <div style={{ color: "#4BAF47", fontWeight: "600" }}>
-                  300,000đ
-                </div>
-                <div className="item-description">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Molestiae, illo saepe. Repellendus dolores ad odit
-                  voluptatibus ipsum corrupti, dicta harum dolore, numquam illum
-                  sapiente maxime nostrum mollitia officiis illo nam.
-                </div>
-                <div className="star">
-                  <img src="images/star.png" alt="Star 1" />
-                  <img src="images/star.png" alt="Star 2" />
-                  <img src="images/star.png" alt="Star 3" />
-                  <img src="images/star.png" alt="Star 4" />
-                  <img src="images/no-star.png" alt="No Star" />
-                </div>
-              </div>
-            </div>
-            <div className="best-seller-card-item">
-              <a style={{ display: "flex" }}>
-                <img
-                  src="client/products/product2.png"
-                  style={{
-                    borderRadius: "6px",
-                    objectFit: "contain",
-                    width: "100%",
-                    height: "250px",
-                  }}
-                  alt="Best Seller 1"
-                />
-              </a>
-              <div>
-                <div style={{ fontSize: "1.2rem", fontWeight: "600" }}>
-                  Khay tre tiện lợi
-                </div>
-                <div style={{ color: "#4BAF47", fontWeight: "600" }}>
-                  300,000đ
-                </div>
-                <div className="item-description">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Molestiae, illo saepe. Repellendus dolores ad odit
-                  voluptatibus ipsum corrupti, dicta harum dolore, numquam illum
-                  sapiente maxime nostrum mollitia officiis illo nam.
-                </div>
-                <div className="star">
-                  <img src="images/star.png" alt="Star 1" />
-                  <img src="images/star.png" alt="Star 2" />
-                  <img src="images/star.png" alt="Star 3" />
-                  <img src="images/star.png" alt="Star 4" />
-                  <img src="images/no-star.png" alt="No Star" />
-                </div>
-              </div>
-            </div>
-            <div className="best-seller-card-item">
-              <a style={{ display: "flex" }}>
-                <img
-                  src="client/products/product2.png"
-                  style={{
-                    borderRadius: "6px",
-                    objectFit: "contain",
-                    width: "100%",
-                    height: "250px",
-                  }}
-                  alt="Best Seller 1"
-                />
-              </a>
-              <div>
-                <div style={{ fontSize: "1.2rem", fontWeight: "600" }}>
-                  Khay tre tiện lợi
-                </div>
-                <div style={{ color: "#4BAF47", fontWeight: "600" }}>
-                  300,000đ
-                </div>
-                <div className="item-description">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Molestiae, illo saepe. Repellendus dolores ad odit
-                  voluptatibus ipsum corrupti, dicta harum dolore, numquam illum
-                  sapiente maxime nostrum mollitia officiis illo nam.
-                </div>
-                <div className="star">
-                  <img src="images/star.png" alt="Star 1" />
-                  <img src="images/star.png" alt="Star 2" />
-                  <img src="images/star.png" alt="Star 3" />
-                  <img src="images/star.png" alt="Star 4" />
-                  <img src="images/no-star.png" alt="No Star" />
-                </div>
-              </div>
-            </div>
-            {/* Repeat other best-seller-card-items */}
-          </div>
+              </Card>
+             </SwiperSlide>
+          </Swiper>
         </div>
 
-        <div className="container">
-          <div className="header">PROJECT TEAM</div>
-          <div className="boxes">
+        <h2 style={{textTransform:'uppercase',fontSize:'2rem',fontWeight:'600',textAlign:'center',marginTop:'4rem'}}>project team</h2>
+        <Swiper
+        style={{marginBottom:'2rem',padding:'1rem'}}
+        spaceBetween={20}
+        slidesPerView={4}
+        navigation={true}
+        pagination={{
+          clickable:true
+        }}
+        modules={[Pagination, Navigation]}
+         className="teamSwiper"
+      >
+        <SwiperSlide>
+          <Card hoverable >
             <div className="box">
-              <img src="images/image1.png" alt="Developer 1" />
-              <div className="box-content">
-                <div className="box-name">Anna Laura</div>
-                <div>Developer</div>
-              </div>
+                  <img src="/client/products/product2.png" alt="Developer 1"/>
+                  <div className="box-content">
+                      <div className="box-name">Anna Laura</div>
+                      <div>Developer</div>
+                  </div>
             </div>
+          </Card>
+        </SwiperSlide>
+        <SwiperSlide>
+          <Card hoverable>
             <div className="box">
-              <img src="images/image1.png" alt="Developer 2" />
-              <div className="box-content">
-                <div className="box-name">Anna Laura</div>
-                <div>Developer</div>
-              </div>
+                  <img src="/client/products/product2.png" alt="Developer 1"/>
+                  <div className="box-content">
+                      <div className="box-name">Anna Laura</div>
+                      <div>Developer</div>
+                  </div>
             </div>
+          </Card>
+        </SwiperSlide>
+        <SwiperSlide>
+          <Card hoverable>
             <div className="box">
-              <img src="images/image1.png" alt="Developer 3" />
-              <div className="box-content">
-                <div className="box-name">Anna Laura</div>
-                <div>Developer</div>
-              </div>
+                  <img src="/client/products/product2.png" alt="Developer 1"/>
+                  <div className="box-content">
+                      <div className="box-name">Anna Laura</div>
+                      <div>Developer</div>
+                  </div>
             </div>
+          </Card>
+        </SwiperSlide>
+        <SwiperSlide>
+          <Card hoverable>
             <div className="box">
-              <img src="images/image1.png" alt="Developer 4" />
-              <div className="box-content">
-                <div className="box-name">Anna Laura</div>
-                <div>Developer</div>
-              </div>
+                  <img src="/client/products/product2.png" alt="Developer 1"/>
+                  <div className="box-content">
+                      <div className="box-name">Anna Laura</div>
+                      <div>Developer</div>
+                  </div>
             </div>
-          </div>
+          </Card>
+        </SwiperSlide>
+        <SwiperSlide>
+          <Card hoverable>
+            <div className="box">
+                  <img src="/client/products/product2.png" alt="Developer 1"/>
+                  <div className="box-content">
+                      <div className="box-name">Anna Laura</div>
+                      <div>Developer</div>
+                  </div>
+            </div>
+          </Card>
+        </SwiperSlide>
+        <SwiperSlide>
+          <Card hoverable>
+            <div className="box">
+                  <img src="/client/products/product2.png" alt="Developer 1"/>
+                  <div className="box-content">
+                      <div className="box-name">Anna Laura</div>
+                      <div>Developer</div>
+                  </div>
+            </div>
+          </Card>
+        </SwiperSlide>
+        <SwiperSlide>
+          <Card hoverable>
+            <div className="box">
+                  <img src="/client/products/product2.png" alt="Developer 1"/>
+                  <div className="box-content">
+                      <div className="box-name">Anna Laura</div>
+                      <div>Developer</div>
+                  </div>
+            </div>
+          </Card>
+        </SwiperSlide>
+        <SwiperSlide>
+          <Card hoverable>
+            <div className="box">
+                  <img src="/client/products/product2.png" alt="Developer 1"/>
+                  <div className="box-content">
+                      <div className="box-name">Anna Laura</div>
+                      <div>Developer</div>
+                  </div>
+            </div>
+          </Card>
+        </SwiperSlide>
+      </Swiper>
         </div>
-      </div>
     </div>
   );
 }
