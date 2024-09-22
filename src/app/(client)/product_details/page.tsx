@@ -2,25 +2,29 @@
 import { useState } from 'react';
 import './product_details.css'
 import { MinusOutlined,PlusOutlined } from '@ant-design/icons';
-import { Input } from 'antd';
-import { Button, Divider, Flex, Radio,Col, Row } from 'antd';
+import type { PaginationProps } from 'antd';
+import { Button,Card,Input, Divider, Flex, Radio ,Col, Row, Pagination  } from 'antd';
 
 export default function page() {
     const [qty,setQty]=useState(1);
 
     const { TextArea } = Input;
+    const onShowSizeChange: PaginationProps['onShowSizeChange'] = (current, pageSize) => {
+        console.log(current, pageSize);
+      };
 
     return (
+        <div style={{width:'1200px',marginLeft:'auto',marginRight:'auto',marginBottom:'2rem'}}>
         <div className="grid-container">
             <img style={{gridArea:'image'}} src='client/products/product2.png'/>
 
-            <div style={{gridArea:'mini_image'}} >
-                <div style={{display:'flex',justifyContent: 'space-between', alignItems: 'center'}}>
-                    <img src='client/products/product2.png' style={{ width: '100px', height: '100px',objectFit:'contain'}}/>
-                    <img src='client/products/product2.png' style={{ width: '100px', height: '100px',objectFit:'contain'}}/>
-                    <img src='client/products/product2.png' style={{ width: '100px', height: '100px',objectFit:'contain'}}/>
-                    <img src='client/products/product2.png' style={{ width: '100px', height: '100px',objectFit:'contain' }}/>
-                </div>
+            <div style={{gridArea:'mini_image',marginBottom:'1.6rem'}} >
+                <Flex justify='start' align='center' gap={"small"} wrap>
+                    <img src='client/products/product2.png' style={{ width: '93px', height: '93px',objectFit:'contain'}}/>
+                    <img src='client/products/product2.png' style={{ width: '93px', height: '93px',objectFit:'contain'}}/>
+                    <img src='client/products/product2.png' style={{ width: '93px', height: '93px',objectFit:'contain'}}/>
+                    <img src='client/products/product2.png' style={{ width: '93px', height: '93px',objectFit:'contain' }}/>
+                </Flex>
             </div>
 
             <div style={{gridArea:'title',fontSize:'2rem',fontWeight:'600'}}>
@@ -59,11 +63,14 @@ export default function page() {
                     </Flex>
                     <Flex vertical gap={"small"}>
                         <p>Choose size</p>
-                        <div style={{display:'flex',gap:'1rem'}}>
-                        <Button style={{color:'#4BAF47',border:'1px solid #4BAF47'}} ghost>Primary</Button>
-                        <Button style={{color:'#4BAF47',border:'1px solid #4BAF47'}} ghost>Medium</Button>
-                        <Button style={{color:'#4BAF47',border:'1px solid #4BAF47'}} ghost>Large</Button>
-                        </div>
+                            <Radio.Group defaultValue="a">
+                                <Flex gap={"small"}>
+                                    <Radio.Button value="a" style={{color:'#4BAF47',border:'1px solid #4BAF47'}}>Hangzhou</Radio.Button>
+                                    <Radio.Button value="b" style={{color:'#4BAF47',border:'1px solid #4BAF47'}}>Shanghai</Radio.Button>
+                                    <Radio.Button value="c" style={{color:'#4BAF47',border:'1px solid #4BAF47'}}>Beijing</Radio.Button>
+                                    <Radio.Button value="d" style={{color:'#4BAF47',border:'1px solid #4BAF47'}}>Chengdu</Radio.Button>
+                                </Flex>
+                            </Radio.Group>
                     </Flex>
                 </Flex>
             </div>
@@ -96,9 +103,15 @@ export default function page() {
             </div>
 
             <div style={{gridArea:'button'}}>
-                <Flex gap="small" align="flex-start">
-                    <Button style={{color:'#4BAF47',border:'1px solid #4BAF47',fontSize:'1rem',padding:'0.5rem 2rem'}} ghost>Thêm vào giỏ hàng</Button>
-                    <Button style={{backgroundColor:'#4BAF47',border:'1px solid #4BAF47',fontSize:'1rem'}} ghost>Mua ngay</Button>
+                <Flex gap="middle" align="flex-start">
+                <   button
+                    className="add_to_cart-button">
+                    Thêm vào giỏ hàng
+                    </button>
+                    <button
+                        className="common-button">
+                        Mua ngay
+                    </button>
                 </Flex>
             </div>
 
@@ -120,7 +133,7 @@ export default function page() {
 
             <div style={{gridArea:'review'}}>
                 <Flex gap={'middle'} vertical>
-                    <h2 style={{fontWeight:'600',fontSize:'1.4rem'}}>Đánh giá sản phẩm</h2>
+                    <h2 style={{fontWeight:'600',fontSize:'1.5rem'}}>Đánh giá sản phẩm</h2>
                     <Flex align="center" gap={'small'}>
                         <span style={{fontSize:'1.6rem',fontWeight:'700'}}>4.89</span>
                         <div className="star">
@@ -141,19 +154,12 @@ export default function page() {
                         </div>
                     </div>
                     <div>
-                        <Button style={{backgroundColor:'#4BAF47',border:'1px solid #4BAF47'}} ghost>Đánh giá</Button>
+                        <button className='review-button'>Đánh giá</button>
                     </div>
                     <Flex vertical gap={"middle"}>
                         <Flex justify='space-between' align='center'>
-                            <p>Bình luận gần đây</p>
-                            <Flex align='center' gap={"small"}>
-                                <div className="btn-left" style={{border:"1px solid #000",borderRadius:'50%'}}>
-                                    <img src="images/left-arrow.png" width="20px" alt="Left Arrow" />
-                                </div>
-                                <div className="btn-right" style={{border:"1px solid #4BAF47",borderRadius:'50%'}}>
-                                    <img src="images/right-arrow.png" width="20px" style={{ transform: 'rotate(180deg)' }} alt="Right Arrow" />
-                                </div>
-                            </Flex>
+                            <p style={{fontSize:'1.2rem',marginBottom:'1rem'}}>Bình luận gần đây</p>
+                            
                         </Flex>
                         <Flex vertical gap={"middle"}>
                             <Row style={{borderBottom:'1px solid #8c8b8b85',paddingBottom:'1rem'}}>
@@ -198,10 +204,191 @@ export default function page() {
                                     <img src="client/products/product2.png" alt="Avatar" className="avatar" />
                                 </Col>
                             </Row>
+                            <Row style={{borderBottom:'1px solid #8c8b8b85',paddingBottom:'1.1rem'}}>
+                                <Col span={18} push={6}>
+                                   <Flex vertical gap={"small"}>
+                                        <Flex justify='space-between'>
+                                            <div>Nguyễn Văn C</div>
+                                            <time>12:30 15/11/2024</time>
+                                        </Flex>
+                                        <Flex className="star" gap={'small'}>
+                                            <img src="images/star.png" alt="Star 1" />
+                                            <img src="images/star.png" alt="Star 2" />
+                                            <img src="images/star.png" alt="Star 3" />
+                                            <img src="images/star.png" alt="Star 4" />
+                                            <img src="images/no-star.png" alt="No Star" />
+                                        </Flex>
+                                        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nesciunt accusamus provident, laboriosam aperiam non, illo praesentium voluptatibus eius quis voluptates tenetur maxime optio iste explicabo velit quisquam? Voluptatibus, earum! Culpa.</p>
+                                   </Flex>
+                                </Col>
+                                <Col span={6} pull={18}>
+                                    <img src="client/products/product2.png" alt="Avatar" className="avatar" />
+                                </Col>
+                            </Row>
+                            <Pagination style={{marginTop:'1rem'}} align='end'
+                            showSizeChanger
+                            onShowSizeChange={onShowSizeChange}
+                            defaultCurrent={3}
+                            total={200}
+                            />
                         </Flex>
                     </Flex>
                 </Flex>
             </div>
+        </div>
+
+            <Flex vertical gap={"middle"} >
+                <h2 style={{textTransform:'uppercase',fontSize:'1.4rem',fontWeight:'600'}}>Sản phẩm liên quan</h2>
+                <Flex wrap gap={"small"} justify='start' align='center' style={{marginLeft:'auto',marginRight:'auto'}}>
+                    <Card
+                        hoverable
+                        style={{ width: 230,height: 350 }}
+                        cover={<img src="client/products/product2.png" />}
+                        >
+                        <Flex vertical align="start">
+                            <div style={{ fontSize: "1.2rem", fontWeight: "600",whiteSpace:'nowrap',textOverflow:'ellipsis',overflow:'hidden' }}>
+                                Khay tre tiện lợi
+                            </div>
+                            <div style={{ color: "#4BAF47", fontWeight: "600" }}>
+                                300,000đ
+                            </div>
+                            <div className="star">
+                                <img src="images/star.png" style={{width:'1rem'}} alt="Star 1" />
+                                <img src="images/star.png" style={{width:'1rem'}} alt="Star 2" />
+                                <img src="images/star.png" style={{width:'1rem'}} alt="Star 3" />
+                                <img src="images/star.png" style={{width:'1rem'}} alt="Star 4" />
+                                <img src="images/no-star.png" style={{width:'1rem'}} alt="No Star" />
+                            </div>
+                        </Flex>
+                    </Card>
+                    <Card
+                        hoverable
+                        style={{ width: 230,height: 350 }}
+                        cover={<img src="client/products/product2.png" />}
+                        >
+                        <Flex vertical align="start">
+                            <div style={{ fontSize: "1.2rem", fontWeight: "600",whiteSpace:'nowrap',textOverflow:'ellipsis',overflow:'hidden' }}>
+                                Khay tre tiện lợi
+                            </div>
+                            <div style={{ color: "#4BAF47", fontWeight: "600" }}>
+                                300,000đ
+                            </div>
+                            <div className="star">
+                                <img src="images/star.png" style={{width:'1rem'}} alt="Star 1" />
+                                <img src="images/star.png" style={{width:'1rem'}} alt="Star 2" />
+                                <img src="images/star.png" style={{width:'1rem'}} alt="Star 3" />
+                                <img src="images/star.png" style={{width:'1rem'}} alt="Star 4" />
+                                <img src="images/no-star.png" style={{width:'1rem'}} alt="No Star" />
+                            </div>
+                        </Flex>
+                    </Card>
+                    <Card
+                        hoverable
+                        style={{ width: 230,height: 350 }}
+                        cover={<img src="client/products/product2.png" />}
+                        >
+                        <Flex vertical align="start">
+                            <div style={{ fontSize: "1.2rem", fontWeight: "600",whiteSpace:'nowrap',textOverflow:'ellipsis',overflow:'hidden' }}>
+                                Khay tre tiện lợi
+                            </div>
+                            <div style={{ color: "#4BAF47", fontWeight: "600" }}>
+                                300,000đ
+                            </div>
+                            <div className="star">
+                                <img src="images/star.png" style={{width:'1rem'}} alt="Star 1" />
+                                <img src="images/star.png" style={{width:'1rem'}} alt="Star 2" />
+                                <img src="images/star.png" style={{width:'1rem'}} alt="Star 3" />
+                                <img src="images/star.png" style={{width:'1rem'}} alt="Star 4" />
+                                <img src="images/no-star.png" style={{width:'1rem'}} alt="No Star" />
+                            </div>
+                        </Flex>
+                    </Card>
+                    <Card
+                        hoverable
+                        style={{ width: 230,height: 350 }}
+                        cover={<img src="client/products/product2.png" />}
+                        >
+                        <Flex vertical align="start">
+                            <div style={{ fontSize: "1.2rem", fontWeight: "600",whiteSpace:'nowrap',textOverflow:'ellipsis',overflow:'hidden' }}>
+                                Khay tre tiện lợi
+                            </div>
+                            <div style={{ color: "#4BAF47", fontWeight: "600" }}>
+                                300,000đ
+                            </div>
+                            <div className="star">
+                                <img src="images/star.png" style={{width:'1rem'}} alt="Star 1" />
+                                <img src="images/star.png" style={{width:'1rem'}} alt="Star 2" />
+                                <img src="images/star.png" style={{width:'1rem'}} alt="Star 3" />
+                                <img src="images/star.png" style={{width:'1rem'}} alt="Star 4" />
+                                <img src="images/no-star.png" style={{width:'1rem'}} alt="No Star" />
+                            </div>
+                        </Flex>
+                    </Card>
+                    <Card
+                        hoverable
+                        style={{ width: 230,height: 350 }}
+                        cover={<img src="client/products/product2.png" />}
+                        >
+                        <Flex vertical align="start">
+                            <div style={{ fontSize: "1.2rem", fontWeight: "600",whiteSpace:'nowrap',textOverflow:'ellipsis',overflow:'hidden' }}>
+                                Khay tre tiện lợi
+                            </div>
+                            <div style={{ color: "#4BAF47", fontWeight: "600" }}>
+                                300,000đ
+                            </div>
+                            <div className="star">
+                                <img src="images/star.png" style={{width:'1rem'}} alt="Star 1" />
+                                <img src="images/star.png" style={{width:'1rem'}} alt="Star 2" />
+                                <img src="images/star.png" style={{width:'1rem'}} alt="Star 3" />
+                                <img src="images/star.png" style={{width:'1rem'}} alt="Star 4" />
+                                <img src="images/no-star.png" style={{width:'1rem'}} alt="No Star" />
+                            </div>
+                        </Flex>
+                    </Card>
+                    <Card
+                        hoverable
+                        style={{ width: 230,height: 350 }}
+                        cover={<img src="client/products/product2.png" />}
+                        >
+                        <Flex vertical align="start">
+                            <div style={{ fontSize: "1.2rem", fontWeight: "600",whiteSpace:'nowrap',textOverflow:'ellipsis',overflow:'hidden' }}>
+                                Khay tre tiện lợi
+                            </div>
+                            <div style={{ color: "#4BAF47", fontWeight: "600" }}>
+                                300,000đ
+                            </div>
+                            <div className="star">
+                                <img src="images/star.png" style={{width:'1rem'}} alt="Star 1" />
+                                <img src="images/star.png" style={{width:'1rem'}} alt="Star 2" />
+                                <img src="images/star.png" style={{width:'1rem'}} alt="Star 3" />
+                                <img src="images/star.png" style={{width:'1rem'}} alt="Star 4" />
+                                <img src="images/no-star.png" style={{width:'1rem'}} alt="No Star" />
+                            </div>
+                        </Flex>
+                    </Card>
+                    <Card
+                        hoverable
+                        style={{ width: 230,height: 350 }}
+                        cover={<img src="client/products/product2.png" />}
+                        >
+                        <Flex vertical align="start">
+                            <div style={{ fontSize: "1.2rem", fontWeight: "600",whiteSpace:'nowrap',textOverflow:'ellipsis',overflow:'hidden' }}>
+                                Khay tre tiện lợi
+                            </div>
+                            <div style={{ color: "#4BAF47", fontWeight: "600" }}>
+                                300,000đ
+                            </div>
+                            <div className="star">
+                                <img src="images/star.png" style={{width:'1rem'}} alt="Star 1" />
+                                <img src="images/star.png" style={{width:'1rem'}} alt="Star 2" />
+                                <img src="images/star.png" style={{width:'1rem'}} alt="Star 3" />
+                                <img src="images/star.png" style={{width:'1rem'}} alt="Star 4" />
+                                <img src="images/no-star.png" style={{width:'1rem'}} alt="No Star" />
+                            </div>
+                        </Flex>
+                    </Card>
+                </Flex>
+            </Flex>
         </div>
     );
 }
