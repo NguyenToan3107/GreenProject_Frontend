@@ -35,14 +35,17 @@ export default function Page() {
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
+    const fetchVariations=async (page:number)=>{
+        setLoading(true);
+        const res =await getAllVariations(page);
+        if(res!=null){
+            setLoading(false);
+        }
+    }
 
     useEffect(() => {
         if(variations.length==0){
-            setLoading(true);
-            const res = getAllVariations(current);
-            if(res!=null){
-                setLoading(false);
-            }
+           fetchVariations(current);
         }
 
     }, []);
@@ -128,7 +131,7 @@ export default function Page() {
     };
 
     const handleTableChange = async (pagination: { current: number; pageSize: number }) => {
-        await getAllVariations(pagination.current);
+        await fetchVariations(pagination.current);
     };
 
 
@@ -140,7 +143,7 @@ export default function Page() {
 
     const onSearch: SearchProps['onSearch'] =async (value, _e, info) => {
         setSearch(value);
-        await getAllVariations(1);
+        await fetchVariations(1);
 
     }
 

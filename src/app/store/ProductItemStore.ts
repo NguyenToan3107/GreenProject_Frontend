@@ -65,7 +65,12 @@ export const useProductItemStore = create<ProductItemState>((set, get) => ({
     deleteProductItem: async (id: number) => {
         const apiCall = () => deleteProductItemById(id);
         const onSuccess = (response: any) => {
-            get().getAllProductItems(get().current)
+            if (get().productItems.length === 1 && get().current > 1) {
+                get().getAllProductItems(get().current - 1);
+            } else {
+
+                get().getAllProductItems(get().current);
+            }
         }
         return await handleApiRequest(apiCall, onSuccess);
     },

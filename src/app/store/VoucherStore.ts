@@ -58,7 +58,12 @@ export const useVoucherStore=create<VoucherState>((set,get)=>({
     deleteVoucher:async (id:number)=>{
         const apiCall = () => deleteVoucherById(id);
         const onSuccess = (response: any) => {
-            get().getAllVouchers(1);
+            if (get().vouchers.length === 1 && get().current > 1) {
+                get().getAllVouchers(get().current - 1);
+            } else {
+
+                get().getAllVouchers(get().current);
+            }
         };
         return await handleApiRequest(apiCall, onSuccess);
     }

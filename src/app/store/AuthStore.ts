@@ -1,5 +1,5 @@
 import {create} from "zustand";
-import {getAllProducts} from "@/apis/modules/product";
+
 import {handleApiRequest} from "@/app/util/utils";
 import {registerRequest,logoutRequest, loginRequest} from "@/apis/modules/auth";
 
@@ -30,7 +30,7 @@ export const useAuthStore=create<AuthState>((set,get)=>({
                 window.location.href = "/home";
             }
         };
-        await handleApiRequest(apiCall, onSuccess, (loading:boolean) => set({ loading }));
+        return await handleApiRequest(apiCall, onSuccess);
 
     },
     register:async(data:any)=>{
@@ -41,7 +41,7 @@ export const useAuthStore=create<AuthState>((set,get)=>({
             })
 
         };
-        await handleApiRequest(apiCall, onSuccess, (loading:boolean) => set({ loading }));
+        return  await handleApiRequest(apiCall, onSuccess);
 
     },
     logout:async()=>{
@@ -50,7 +50,7 @@ export const useAuthStore=create<AuthState>((set,get)=>({
             window.location.href="/auth"
 
         };
-        await handleApiRequest(apiCall, onSuccess, (loading:boolean) => set({ loading }));
+        return  await handleApiRequest(apiCall, onSuccess);
 
     }
 }))

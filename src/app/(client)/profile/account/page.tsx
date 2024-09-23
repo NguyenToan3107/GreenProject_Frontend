@@ -2,26 +2,44 @@
 import Sidebar from "@/app/(client)/_components/Sidebar";
 import Link from "next/link";
 import React, { useState } from "react";
-import { Form, Input, Button, Upload, Image } from "antd";
+import {Form, Input, Button, Upload, Image, Spin} from "antd";
 import { UploadOutlined } from "@ant-design/icons";
+import axios from "axios";
+import {useUserStore} from "@/app/store/UserStore";
+
 
 const { Item } = Form;
 
 export default function page() {
   const [form] = Form.useForm();
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [loading,setLoading]=useState(false);
+  const {user,setUser}=useUserStore(state => state);
 
-  const handleImageChange = (file: any) => {
-    const reader = new FileReader();
-    reader.onload = () => setImageUrl(reader.result as string);
-    reader.readAsDataURL(file);
-    return false; // Prevent automatic upload
+
+  const handleImageChange = async (file: any) => {
+    console.log(file)
+    const formData=new FormData();
+    formData.append("avatar",file);
+    setLoading(true)
+    const response:any = await axios.post('http://localhost:7000/api/users/upload-avatar', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      withCredentials: true,
+
+    });
+    setLoading(false);
+    const res=response.data;
+    if(res.code==200){
+      setUser(res.data)
+
+    }
+
+    return false;
   };
 
   const onFinish = (values: any) => {
-    console.log("Form values:", values);
-    console.log("Selected image URL:", imageUrl);
-    // Handle form submission with values and selected image URL
+
   };
   return (
     <div className="flex w-full h-screen justify-between my-16 px-6">
@@ -132,13 +150,15 @@ export default function page() {
             </div>
 
             <div className="w-1/3 flex flex-col items-center space-y-4">
-              <Image
-                src={imageUrl || "/client/products/product2.png"}
-                alt="Avatar"
-                width={150}
-                height={150}
-                className="rounded-full object-cover"
-              />
+              <Spin spinning={loading}>
+                <Image
+                    src={user?.imgUrl || "/images/user_default.png"}
+                    alt="Avatar"
+                    width={150}
+                    height={150}
+                    className="rounded-full object-cover"
+                />
+              </Spin>
               <Upload showUploadList={false} beforeUpload={handleImageChange}>
                 <Button>Chọn ảnh</Button>
               </Upload>

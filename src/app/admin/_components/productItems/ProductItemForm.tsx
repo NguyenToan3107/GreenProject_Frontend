@@ -1,11 +1,11 @@
-import {Product} from "@/app/model/Product";
-import {Col, Form, Input, Modal, Row, Select, TreeSelect} from "antd";
-import TextArea from "antd/es/input/TextArea";
+"use client"
+import {Col, Form, Input, Modal, Row, Select, Spin, TreeSelect} from "antd";
 import React, {useEffect, useState} from "react";
 import {useProductStore} from "@/app/store/ProductStore";
-import {useCategoryStore} from "@/app/store/CategoryStore";
 import {useVariationStore} from "@/app/store/VariationStore";
 import {useProductItemStore} from "@/app/store/ProductItemStore";
+import {LoadingOutlined} from "@ant-design/icons";
+
 
 interface ProductItemFormProps {
     productItem?: any | null,
@@ -20,6 +20,7 @@ export default function ProductItemForm({productItem, isModalOpen, setIsModalOpe
     const {getAllVariationsByProductId,variationsByproductId,setVariationsByproductId}=useVariationStore();
     const {createProductItem,updateProductItem}=useProductItemStore()
     const [loading,setLoading]=useState(false);
+    const [loadingVariations,setLoadingVariations]=useState(false);
     useEffect(() => {
         if(productsSelect.length==0){
             getAllProducts(0);
@@ -53,9 +54,22 @@ export default function ProductItemForm({productItem, isModalOpen, setIsModalOpe
         form.setFieldsValue(initialFormValues);
 
 
-        getAllVariationsByProductId(productItem.product.id);
+
 
     }, [isModalOpen]);
+    const fetchVariations = async (productId:number) => {
+        setLoadingVariations(true);
+        console.log(loadingVariations)
+        await getAllVariationsByProductId(productId);
+        setLoadingVariations(false);
+    };
+
+    useEffect(() => {
+        if(productItem!=null){
+            fetchVariations(productItem.product.id);
+        }
+
+    }, [productItem]);
 
 
     async function handleOk() {
@@ -101,7 +115,8 @@ export default function ProductItemForm({productItem, isModalOpen, setIsModalOpe
 
     async function handleChangeSelect(value:any) {
         console.log(value)
-        await getAllVariationsByProductId(value);
+        fetchVariations(value);
+
     }
 
     const handleSelectChange = (value: string, variationId: number) => {
@@ -170,23 +185,29 @@ export default function ProductItemForm({productItem, isModalOpen, setIsModalOpe
 
                     {/* Dynamic variation options */}
                     <Row gutter={24}>
-                        {variationsByproductId.map(variation => (
-                            <Col span={12} key={variation.id}>
-                                <Form.Item
-                                    label={`Chọn ${variation.name}`}
-                                    name={`variation_${variation.id}`}
-                                >
-                                    <Select
-                                        placeholder={`Chọn giá trị cho ${variation.name}`}
-                                        onChange={(value) => handleSelectChange(value, variation.id)}
-                                        options={variation.values.map((p: any) => ({
-                                            label: p.value,
-                                            value: p.id,
-                                        }))}
-                                    />
-                                </Form.Item>
+                        {loadingVariations ? (
+                            <Col span={24} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
+                                <Spin indicator={<LoadingOutlined spin />} size="large" />
                             </Col>
-                        ))}
+                        ) : (
+                            variationsByproductId.map(variation => (
+                                <Col span={12} key={variation.id}>
+                                    <Form.Item
+                                        label={`Chọn ${variation.name}`}
+                                        name={`variation_${variation.id}`}
+                                    >
+                                        <Select
+                                            placeholder={`Chọn giá trị cho ${variation.name}`}
+                                            onChange={(value) => handleSelectChange(value, variation.id)}
+                                            options={variation.values.map((p: any) => ({
+                                                label: p.value,
+                                                value: p.id,
+                                            }))}
+                                        />
+                                    </Form.Item>
+                                </Col>
+                            ))
+                        )}
                     </Row>
                 </Form>
             </Modal>

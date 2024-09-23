@@ -59,7 +59,12 @@ export const useVariationOptionStore=create<VariationOptionState>((set,get)=>({
     deleteVariationOption:async (id:number)=>{
         const apiCall = () => deleteVariationOptionById(id);
         const onSuccess = (response: any) => {
-            get().getAllVariationOptions(1);
+            if (get().variationOptions.length === 1 && get().current > 1) {
+                get().getAllVariationOptions(get().current - 1);
+            } else {
+
+                get().getAllVariationOptions(get().current);
+            }
         };
         return await handleApiRequest(apiCall, onSuccess);
     }

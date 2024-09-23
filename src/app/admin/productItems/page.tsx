@@ -113,14 +113,17 @@ export default function Page() {
             ),
         },
     ];
+    const fetchProductItem=async (page:number)=>{
+        setLoading(true);
+        const res = await getAllProductItems(current);
+        if(res!=null){
+            setLoading(false);
+        }
+    }
 
     useEffect(() => {
         if(productItems.length==0){
-            setLoading(true);
-            const res =  getAllProductItems(current);
-            if(res!=null){
-                setLoading(false);
-            }
+            fetchProductItem(current)
         }
 
     }, []);
@@ -150,7 +153,7 @@ export default function Page() {
     };
 
     const handleTableChange = async (pagination: { current: number; pageSize: number }) => {
-        await getAllProductItems(pagination.current);
+        await fetchProductItem(pagination.current);
     };
 
 
@@ -162,7 +165,7 @@ export default function Page() {
 
     const onSearch: SearchProps['onSearch'] =async (value, _e, info) => {
         setSearch(value);
-        await getAllProductItems(1);
+        await fetchProductItem(1);
 
     }
 

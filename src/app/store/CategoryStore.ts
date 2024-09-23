@@ -94,7 +94,12 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
     deleteCategory: async (id: number) => {
         const apiCall = () => deleteCategoryById(id);
         const onSuccess = (response: any) => {
-            get().getAllCategories(1);
+            if (get().categories.length === 1 && get().current > 1) {
+                get().getAllCategories(get().current - 1);
+            } else {
+
+                get().getAllCategories(get().current);
+            }
             get().fetchCategories();
         };
         return await handleApiRequest(apiCall, onSuccess);

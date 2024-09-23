@@ -36,14 +36,17 @@ export default function Page() {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
     const [loading,setLoading]=useState(false);
+    const fetchVoucher=async (page:number)=>{
+        setLoading(true);
+        const res = await getAllVouchers(page);
+        if(res!=null){
+            setLoading(false);
+        }
+    }
 
     useEffect(() => {
         if(vouchers.length==0){
-            setLoading(true);
-            const res =  getAllVouchers(current);
-            if(res!=null){
-                setLoading(false);
-            }
+            fetchVoucher(current)
         }
 
     }, []);
@@ -157,7 +160,7 @@ export default function Page() {
     };
 
     const handleTableChange = async (pagination: { current: number; pageSize: number }) => {
-        await getAllVouchers(pagination.current);
+        await fetchVoucher(pagination.current);
     };
 
 
@@ -169,7 +172,7 @@ export default function Page() {
 
     const onSearch: SearchProps['onSearch'] =async (value, _e, info) => {
         setSearch(value);
-        await getAllVouchers(1);
+        await fetchVoucher(1);
 
     }
 

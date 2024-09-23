@@ -102,7 +102,11 @@ export const useVariationStore=create<VariationState>((set,get)=>({
     deleteVariation:async (id:number)=>{
         const apiCall = () => deleteVariationById(id);
         const onSuccess = (response: any) => {
-            get().getAllVariations(1);
+            if (get().variations.length === 1 && get().current > 1) {
+                get().getAllVariations(get().current - 1);
+            } else {
+                get().getAllVariations(get().current);
+            }
             get().getAllVariations(0);
         };
         return await handleApiRequest(apiCall, onSuccess);

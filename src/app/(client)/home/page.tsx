@@ -1,21 +1,21 @@
 "use client";
 
 import "./home.css";
-import { register } from "swiper/element/bundle";
-import { Pagination, Navigation } from "swiper/modules";
-import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
-import { Button, Divider, Flex, Radio, Col, Row, Card } from "antd";
+import { Flex, Card } from "antd";
+import { register } from "swiper/element/bundle";
+import { Pagination, Navigation } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
+
 // register Swiper custom elements
 register();
 
 export default function page() {
-  async function logout() {}
 
-  async function getCategories() {}
-  //console.log(getLocalStorage("user_data"))
+
+
 
   return (
     <div>
