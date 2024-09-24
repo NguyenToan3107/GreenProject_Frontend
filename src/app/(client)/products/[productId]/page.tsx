@@ -37,13 +37,15 @@ export default function page({params}:any) {
         <div style={{width:'1200px',marginLeft:'auto',marginRight:'auto',marginBottom:'2rem'}}>
         <div className="grid-container">
 
-            <Image src={product?.images[0].url}/>
+            <div style={{gridArea:'image'}}>
+                <Image src={product?.images[0].url}/>
+            </div>
 
             <div style={{gridArea:'mini_image',marginBottom:'1.6rem'}} >
-                <Flex justify='start' align='center' gap={"small"} wrap>
+                <Flex justify='space-between' align='center' gap={"small"} wrap>
                     {
                         product?.images.map((i:any)=>(
-                            <Image style={{ width: '93px', height: '93px',objectFit:'contain'}} src={i.url}/>
+                            <Image style={{ width: '140px', height: '140px',objectFit:'contain'}} src={i.url}/>
                         ))
                     }
                 </Flex>
