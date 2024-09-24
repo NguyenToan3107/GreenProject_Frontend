@@ -19,7 +19,7 @@ export default function Header() {
           className="h-full object-contain cursor-pointer"
         />
         <nav className="flex justify-center items-center">
-          <ul className="flex space-x-4">
+          <ul className="flex space-x-4 m-0 p-0">
             <li>
               <Link
                 href="/home"
