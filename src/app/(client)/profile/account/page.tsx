@@ -2,45 +2,76 @@
 import Sidebar from "@/app/(client)/_components/Sidebar";
 import Link from "next/link";
 import React, { useState } from "react";
-import {Form, Input, Button, Upload, Image, Spin} from "antd";
+import { Form, Input, Button, Upload, Image, Spin, message } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import axios from "axios";
-import {useUserStore} from "@/app/store/UserStore";
-
+import { useUserStore } from "@/app/store/UserStore";
+import { updateUser } from "@/apis/modules/user";
 
 const { Item } = Form;
 
 export default function page() {
   const [form] = Form.useForm();
-  const [loading,setLoading]=useState(false);
-  const {user,setUser}=useUserStore(state => state);
-
-
+  const [loading, setLoading] = useState(false);
+  const { user, setUser } = useUserStore((state) => state);
+  console.log(user);
   const handleImageChange = async (file: any) => {
-    console.log(file)
-    const formData=new FormData();
-    formData.append("avatar",file);
-    setLoading(true)
-    const response:any = await axios.post('http://localhost:7000/api/users/upload-avatar', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-      withCredentials: true,
+    console.log(file);
+    const formData = new FormData();
+    formData.append("avatar", file);
+    setLoading(true);
 
-    });
-    setLoading(false);
-    const res=response.data;
-    if(res.code==200){
-      setUser(res.data)
-
+    try {
+      const response: any = await axios.post(
+        "http://localhost:7000/api/users/upload-avatar",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          withCredentials: true,
+        }
+      );
+      setLoading(false);
+      const res = response.data;
+      if (res.code == 200) {
+        setUser(res.data);
+        message.success("Ảnh đại diện đã được cập nhật thành công!"); // Success message
+      } else {
+        message.error("Cập nhật ảnh đại diện thất bại!"); // Error message
+      }
+    } catch (error) {
+      setLoading(false);
+      message.error("Có lỗi xảy ra khi cập nhật ảnh đại diện!");
     }
 
     return false;
   };
 
-  const onFinish = (values: any) => {
+  const update = async (fullName: string, numberPhone: string) => {
+    const payload = {
+      fullName,
+      numberPhone,
+    };
 
+    try {
+      const res: any = await updateUser(payload);
+      if (res.code === 200) {
+        message.success("Thông tin người dùng đã được cập nhật thành công!"); // Success message
+      } else {
+        message.error("Cập nhật thông tin thất bại!"); // Error message
+      }
+    } catch (error) {
+      message.error("Có lỗi xảy ra khi cập nhật thông tin người dùng!");
+    }
   };
+
+  const onFinish = async (values: any) => {
+    const { fullName, numberPhone } = values;
+
+    await update(fullName, numberPhone);
+  };
+
   return (
     <div className="flex w-full h-screen justify-between my-16 px-6">
       {/* Sidebar */}
@@ -60,26 +91,6 @@ export default function page() {
             className="flex flex-grow justify-between"
           >
             <div className="w-2/3 pr-4 flex flex-col space-y-4">
-              <div className="flex items-center">
-                <div className="w-1/3">
-                  <label className="font-medium">Tên đăng nhập</label>
-                </div>
-                <div className="w-2/4">
-                  <Form.Item
-                    name="username"
-                    className="m-0 mt-0"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Vui lòng nhập tên đăng nhập!",
-                      },
-                    ]}
-                  >
-                    <Input />
-                  </Form.Item>
-                </div>
-              </div>
-
               <div className="flex items-center mb-4">
                 <div className="w-1/3">
                   <label className="font-medium">Họ và tên</label>
@@ -92,28 +103,7 @@ export default function page() {
                       { required: true, message: "Vui lòng nhập họ và tên!" },
                     ]}
                   >
-                    <Input />
-                  </Form.Item>
-                </div>
-              </div>
-
-              <div className="flex items-center mb-4">
-                <div className="w-1/3">
-                  <label className="font-medium">Email</label>
-                </div>
-                <div className="w-2/4">
-                  <Form.Item
-                    name="email"
-                    className="m-0"
-                    rules={[
-                      {
-                        required: true,
-                        type: "email",
-                        message: "Vui lòng nhập email hợp lệ!",
-                      },
-                    ]}
-                  >
-                    <Input />
+                    <Input placeholder={user?.fullName || "Nhập họ và tên"} />
                   </Form.Item>
                 </div>
               </div>
@@ -124,7 +114,7 @@ export default function page() {
                 </div>
                 <div className="w-2/4">
                   <Form.Item
-                    name="phone"
+                    name="numberPhone"
                     className="m-0"
                     rules={[
                       {
@@ -133,7 +123,9 @@ export default function page() {
                       },
                     ]}
                   >
-                    <Input />
+                    <Input
+                      placeholder={user?.phoneNumber || "Nhập số điện thoại"}
+                    />
                   </Form.Item>
                 </div>
               </div>
@@ -152,11 +144,11 @@ export default function page() {
             <div className="w-1/3 flex flex-col items-center space-y-4">
               <Spin spinning={loading}>
                 <Image
-                    src={user?.imgUrl || "/images/user_default.png"}
-                    alt="Avatar"
-                    width={150}
-                    height={150}
-                    className="rounded-full object-cover"
+                  src={user?.imgUrl || "/images/user_default.png"}
+                  alt="Avatar"
+                  width={150}
+                  height={150}
+                  className="rounded-full object-cover"
                 />
               </Spin>
               <Upload showUploadList={false} beforeUpload={handleImageChange}>
