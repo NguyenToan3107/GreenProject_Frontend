@@ -9,7 +9,7 @@ import { Flex, Card,Rate } from "antd";
 import { register } from "swiper/element/bundle";
 import { Pagination, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-import {useProductItemStore} from "@/app/store/ProductItemStore";
+import {useProductStore} from "@/app/store/ProductStore";
 // register Swiper custom elements
 register();
 
@@ -17,11 +17,11 @@ export default function page() {
 
   const {
     productItemOnTopSold,
-    getProductItemOnTopSold,
-  } = useProductItemStore((state) => state);
+    getProductOnTopSold,
+  } = useProductStore((state) => state);
 
   const fetchProductItemOnTopSold=async ()=>{
-    await getProductItemOnTopSold(8);
+    await getProductOnTopSold(8);
   }
 
   function currencyFormat(num: number) {

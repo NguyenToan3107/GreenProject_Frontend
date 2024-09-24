@@ -3,6 +3,7 @@ import {
     createNewProduct,
     deleteProductById,
     getAllProducts,
+    getProductOnTopSold,
     updateProductById
 } from "@/apis/modules/product";
 import { ProductDto } from "@/app/admin/_components/products/ProductForm";
@@ -10,6 +11,7 @@ import {handleApiRequest} from "@/app/util/utils";
 
 interface ProductState {
     products: any[];
+    productItemOnTopSold: any[];
     productsSelect:any[];
     search: string;
     setSearch: (key: string) => void;
@@ -17,6 +19,7 @@ interface ProductState {
     createProduct: (product: ProductDto) => Promise<void>;
     updateProduct: (id: number, product: ProductDto) => Promise<void>;
     deleteProduct: (id: number) => Promise<void>;
+    getProductOnTopSold: (id:number) => Promise<void>;
     current: number;
     totalElements: number;
     categoryId:number;
@@ -28,6 +31,7 @@ interface ProductState {
 export const useProductStore = create<ProductState>((set, get) => ({
     products: [],
     productsSelect:[],
+    productItemOnTopSold: [],
     search: "",
     current: 1,
     pageSize: 5,
@@ -40,6 +44,18 @@ export const useProductStore = create<ProductState>((set, get) => ({
     },
     setCategoryId: (key) => {
         set({ categoryId: key });
+    },
+
+    getProductOnTopSold: async(limit:number)=>{
+        const apiCall = () => getProductOnTopSold(limit);
+        const onSuccess = (response: any) => {
+                console.log(response)
+                set({
+                    productItemOnTopSold: response.data,
+                });
+
+        };
+        return await handleApiRequest(apiCall, onSuccess);
     },
 
     getAllProducts: async (page: number) => {
