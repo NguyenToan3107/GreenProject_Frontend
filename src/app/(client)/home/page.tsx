@@ -4,17 +4,36 @@ import "./home.css";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
+import React, { useEffect, useState } from "react";
 import { Flex, Card } from "antd";
 import { register } from "swiper/element/bundle";
 import { Pagination, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-
+import {useProductItemStore} from "@/app/store/ProductItemStore";
 // register Swiper custom elements
 register();
 
 export default function page() {
 
+  const {
+    productItemOnTopSold,
+    getProductItemOnTopSold,
+  } = useProductItemStore((state) => state);
 
+  const fetchProductItemOnTopSold=async ()=>{
+    await getProductItemOnTopSold(8);
+  }
+
+  function currencyFormat(num: number) {
+    return num.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + ' VNĐ'
+ }
+
+
+  useEffect(() => {
+    if (!productItemOnTopSold || productItemOnTopSold.length === 0) {
+      fetchProductItemOnTopSold(); 
+    }
+  }, []); 
 
 
   return (
@@ -460,19 +479,20 @@ export default function page() {
                 </div>
               </Card>
             </SwiperSlide>
-            <SwiperSlide>
+            {productItemOnTopSold.map((product) => (
+            <SwiperSlide key={product.id}>
               <Card hoverable>
                 <div className="best-seller-card-item">
                   <a style={{ display: "flex" }}>
                     <img
-                      src="client/products/product2.png"
+                      src={product.product.images[0].url}
                       style={{
                         borderRadius: "6px",
                         objectFit: "contain",
                         width: "100%",
                         height: "250px",
                       }}
-                      alt="Best Seller 1"
+                      alt={product.name}
                     />
                   </a>
                   <Flex vertical align="start">
@@ -485,249 +505,28 @@ export default function page() {
                         overflow: "hidden",
                       }}
                     >
-                      Khay tre tiện lợi
+                      {product.product.name}
                     </div>
                     <div style={{ color: "#4BAF47", fontWeight: "600" }}>
-                      300,000đ
+                      {currencyFormat(product.price)}
                     </div>
                     <div className="item-description">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Molestiae, illo saepe. Repellendus dolores ad odit
-                      voluptatibus ipsum corrupti, dicta harum dolore, numquam
-                      illum sapiente maxime nostrum mollitia officiis illo nam.
+                      {product.product.description}
                     </div>
                     <div className="star">
-                      <img
-                        src="images/star.png"
-                        style={{ width: "1rem" }}
-                        alt="Star 1"
-                      />
-                      <img
-                        src="images/star.png"
-                        style={{ width: "1rem" }}
-                        alt="Star 2"
-                      />
-                      <img
-                        src="images/star.png"
-                        style={{ width: "1rem" }}
-                        alt="Star 3"
-                      />
-                      <img
-                        src="images/star.png"
-                        style={{ width: "1rem" }}
-                        alt="Star 4"
-                      />
-                      <img
-                        src="images/no-star.png"
-                        style={{ width: "1rem" }}
-                        alt="No Star"
-                      />
+                      {[...Array(5)].map((_, index) => (
+                        <img
+                          key={index}
+                          src={index < product.stars ? "images/star.png" : "images/no-star.png"}
+                          style={{ width: "1rem" }}
+                          alt={`Star ${index + 1}`}
+                        />
+                      ))}
                     </div>
                   </Flex>
                 </div>
               </Card>
-            </SwiperSlide>
-            <SwiperSlide>
-              <Card hoverable>
-                <div className="best-seller-card-item">
-                  <a style={{ display: "flex" }}>
-                    <img
-                      src="client/products/product2.png"
-                      style={{
-                        borderRadius: "6px",
-                        objectFit: "contain",
-                        width: "100%",
-                        height: "250px",
-                      }}
-                      alt="Best Seller 1"
-                    />
-                  </a>
-                  <Flex vertical align="start">
-                    <div
-                      style={{
-                        fontSize: "1.2rem",
-                        fontWeight: "600",
-                        whiteSpace: "nowrap",
-                        textOverflow: "ellipsis",
-                        overflow: "hidden",
-                      }}
-                    >
-                      Khay tre tiện lợi
-                    </div>
-                    <div style={{ color: "#4BAF47", fontWeight: "600" }}>
-                      300,000đ
-                    </div>
-                    <div className="item-description">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Molestiae, illo saepe. Repellendus dolores ad odit
-                      voluptatibus ipsum corrupti, dicta harum dolore, numquam
-                      illum sapiente maxime nostrum mollitia officiis illo nam.
-                    </div>
-                    <div className="star">
-                      <img
-                        src="images/star.png"
-                        style={{ width: "1rem" }}
-                        alt="Star 1"
-                      />
-                      <img
-                        src="images/star.png"
-                        style={{ width: "1rem" }}
-                        alt="Star 2"
-                      />
-                      <img
-                        src="images/star.png"
-                        style={{ width: "1rem" }}
-                        alt="Star 3"
-                      />
-                      <img
-                        src="images/star.png"
-                        style={{ width: "1rem" }}
-                        alt="Star 4"
-                      />
-                      <img
-                        src="images/no-star.png"
-                        style={{ width: "1rem" }}
-                        alt="No Star"
-                      />
-                    </div>
-                  </Flex>
-                </div>
-              </Card>
-            </SwiperSlide>
-            <SwiperSlide>
-              <Card hoverable>
-                <div className="best-seller-card-item">
-                  <a style={{ display: "flex" }}>
-                    <img
-                      src="client/products/product2.png"
-                      style={{
-                        borderRadius: "6px",
-                        objectFit: "contain",
-                        width: "100%",
-                        height: "250px",
-                      }}
-                      alt="Best Seller 1"
-                    />
-                  </a>
-                  <Flex vertical align="start">
-                    <div
-                      style={{
-                        fontSize: "1.2rem",
-                        fontWeight: "600",
-                        whiteSpace: "nowrap",
-                        textOverflow: "ellipsis",
-                        overflow: "hidden",
-                      }}
-                    >
-                      Khay tre tiện lợi
-                    </div>
-                    <div style={{ color: "#4BAF47", fontWeight: "600" }}>
-                      300,000đ
-                    </div>
-                    <div className="item-description">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Molestiae, illo saepe. Repellendus dolores ad odit
-                      voluptatibus ipsum corrupti, dicta harum dolore, numquam
-                      illum sapiente maxime nostrum mollitia officiis illo nam.
-                    </div>
-                    <div className="star">
-                      <img
-                        src="images/star.png"
-                        style={{ width: "1rem" }}
-                        alt="Star 1"
-                      />
-                      <img
-                        src="images/star.png"
-                        style={{ width: "1rem" }}
-                        alt="Star 2"
-                      />
-                      <img
-                        src="images/star.png"
-                        style={{ width: "1rem" }}
-                        alt="Star 3"
-                      />
-                      <img
-                        src="images/star.png"
-                        style={{ width: "1rem" }}
-                        alt="Star 4"
-                      />
-                      <img
-                        src="images/no-star.png"
-                        style={{ width: "1rem" }}
-                        alt="No Star"
-                      />
-                    </div>
-                  </Flex>
-                </div>
-              </Card>
-            </SwiperSlide>
-            <SwiperSlide>
-              <Card hoverable>
-                <div className="best-seller-card-item">
-                  <a style={{ display: "flex" }}>
-                    <img
-                      src="client/products/product2.png"
-                      style={{
-                        borderRadius: "6px",
-                        objectFit: "contain",
-                        width: "100%",
-                        height: "250px",
-                      }}
-                      alt="Best Seller 1"
-                    />
-                  </a>
-                  <Flex vertical align="start">
-                    <div
-                      style={{
-                        fontSize: "1.2rem",
-                        fontWeight: "600",
-                        whiteSpace: "nowrap",
-                        textOverflow: "ellipsis",
-                        overflow: "hidden",
-                      }}
-                    >
-                      Khay tre tiện lợi
-                    </div>
-                    <div style={{ color: "#4BAF47", fontWeight: "600" }}>
-                      300,000đ
-                    </div>
-                    <div className="item-description">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Molestiae, illo saepe. Repellendus dolores ad odit
-                      voluptatibus ipsum corrupti, dicta harum dolore, numquam
-                      illum sapiente maxime nostrum mollitia officiis illo nam.
-                    </div>
-                    <div className="star">
-                      <img
-                        src="images/star.png"
-                        style={{ width: "1rem" }}
-                        alt="Star 1"
-                      />
-                      <img
-                        src="images/star.png"
-                        style={{ width: "1rem" }}
-                        alt="Star 2"
-                      />
-                      <img
-                        src="images/star.png"
-                        style={{ width: "1rem" }}
-                        alt="Star 3"
-                      />
-                      <img
-                        src="images/star.png"
-                        style={{ width: "1rem" }}
-                        alt="Star 4"
-                      />
-                      <img
-                        src="images/no-star.png"
-                        style={{ width: "1rem" }}
-                        alt="No Star"
-                      />
-                    </div>
-                  </Flex>
-                </div>
-              </Card>
-            </SwiperSlide>
+            </SwiperSlide>))}
           </Swiper>
         </div>
 

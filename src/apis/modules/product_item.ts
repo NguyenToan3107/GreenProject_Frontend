@@ -22,6 +22,9 @@ export function createNewProductItem(productItem:any){
     return api.post('productItems/create',productItem);
 }
 
+export function getProductItemOnTopSold(limit:number){
+    return api.get(`productItems/top_sold/limit=${limit}`);
+}
 
 export function updateProductItemById(id:number,productItem:any){
     return api.put(`productItems/update/${id}`,productItem);

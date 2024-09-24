@@ -5,11 +5,13 @@ import {
     createNewProductItem,
     deleteProductItemById,
     getAllProductItems,
+    getProductItemOnTopSold,
     updateProductItemById
 } from "@/apis/modules/product_item";
 
 interface ProductItemState {
     productItems: any[];
+    productItemOnTopSold: any[];
     productId:number,
     setProductId: (key: number) => void;
     search: string;
@@ -17,6 +19,7 @@ interface ProductItemState {
     getAllProductItems: (page: number) => Promise<void>;
     createProductItem: (product: any) => Promise<void>;
     updateProductItem: (id: number, product: any) => Promise<void>;
+    getProductItemOnTopSold: (limit:number) => Promise<void>;
     deleteProductItem: (id: number) => Promise<void>;
     current: number;
     totalElements: number;
@@ -25,6 +28,7 @@ interface ProductItemState {
 
 export const useProductItemStore = create<ProductItemState>((set, get) => ({
     productItems: [],
+    productItemOnTopSold: [],
     search: "",
     current: 1,
     totalElements: 0,
@@ -44,6 +48,18 @@ export const useProductItemStore = create<ProductItemState>((set, get) => ({
                     productItems: response.data.content,
                     current: page,
                     totalElements: response.data.totalElements,
+                });
+
+        };
+        return await handleApiRequest(apiCall, onSuccess);
+    },
+
+    getProductItemOnTopSold: async(limit:number)=>{
+        const apiCall = () => getProductItemOnTopSold(limit);
+        const onSuccess = (response: any) => {
+                console.log(response)
+                set({
+                    productItemOnTopSold: response.data,
                 });
 
         };
