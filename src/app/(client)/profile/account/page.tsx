@@ -57,9 +57,9 @@ export default function page() {
     try {
       const res: any = await updateUser(payload);
       if (res.code === 200) {
-        message.success("Thông tin người dùng đã được cập nhật thành công!"); // Success message
+        message.success("Thông tin người dùng đã được cập nhật thành công!");
       } else {
-        message.error("Cập nhật thông tin thất bại!"); // Error message
+        message.error("Cập nhật thông tin thất bại!");
       }
     } catch (error) {
       message.error("Có lỗi xảy ra khi cập nhật thông tin người dùng!");
