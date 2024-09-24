@@ -1,16 +1,18 @@
 "use client";
-import { SetStateAction, useState } from "react";
-import Image from "next/image";
+import {SetStateAction, useEffect, useState} from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import {
   faStar,
   faHeart as faHeartEmpty,
 } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as faHeartFilled } from "@fortawesome/free-solid-svg-icons";
-import { Button, Dropdown, Menu, Checkbox } from "antd";
+import {Button, Dropdown, Menu, Checkbox, Pagination,Image} from "antd";
 import "../../../app/globals.css";
 import "antd/dist/reset.css";
 import { useProductStore } from "@/app/store/ProductStore";
+import {PRODUCT_ITEM_PAGE_SIZE} from "@/app/util/constant";
+import {getAllProductsView} from "@/apis/modules/product";
 
 const products = [
   {
@@ -130,11 +132,33 @@ const categoryMenu = (
 );
 
 export default function page() {
-  const { getAllProducts } = useProductStore((state: any) => state);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeButton, setActiveButton] = useState("popular");
   const [likedProducts, setLikedProducts] = useState(new Set());
   const [currentPage, setCurrentPage] = useState(1);
+  const [productsView, setProductsView] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [loading,setLoading]=useState(false);
+
+  const fetchProduct=async (page:number)=>{
+    setLoading(true)
+    const res:any=await getAllProductsView(page);
+    console.log(res)
+    setLoading(false);
+    if(res.code==200){
+      setProductsView(res.data.content)
+      setCurrentPage(res.data.currentPage)
+      setTotal(res.data.totalElements)
+
+    }
+
+
+  }
+
+  useEffect(() => {
+    fetchProduct(currentPage);
+  }, []);
+
 
   const handleButtonClick = (buttonType: SetStateAction<string>) => {
     setActiveButton(buttonType);
@@ -156,78 +180,9 @@ export default function page() {
     });
   };
 
-  const PRODUCTS_PER_PAGE = 12;
 
-  const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
 
-  // Paginated products based on current page
-  const paginatedProducts = filteredProducts.slice(
-    (currentPage - 1) * PRODUCTS_PER_PAGE,
-    currentPage * PRODUCTS_PER_PAGE
-  );
 
-  const handlePageChange = (page: any) => {
-    setCurrentPage(page);
-  };
-
-  // Hàm để tạo các nút phân trang với ba chấm
-  const renderPagination = () => {
-    const pageNumbers = [];
-    const siblingsCount = 1; // Số trang trước và sau trang hiện tại
-    const totalVisiblePages = 3; // Hiển thị 3 trang gần nhất
-
-    if (totalPages <= 5) {
-      // Nếu có ít trang, hiển thị tất cả các trang
-      for (let i = 1; i <= totalPages; i++) {
-        pageNumbers.push(i);
-      }
-    } else {
-      // Hiển thị trang đầu, trang cuối, và các trang xung quanh trang hiện tại
-      const startPage = Math.max(2, currentPage - siblingsCount);
-      const endPage = Math.min(totalPages - 1, currentPage + siblingsCount);
-
-      // Trang đầu tiên
-      pageNumbers.push(1);
-
-      // Nếu startPage > 2, thêm ba chấm (...)
-      if (startPage > 2) {
-        pageNumbers.push("...");
-      }
-
-      // Các trang xung quanh trang hiện tại
-      for (let i = startPage; i <= endPage; i++) {
-        pageNumbers.push(i);
-      }
-
-      // Nếu endPage < totalPages - 1, thêm ba chấm (...)
-      if (endPage < totalPages - 1) {
-        pageNumbers.push("...");
-      }
-
-      // Trang cuối cùng
-      pageNumbers.push(totalPages);
-    }
-
-    return pageNumbers.map((page, index) => {
-      if (page === "...") {
-        return (
-          <span key={index} className="px-2">
-            ...
-          </span>
-        );
-      } else {
-        return (
-          <Button
-            key={index}
-            type={currentPage === page ? "primary" : "default"}
-            onClick={() => handlePageChange(page)}
-          >
-            {page}
-          </Button>
-        );
-      }
-    });
-  };
 
   return (
     <div className="mx-0 px-0">
@@ -342,13 +297,13 @@ export default function page() {
               </Dropdown>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 rounded cursor-pointer">
-              {paginatedProducts.map((product) => (
+              {productsView.map((product:any) => (
                 <div
                   key={product.id}
                   className="border rounded overflow-hidden shadow-md flex flex-col"
                 >
                   <Image
-                    src={product.image}
+                    src={product.images[1].url}
                     alt={product.name}
                     width={150}
                     height={100}
@@ -359,31 +314,11 @@ export default function page() {
                       {product.name}
                     </h3>
                     <p className="text-brand-primary mb-2 font-bold">
-                      {product.price}đ
+                      {product.minPrice}đ-{product.maxPrice}đ
                     </p>
-                    <p className="text-gray-700 mb-2">{product.description}</p>
                     <div className="flex justify-between">
                       <div className="flex items-center mb-2">
-                        <FontAwesomeIcon
-                          icon={faStar}
-                          className="text-yellow-400 mr-1"
-                        />
-                        <FontAwesomeIcon
-                          icon={faStar}
-                          className="text-yellow-400 mr-1"
-                        />
-                        <FontAwesomeIcon
-                          icon={faStar}
-                          className="text-yellow-400 mr-1"
-                        />
-                        <FontAwesomeIcon
-                          icon={faStar}
-                          className="text-yellow-400 mr-1"
-                        />
-                        <FontAwesomeIcon
-                          icon={faStar}
-                          className="text-gray-300"
-                        />
+
                       </div>
                       <div className="flex items-center justify-between">
                         <FontAwesomeIcon
@@ -407,7 +342,7 @@ export default function page() {
             </div>
             {/* Phân trang */}
             <div className="flex justify-center mt-8 space-x-2">
-              {renderPagination()}
+              <Pagination defaultCurrent={currentPage} defaultPageSize={PRODUCT_ITEM_PAGE_SIZE} total={total} />
             </div>
           </main>
         </div>

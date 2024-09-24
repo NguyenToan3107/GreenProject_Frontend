@@ -2,15 +2,19 @@ import api from "@/apis/request";
 import {PAGE_SIZE} from "@/app/util/constant";
 
 
-export function getAllProductItems(pageNum:any,search:string) {
+export function getAllProductItems(pageNum:number,search:string,productId:number) {
     if(pageNum==0){
         return api.get("productItems");
     }
+    if(productId!=0){
+        return api.get(`productItems?pageNum=${pageNum}&pageSize=${PAGE_SIZE}&productId=${productId}`);
+    }
     if(search.trim()!=""){
         return api.get(`productItems?pageNum=${pageNum}&pageSize=${PAGE_SIZE}&search=${search.trim()}`);
-    }else {
-        return api.get(`productItems?pageNum=${pageNum}&pageSize=${PAGE_SIZE}`);
     }
+
+    return api.get(`productItems?pageNum=${pageNum}&pageSize=${PAGE_SIZE}`);
+
 
 }
 

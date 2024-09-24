@@ -1,6 +1,6 @@
 "use client"
 import React, { useEffect, useState } from "react";
-import {Button, Col, Input, Modal, Row, Table, theme, Upload} from "antd";
+import {Button, Col, Input, Modal, Row, Select, Table, theme, Upload} from "antd";
 
 import { Header } from "antd/es/layout/layout";
 import { Category } from "@/app/model/Category";
@@ -11,6 +11,7 @@ import { SearchProps } from "antd/es/input";
 import {useVariationOptionStore} from "@/app/store/VariationOptionStore";
 import OptionForm from "@/app/admin/_components/options/OptionForm";
 import {PAGE_SIZE} from "@/app/util/constant";
+import {useVariationStore} from "@/app/store/VariationStore";
 
 
 const { confirm } = Modal;
@@ -20,11 +21,14 @@ export default function Page() {
     const {
         variationOptions,
         setSearch,
+        setVariationId,
         getAllVariationOptions,
         deleteVariationOption,
         current,
         totalElements
     } = useVariationOptionStore((state) => state);
+
+    const {variationsSelect,getAllVariations}=useVariationStore()
 
 
 
@@ -45,6 +49,9 @@ export default function Page() {
     useEffect(() => {
         if(variationOptions.length==0){
             fetchOptions(current);
+        }
+        if(variationsSelect.length==0){
+            getAllVariations(0)
         }
 
     }, []);
@@ -149,6 +156,15 @@ export default function Page() {
 
     }
 
+    async function handleSelectChange(value:any) {
+        if(value==undefined){
+            setVariationId(0)
+        }else {
+            setVariationId(value)
+        }
+        await fetchOptions(1)
+    }
+
     return (
         <>
             <Header style={{ padding: 0, background: colorBgContainer }}>
@@ -175,12 +191,24 @@ export default function Page() {
                     borderRadius: borderRadiusLG,
                 }}
             >
-                <Row gutter={16} className="flex items-center justify-between mb-4">
+                <Row gutter={[16,16]} className="flex items-center justify-between mb-4">
                     <Col>
                         <Search
                             placeholder="Tìm kiếm biến thể"
                             allowClear
                             onSearch={onSearch}
+                        />
+                    </Col>
+                    <Col>
+                        <Select
+                            style={{ width: '300px' }}
+                            placeholder="Chọn biến thể"
+                            options={variationsSelect.map((variation: any) => ({
+                                label: variation.name,
+                                value: variation.id,
+                            }))}
+                            allowClear
+                            onChange={handleSelectChange}
                         />
                     </Col>
                     <Col className="flex justify-end">

@@ -21,17 +21,10 @@ export default function ProductItemForm({productItem, isModalOpen, setIsModalOpe
     const {createProductItem,updateProductItem}=useProductItemStore()
     const [loading,setLoading]=useState(false);
     const [loadingVariations,setLoadingVariations]=useState(false);
-    useEffect(() => {
-        if(productsSelect.length==0){
-            getAllProducts(0);
-        }
 
-    }, []);
     useEffect(() => {
-
         if (!isModalOpen) {
             return;
-
         }
         if(!productItem){
             form.resetFields();
@@ -203,6 +196,7 @@ export default function ProductItemForm({productItem, isModalOpen, setIsModalOpe
                                                 label: p.value,
                                                 value: p.id,
                                             }))}
+                                            allowClear
                                         />
                                     </Form.Item>
                                 </Col>

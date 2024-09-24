@@ -1,6 +1,6 @@
 "use client"
 import React, { useEffect, useState } from "react";
-import {Button, Col, Input, Modal, Row, Table, theme, Upload} from "antd";
+import {Button, Col, Input, Modal, Row, Table, theme, TreeSelect, Upload} from "antd";
 import CategoryForm from "@/app/admin/_components/categories/CategoryForm";
 import { Header } from "antd/es/layout/layout";
 import { Category } from "@/app/model/Category";
@@ -23,8 +23,11 @@ export default function Page() {
         getAllVariations,
         deleteVariation,
         current,
+        setCategoryId,
         totalElements
     } = useVariationStore((state) => state);
+
+    const {categoriesTree,fetchCategories}=useCategoryStore();
 
 
 
@@ -47,8 +50,19 @@ export default function Page() {
         if(variations.length==0){
            fetchVariations(current);
         }
+        if(categoriesTree.length==0){
+            fetchCategories();
+        }
 
     }, []);
+    const buildCategoryTree = (categories:any) => {
+        return categories.map((cat:any) => ({
+            title: cat.name,
+            value: cat.id,
+            children: cat.children ? buildCategoryTree(cat.children) : [],
+        }));
+    };
+    const categoryTreeData = buildCategoryTree(categoriesTree);
 
     const columns = [
         {
@@ -140,6 +154,17 @@ export default function Page() {
         setVariation(null);
         setIsModalOpen(true);
     }
+    const handleCategoryChange = async (value: any) => {
+        console.log(value)
+        if(value==undefined){
+            setCategoryId(0)
+        }else {
+            setCategoryId(value)
+        }
+
+        await fetchVariations(1)
+
+    };
 
     const onSearch: SearchProps['onSearch'] =async (value, _e, info) => {
         setSearch(value);
@@ -173,12 +198,23 @@ export default function Page() {
                     borderRadius: borderRadiusLG,
                 }}
             >
-                <Row gutter={16} className="flex items-center justify-between mb-4">
+                <Row  className="flex items-center justify-between mb-4">
                     <Col>
                         <Search
                             placeholder="Tìm kiếm biến thể"
                             allowClear
                             onSearch={onSearch}
+                        />
+
+
+                    </Col>
+                    <Col>
+                        <TreeSelect
+                            treeData={categoryTreeData}
+                            placeholder="Lọc theo danh mục"
+                            allowClear
+                            onChange={handleCategoryChange}
+                            style={{ width: 250 }}
                         />
                     </Col>
                     <Col className="flex justify-end">

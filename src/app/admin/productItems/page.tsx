@@ -1,6 +1,6 @@
 "use client"
 import React, { useEffect, useState } from "react";
-import {Button, Col, Input, Modal, Row, Table, theme, Upload} from "antd";
+import {Button, Col, Input, Modal, Row, Select, Table, theme, Upload} from "antd";
 import CategoryForm from "@/app/admin/_components/categories/CategoryForm";
 import { Header } from "antd/es/layout/layout";
 import { Category } from "@/app/model/Category";
@@ -25,10 +25,13 @@ export default function Page() {
         productItems,
         getAllProductItems,
         deleteProductItem,
+        setProductId,
         setSearch,
         current,
         totalElements
     } = useProductItemStore((state) => state);
+
+    const {productsSelect,getAllProducts}=useProductStore()
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [productItem, setProductItem] = useState<any | null>(null);
@@ -115,7 +118,7 @@ export default function Page() {
     ];
     const fetchProductItem=async (page:number)=>{
         setLoading(true);
-        const res = await getAllProductItems(current);
+        const res = await getAllProductItems(page);
         if(res!=null){
             setLoading(false);
         }
@@ -124,6 +127,9 @@ export default function Page() {
     useEffect(() => {
         if(productItems.length==0){
             fetchProductItem(current)
+        }
+        if(productsSelect.length==0){
+            getAllProducts(0)
         }
 
     }, []);
@@ -169,6 +175,17 @@ export default function Page() {
 
     }
 
+    async function handleChangeSelect(value:any) {
+        console.log(value)
+        if(value==undefined){
+            setProductId(0)
+        }else {
+            setProductId(value)
+        }
+        await fetchProductItem(1);
+
+    }
+
     return (
         <>
             <Header style={{ padding: 0, background: colorBgContainer }}>
@@ -201,6 +218,17 @@ export default function Page() {
                             placeholder="Tìm kiếm sản phẩm"
                             allowClear
                             onSearch={onSearch}
+                        />
+                    </Col>
+                    <Col>
+                        <Select
+                            onChange={handleChangeSelect}
+                            placeholder="Chọn sản phẩm"
+                            options={productsSelect.map((p: any) => ({
+                                label: p.name,
+                                value: p.id,
+                            }))}
+                            style={{width:250}}
                         />
                     </Col>
                     <Col className="flex justify-end">

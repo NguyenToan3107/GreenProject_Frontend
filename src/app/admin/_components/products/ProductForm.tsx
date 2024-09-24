@@ -22,14 +22,9 @@ export default function ProductForm({isModalOpen, setIsModalOpen, product}: Prod
     const [form] = Form.useForm();
     const [loading,setLoading]=useState(false);
 
-    const {categoriesTree, fetchCategories} = useCategoryStore();
+    const {categoriesTree} = useCategoryStore();
     const {createProduct,updateProduct} = useProductStore();
-    useEffect(() => {
-        if (categoriesTree.length==0) {
-            fetchCategories();
-        }
 
-    }, []);
 
 
 

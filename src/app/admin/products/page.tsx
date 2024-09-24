@@ -1,6 +1,6 @@
 "use client"
 import React, { useEffect, useState } from "react";
-import {Button, Col, Input, Modal, Row, Table, theme, Upload} from "antd";
+import {Button, Col, Input, Modal, Row, Table, theme, TreeSelect, Upload} from "antd";
 import CategoryForm from "@/app/admin/_components/categories/CategoryForm";
 import { Header } from "antd/es/layout/layout";
 import { Category } from "@/app/model/Category";
@@ -24,12 +24,14 @@ export default function Page() {
         getAllProducts,
         deleteProduct,
         setSearch,
+        setCategoryId,
         current,
         totalElements
     } = useProductStore((state) => state);
     const [loading,setLoading]=useState(false);
 
     const {setProductId}=useImageStore((state) => state);
+    const {categoriesTree,fetchCategories}=useCategoryStore()
 
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -124,8 +126,19 @@ export default function Page() {
         if(products.length==0){
            fetchProduct(current);
         }
+        if(categoriesTree.length==0){
+            fetchCategories();
+        }
 
     }, []);
+    const buildCategoryTree = (categories:any) => {
+        return categories.map((cat:any) => ({
+            title: cat.name,
+            value: cat.id,
+            children: cat.children ? buildCategoryTree(cat.children) : [],
+        }));
+    };
+    const categoryTreeData = buildCategoryTree(categoriesTree);
 
     function handleUploadImage(record: Product) {
         setProductId(record.id)
@@ -158,6 +171,18 @@ export default function Page() {
         await fetchProduct(pagination.current);
     };
 
+    const handleCategoryChange = async (value: any) => {
+        console.log(value)
+        if(value==undefined){
+            setCategoryId(0)
+        }else {
+            setCategoryId(value)
+        }
+
+        await fetchProduct(1)
+
+    };
+
 
 
     function handleAddButton() {
@@ -170,6 +195,7 @@ export default function Page() {
         await fetchProduct(1);
 
     }
+
 
     return (
         <>
@@ -203,6 +229,15 @@ export default function Page() {
                             placeholder="Tìm kiếm sản phẩm"
                             allowClear
                             onSearch={onSearch}
+                        />
+                    </Col>
+                    <Col>
+                        <TreeSelect
+                            treeData={categoryTreeData}
+                            placeholder="Lọc theo danh mục"
+                            allowClear
+                            onChange={handleCategoryChange}
+                            style={{ width: 250 }}
                         />
                     </Col>
                     <Col className="flex justify-end">

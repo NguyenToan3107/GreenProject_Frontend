@@ -26,13 +26,6 @@ export default function OptionForm({
     const [loading,setLoading]=useState(false);
 
 
-    useEffect(() => {
-        if(variationsSelect.length==0){
-            getAllVariations(0);
-        }
-
-    }, []);
-
     const handleCancel = () => {
         if (isModalOpen && setIsModalOpen) {
             setIsModalOpen(false);

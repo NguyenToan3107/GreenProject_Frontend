@@ -10,6 +10,8 @@ import {
 
 interface ProductItemState {
     productItems: any[];
+    productId:number,
+    setProductId: (key: number) => void;
     search: string;
     setSearch: (key: string) => void;
     getAllProductItems: (page: number) => Promise<void>;
@@ -26,13 +28,17 @@ export const useProductItemStore = create<ProductItemState>((set, get) => ({
     search: "",
     current: 1,
     totalElements: 0,
+    productId:0,
+    setProductId: (key) => {
+        set({ productId: key });
+    },
 
     setSearch: (key: string) => {
         set({ search: key });
     },
 
     getAllProductItems: async (page: number) => {
-        const apiCall = () => getAllProductItems(page, get().search);
+        const apiCall = () => getAllProductItems(page, get().search,get().productId);
         const onSuccess = (response: any) => {
                 set({
                     productItems: response.data.content,

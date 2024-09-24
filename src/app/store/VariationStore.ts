@@ -20,9 +20,11 @@ interface VariationState {
     variationsByproductId:any[];
     setVariationsByproductId:(v:any[])=>void;
     search: string;
+    categoryId:number;
     current: number;
     totalElements: number;
     setSearch: (key: string) => void;
+    setCategoryId: (key: number) => void;
     getAllVariations: (page: number) => Promise<void>;
     getAllVariationsByProductId: (productId:number) => Promise<void>;
     createVariation: (variation: VariationDto) => Promise<void>;
@@ -40,6 +42,7 @@ export const useVariationStore=create<VariationState>((set,get)=>({
     search:"",
     current: 1,
     totalElements: 0,
+    categoryId:0,
 
 
     setVariationsByproductId:(a:any[])=> {
@@ -49,9 +52,12 @@ export const useVariationStore=create<VariationState>((set,get)=>({
     setSearch:(s)=>{
         set({search:s})
     },
+    setCategoryId:(id:number)=>{
+        set({categoryId:id})
+    },
 
     getAllVariations: async (page: number) => {
-        const apiCall = () => getAllVariations(page, get().search);
+        const apiCall = () => getAllVariations(page, get().search,get().categoryId);
         const onSuccess = (response: any) => {
             if(!response.data.content){
                 set({

@@ -19,6 +19,8 @@ interface ProductState {
     deleteProduct: (id: number) => Promise<void>;
     current: number;
     totalElements: number;
+    categoryId:number;
+    setCategoryId:(key: number) => void;
 
 
 }
@@ -30,15 +32,18 @@ export const useProductStore = create<ProductState>((set, get) => ({
     current: 1,
     pageSize: 5,
     totalElements: 0,
+    categoryId:0,
 
 
     setSearch: (key: string) => {
         set({ search: key });
     },
+    setCategoryId: (key) => {
+        set({ categoryId: key });
+    },
 
     getAllProducts: async (page: number) => {
-
-        const apiCall = () => getAllProducts(page, get().search);
+        const apiCall = () => getAllProducts(page, get().search,get().categoryId);
         const onSuccess = (response: any) => {
             if(!response.data.content){
                 set({

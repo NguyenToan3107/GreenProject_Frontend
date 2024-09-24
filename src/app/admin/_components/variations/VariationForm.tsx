@@ -23,11 +23,7 @@ export default function VariationForm({
     const { createVariation, updateVariation } = useVariationStore();
     const { categoriesTree, fetchCategories } = useCategoryStore();
     const [loading,setLoading]=useState(false);
-    useEffect(() => {
-        if(categoriesTree.length==0){
-            fetchCategories();
-        }
-    }, []);
+
 
     const handleCancel = () => {
         if (isModalOpen && setIsModalOpen) {

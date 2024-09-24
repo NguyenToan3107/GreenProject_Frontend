@@ -1,19 +1,33 @@
 import api from "@/apis/request";
 import {CategoryDto} from "@/app/admin/_components/categories/CategoryForm";
 import {ProductDto} from "@/app/admin/_components/products/ProductForm";
-import {PAGE_SIZE} from "@/app/util/constant";
+import {PAGE_SIZE, PRODUCT_ITEM_PAGE_SIZE} from "@/app/util/constant";
 
 
-export function getAllProducts(pageNum:number,search:string) {
+export function getAllProducts(pageNum:number,search:string,categoryId:number) {
     if(pageNum==0){
         return api.get("products");
     }
-    if(search.trim()!=""){
-        return api.get(`products?pageNum=${pageNum}&pageSize=${PAGE_SIZE}&search=${search.trim()}`);
-    }else {
-        return api.get(`products?pageNum=${pageNum}&pageSize=${PAGE_SIZE}`);
+
+    if(search.trim()!=""&&categoryId!=0){
+        return api.get(`products?pageNum=${pageNum}&pageSize=${PAGE_SIZE}&search=${search.trim()}&categoryId=${categoryId}`);
     }
 
+    if(search.trim()!=""){
+        return api.get(`products?pageNum=${pageNum}&pageSize=${PAGE_SIZE}&search=${search.trim()}`);
+    }
+
+    if(categoryId!=0){
+        return api.get(`products?pageNum=${pageNum}&pageSize=${PAGE_SIZE}&categoryId=${categoryId}`);
+    }
+
+    return api.get(`products?pageNum=${pageNum}&pageSize=${PAGE_SIZE}`);
+
+
+}
+
+export function getAllProductsView(pageNum:number){
+    return api.get(`products/view?pageNum=${pageNum}&pageSize=${PRODUCT_ITEM_PAGE_SIZE}`);
 }
 
 export function createNewProduct(product:ProductDto){

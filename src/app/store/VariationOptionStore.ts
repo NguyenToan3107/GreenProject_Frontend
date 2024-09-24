@@ -10,6 +10,8 @@ import {
 interface VariationOptionState {
     variationOptions: any[];
     search: string;
+    variationId:number;
+    setVariationId:(key: number) => void;
     setSearch: (key: string) => void;
     getAllVariationOptions: (page: number) => Promise<void>;
     createVariationOption: (option: VariationOptionDto) => Promise<void>;
@@ -25,12 +27,17 @@ export const useVariationOptionStore=create<VariationOptionState>((set,get)=>({
     search:"",
     current: 1,
     totalElements: 0,
+    variationId:0,
+
     setSearch:(s)=>{
         set({search:s})
     },
+    setVariationId:(s)=>{
+        set({variationId:s})
+    },
 
     getAllVariationOptions: async (page: number) => {
-        const apiCall = () => getAllVariationOptions(page, get().search);
+        const apiCall = () => getAllVariationOptions(page, get().search,get().variationId);
         const onSuccess = (response: any) => {
             set({
                 variationOptions: response.data.content,
