@@ -7,12 +7,12 @@ import {
   faHeart as faHeartEmpty,
 } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as faHeartFilled } from "@fortawesome/free-solid-svg-icons";
-import {Button, Dropdown, Menu, Checkbox, Pagination,Image} from "antd";
+import {Button, Dropdown, Menu, Checkbox, Pagination, Image, Spin, Rate} from "antd";
 import "../../../app/globals.css";
 import "antd/dist/reset.css";
-import { useProductStore } from "@/app/store/ProductStore";
 import {PRODUCT_ITEM_PAGE_SIZE} from "@/app/util/constant";
 import {getAllProductsView} from "@/apis/modules/product";
+import Link from "next/link";
 
 
 
@@ -44,7 +44,6 @@ export default function page() {
   const fetchProduct=async (page:number)=>{
     setLoading(true)
     const res:any=await getAllProductsView(page);
-    console.log(res)
     setLoading(false);
     if(res.code==200){
       setProductsView(res.data.content)
@@ -199,53 +198,65 @@ export default function page() {
                 </Button>
               </Dropdown>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 rounded cursor-pointer">
-              {productsView.map((product:any) => (
-                <div
-                  key={product.id}
-                  className="border rounded overflow-hidden shadow-md flex flex-col"
-                >
-                  <Image
-                    src={product.images[1].url}
-                    alt={product.name}
-                    width={150}
-                    height={100}
-                    className="object-cover w-full h-45"
-                  />
-                  <div className="p-4 flex-1">
-                    <h3 className="text-lg font-semibold mb-2">
-                      {product.name}
-                    </h3>
-                    <p className="text-brand-primary mb-2 font-bold">
-                      {product.minPrice}đ-{product.maxPrice}đ
-                    </p>
-                    <div className="flex justify-between">
-                      <div className="flex items-center mb-2">
-
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <FontAwesomeIcon
-                          icon={
-                            likedProducts.has(product.id)
-                              ? faHeartFilled
-                              : faHeartEmpty
-                          }
-                          className={`cursor-pointer ${
-                            likedProducts.has(product.id)
-                              ? "text-red-500"
-                              : "text-gray-500"
-                          }`}
-                          onClick={() => toggleLike(product.id)}
-                        />
-                      </div>
-                    </div>
+            {
+              loading ? (
+                  <div className="flex justify-center items-center h-screen">
+                    <Spin size="large" />
                   </div>
-                </div>
-              ))}
-            </div>
+              ): (
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-6 rounded cursor-pointer">
+
+                    {productsView.map((product: any) => (
+                        <Link href={`/products/${product.id}`}>
+                        <div
+                            key={product.id}
+                            className="border rounded overflow-hidden shadow-md flex flex-col"
+                        >
+                          <img
+                              src={product.images[1].url}
+                              alt={product.name}
+                              className="object-cover w-full h-45 object-center aspect-square"
+                          />
+                          <div className="p-4 flex-1">
+                            <h3 className="text-lg font-semibold mb-2">
+                              {product.name}
+                            </h3>
+                            <p className="text-brand-primary mb-2 font-bold">
+                              {product.minPrice}đ-{product.maxPrice}đ
+                            </p>
+                            <div className="flex justify-between">
+                              <div className="flex items-center mb-2">
+                                <Rate allowHalf defaultValue={product.avgRating} disabled />
+                              </div>
+                              <div className="flex items-center justify-between">
+                                <FontAwesomeIcon
+                                    icon={
+                                      likedProducts.has(product.id)
+                                          ? faHeartFilled
+                                          : faHeartEmpty
+                                    }
+                                    className={`cursor-pointer ${
+                                        likedProducts.has(product.id)
+                                            ? "text-red-500"
+                                            : "text-gray-500"
+                                    }`}
+                                    onClick={() => toggleLike(product.id)}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+</Link>
+                    ))}
+                  </div>
+
+              )
+            }
+
             {/* Phân trang */}
             <div className="flex justify-center mt-8 space-x-2">
-              <Pagination onChange={handlePageChange} defaultCurrent={currentPage} defaultPageSize={PRODUCT_ITEM_PAGE_SIZE} total={total} />
+              <Pagination onChange={handlePageChange} defaultCurrent={currentPage}
+                          defaultPageSize={PRODUCT_ITEM_PAGE_SIZE} total={total}/>
             </div>
           </main>
         </div>

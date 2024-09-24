@@ -30,6 +30,10 @@ export function getAllProductsView(pageNum:number){
     return api.get(`products/view?pageNum=${pageNum}&pageSize=${PRODUCT_ITEM_PAGE_SIZE}`);
 }
 
+export function getProductById(productId:number){
+    return api.get(`products/${productId}`);
+}
+
 export function createNewProduct(product:ProductDto){
     return api.post('products/create',product);
 }

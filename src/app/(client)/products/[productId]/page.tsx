@@ -1,12 +1,32 @@
 "use client"
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import './product_details.css'
 import { MinusOutlined,PlusOutlined } from '@ant-design/icons';
-import type { PaginationProps } from 'antd';
+import {Image, PaginationProps, Rate} from 'antd';
 import { Button,Card,Input, Divider, Flex, Radio ,Col, Row, Pagination  } from 'antd';
+import {getProductById} from "@/apis/modules/product";
 
-export default function page() {
+
+export default function page({params}:any) {
     const [qty,setQty]=useState(1);
+    const [product,setProduct]=useState<any>(null);
+    const [loading,setLoading]=useState(false);
+    console.log(params.productId)
+    const getProduct=async (productId:number)=>{
+        setLoading(true)
+        const res:any=await getProductById(productId);
+        setLoading(false)
+        console.log(res)
+        if(res.code==200){
+            setProduct(res.data);
+        }
+
+    }
+
+    useEffect(() => {
+        getProduct(params.productId)
+
+    }, []);
 
     const { TextArea } = Input;
     const onShowSizeChange: PaginationProps['onShowSizeChange'] = (current, pageSize) => {
@@ -16,34 +36,33 @@ export default function page() {
     return (
         <div style={{width:'1200px',marginLeft:'auto',marginRight:'auto',marginBottom:'2rem'}}>
         <div className="grid-container">
-            <img style={{gridArea:'image'}} src='client/products/product2.png'/>
+
+            <Image src={product?.images[0].url}/>
 
             <div style={{gridArea:'mini_image',marginBottom:'1.6rem'}} >
                 <Flex justify='start' align='center' gap={"small"} wrap>
-                    <img src='client/products/product2.png' style={{ width: '93px', height: '93px',objectFit:'contain'}}/>
-                    <img src='client/products/product2.png' style={{ width: '93px', height: '93px',objectFit:'contain'}}/>
-                    <img src='client/products/product2.png' style={{ width: '93px', height: '93px',objectFit:'contain'}}/>
-                    <img src='client/products/product2.png' style={{ width: '93px', height: '93px',objectFit:'contain' }}/>
+                    {
+                        product?.images.map((i:any)=>(
+                            <Image style={{ width: '93px', height: '93px',objectFit:'contain'}} src={i.url}/>
+                        ))
+                    }
                 </Flex>
             </div>
 
             <div style={{gridArea:'title',fontSize:'2rem',fontWeight:'600'}}>
-                Khay tre tiện lợi
+                {product?.name}
             </div>
 
             <div style={{gridArea:'star'}}>
                 <div className="star">
-                    <img src="images/star.png" alt="Star 1" />
-                    <img src="images/star.png" alt="Star 2" />
-                    <img src="images/star.png" alt="Star 3" />
-                    <img src="images/star.png" alt="Star 4" />
-                    <img src="images/no-star.png" alt="No Star" />
+                    <Rate allowHalf defaultValue={5} disabled />
                 </div>
             </div>
 
             <div style={{gridArea:'description'}}>
                 <p>
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Vel doloremque, ex placeat laborum dolorem quidem repellendus aspernatur cumque earum, voluptatem quibusdam soluta reprehenderit error molestiae quos atque eaque ducimus! Dolor?
+                    {product?.description}
+
                 </p>     
             </div>
 
@@ -137,11 +156,7 @@ export default function page() {
                     <Flex align="center" gap={'small'}>
                         <span style={{fontSize:'1.6rem',fontWeight:'700'}}>4.89</span>
                         <div className="star">
-                            <img src="images/star.png" alt="Star 1" />
-                            <img src="images/star.png" alt="Star 2" />
-                            <img src="images/star.png" alt="Star 3" />
-                            <img src="images/star.png" alt="Star 4" />
-                            <img src="images/no-star.png" alt="No Star" />
+                            <Rate allowHalf defaultValue={5} disabled />
                         </div>
                     </Flex>
                     <div style={{}}>
@@ -170,11 +185,7 @@ export default function page() {
                                             <time>12:30 15/11/2024</time>
                                         </Flex>
                                         <Flex className="star" gap={'small'}>
-                                            <img src="images/star.png" alt="Star 1" />
-                                            <img src="images/star.png" alt="Star 2" />
-                                            <img src="images/star.png" alt="Star 3" />
-                                            <img src="images/star.png" alt="Star 4" />
-                                            <img src="images/no-star.png" alt="No Star" />
+                                            <Rate allowHalf defaultValue={5} disabled />
                                         </Flex>
                                         <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nesciunt accusamus provident, laboriosam aperiam non, illo praesentium voluptatibus eius quis voluptates tenetur maxime optio iste explicabo velit quisquam? Voluptatibus, earum! Culpa.</p>
                                    </Flex>
@@ -191,11 +202,7 @@ export default function page() {
                                             <time>12:30 15/11/2024</time>
                                         </Flex>
                                         <Flex className="star" gap={'small'}>
-                                            <img src="images/star.png" alt="Star 1" />
-                                            <img src="images/star.png" alt="Star 2" />
-                                            <img src="images/star.png" alt="Star 3" />
-                                            <img src="images/star.png" alt="Star 4" />
-                                            <img src="images/no-star.png" alt="No Star" />
+                                            <Rate allowHalf defaultValue={5} disabled />
                                         </Flex>
                                         <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nesciunt accusamus provident, laboriosam aperiam non, illo praesentium voluptatibus eius quis voluptates tenetur maxime optio iste explicabo velit quisquam? Voluptatibus, earum! Culpa.</p>
                                    </Flex>
@@ -212,11 +219,7 @@ export default function page() {
                                             <time>12:30 15/11/2024</time>
                                         </Flex>
                                         <Flex className="star" gap={'small'}>
-                                            <img src="images/star.png" alt="Star 1" />
-                                            <img src="images/star.png" alt="Star 2" />
-                                            <img src="images/star.png" alt="Star 3" />
-                                            <img src="images/star.png" alt="Star 4" />
-                                            <img src="images/no-star.png" alt="No Star" />
+                                            <Rate allowHalf defaultValue={5} disabled />
                                         </Flex>
                                         <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nesciunt accusamus provident, laboriosam aperiam non, illo praesentium voluptatibus eius quis voluptates tenetur maxime optio iste explicabo velit quisquam? Voluptatibus, earum! Culpa.</p>
                                    </Flex>
