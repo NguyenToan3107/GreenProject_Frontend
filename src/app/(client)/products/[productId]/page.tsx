@@ -3,7 +3,7 @@ import {useEffect, useState} from 'react';
 import './product_details.css'
 import { MinusOutlined,PlusOutlined } from '@ant-design/icons';
 import {Image, PaginationProps, Rate} from 'antd';
-import { Button,Card,Input, Divider, Flex, Radio ,Col, Row, Pagination  } from 'antd';
+import { Button,Card,Input, Flex, Radio ,Col, Row, Pagination  } from 'antd';
 import {getProductById} from "@/apis/modules/product";
 
 
@@ -11,6 +11,7 @@ export default function page({params}:any) {
     const [qty,setQty]=useState(1);
     const [product,setProduct]=useState<any>(null);
     const [loading,setLoading]=useState(false);
+    const [productItemCurrent,setProductItemCurrent]=useState<any>(null);
     console.log(params.productId)
     const getProduct=async (productId:number)=>{
         setLoading(true)
@@ -19,6 +20,7 @@ export default function page({params}:any) {
         console.log(res)
         if(res.code==200){
             setProduct(res.data);
+            setProductItemCurrent(res.data.productItems[0])
         }
 
     }
