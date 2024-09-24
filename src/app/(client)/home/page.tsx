@@ -5,7 +5,7 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import React, { useEffect, useState } from "react";
-import { Flex, Card } from "antd";
+import { Flex, Card,Rate } from "antd";
 import { register } from "swiper/element/bundle";
 import { Pagination, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -40,7 +40,7 @@ export default function page() {
     <div>
       <div
         className="container"
-        style={{ width: "1200px", marginRight: "auto", marginLeft: "auto" }}
+        style={{ width: "1200px", marginRight: "auto", marginLeft: "auto",marginTop:'5rem',marginBottom:'4rem' }}
       >
         <div
           style={{
@@ -102,7 +102,7 @@ export default function page() {
               </div>
               <div className="grid-item">
                 <img
-                  src="/client/products/product2.png"
+                  src="http://res.cloudinary.com/dji65jgy3/image/upload/v1726983442/df691db5-6830-41c0-8610-3529e9744e9c.jpg"
                   className="image"
                   alt="Product 2"
                 />
@@ -119,21 +119,21 @@ export default function page() {
             >
               <div className="grid-item">
                 <img
-                  src="/client/products/product2.png"
+                  src="http://res.cloudinary.com/dji65jgy3/image/upload/v1726983614/615e6891-ade8-41dd-896e-f63a01c49ed9.jpg"
                   className="image"
                   alt="Product 3"
                 />
               </div>
               <div className="grid-item">
                 <img
-                  src="/client/products/product2.png"
+                  src="http://res.cloudinary.com/dji65jgy3/image/upload/v1726983785/965dbcf4-c2dc-4572-b328-bea636145a9c.jpg"
                   className="image"
                   alt="Product 4"
                 />
               </div>
               <div className="grid-item">
                 <img
-                  src="/client/products/product2.png"
+                  src="http://res.cloudinary.com/dji65jgy3/image/upload/v1726983884/a411ee9a-f8b0-4f59-ac2f-b3b151bc091b.webp"
                   className="image"
                   alt="Product 5"
                 />
@@ -150,14 +150,14 @@ export default function page() {
             >
               <div className="grid-item">
                 <img
-                  src="/client/products/product2.png"
+                  src="http://res.cloudinary.com/dji65jgy3/image/upload/v1726983528/d701ef95-2370-44d7-ae9a-66d47cb5a670.jpg"
                   className="image"
                   alt="Product 6"
                 />
               </div>
               <div className="grid-item">
                 <img
-                  src="/client/products/product2.png"
+                  src="http://res.cloudinary.com/dji65jgy3/image/upload/v1726982744/33168c13-514e-46a9-9c59-e3d026713e3b.jpg"
                   className="image"
                   alt="Product 7"
                 />
@@ -166,7 +166,7 @@ export default function page() {
           </div>
         </div>
 
-        <div className="service-container mt-10">
+        <div className="service-container mt-15">
           <h2
             style={{
               textTransform: "uppercase",
@@ -256,10 +256,10 @@ export default function page() {
               backgroundRepeat: "no-repeat", // Không lặp lại ảnh nếu khung lớn hơn ảnh
             }}
           >
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col items-center gap-3">
               <h2
                 className="text-4xl text-white font-bold"
-                style={{ textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)" }}
+                style={{ textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)",fontWeight:'600',fontSize:'3rem' }}
               >
                 40 Triệu
               </h2>
@@ -286,10 +286,10 @@ export default function page() {
                 alignItems: "center",
               }}
             >
-              <div className="flex flex-col items-center">
+              <div className="flex flex-col items-center gap-3">
                 <h2
                   className="text-4xl text-white font-bold"
-                  style={{ textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)" }}
+                  style={{ textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)",fontWeight:'600',fontSize:'3rem' }}
                 >
                   20 Tấn
                 </h2>{" "}
@@ -316,10 +316,10 @@ export default function page() {
                 alignItems: "center",
               }}
             >
-              <div className="flex flex-col items-center">
+              <div className="flex flex-col items-center gap-3">
                 <h2
                   className="text-4xl text-white font-bold"
-                  style={{ textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)" }}
+                  style={{ textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)",fontWeight:'600',fontSize:'3rem' }}
                 >
                   50 Tấn
                 </h2>{" "}
@@ -346,10 +346,10 @@ export default function page() {
                 alignItems: "center",
               }}
             >
-              <div className="flex flex-col items-center">
+              <div className="flex flex-col items-center gap-3">
                 <h2
                   className="text-4xl text-white font-bold"
-                  style={{ textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)" }}
+                  style={{ textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)",fontWeight:'600',fontSize:'3rem' }}
                 >
                   100
                 </h2>{" "}
@@ -412,80 +412,13 @@ export default function page() {
             loop={true}
             className="mySwiper"
           >
-            <SwiperSlide>
-              <Card hoverable>
-                <div className="best-seller-card-item">
-                  <a style={{ display: "flex" }}>
-                    <img
-                      src="client/products/product2.png"
-                      style={{
-                        borderRadius: "6px",
-                        objectFit: "contain",
-                        width: "100%",
-                        height: "250px",
-                      }}
-                      alt="Best Seller 1"
-                    />
-                  </a>
-                  <Flex vertical align="start">
-                    <div
-                      style={{
-                        fontSize: "1.2rem",
-                        fontWeight: "600",
-                        whiteSpace: "nowrap",
-                        textOverflow: "ellipsis",
-                        overflow: "hidden",
-                      }}
-                    >
-                      Khay tre tiện lợi
-                    </div>
-                    <div style={{ color: "#4BAF47", fontWeight: "600" }}>
-                      300,000đ
-                    </div>
-                    <div className="item-description">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Molestiae, illo saepe. Repellendus dolores ad odit
-                      voluptatibus ipsum corrupti, dicta harum dolore, numquam
-                      illum sapiente maxime nostrum mollitia officiis illo nam.
-                    </div>
-                    <div className="star">
-                      <img
-                        src="images/star.png"
-                        style={{ width: "1rem" }}
-                        alt="Star 1"
-                      />
-                      <img
-                        src="images/star.png"
-                        style={{ width: "1rem" }}
-                        alt="Star 2"
-                      />
-                      <img
-                        src="images/star.png"
-                        style={{ width: "1rem" }}
-                        alt="Star 3"
-                      />
-                      <img
-                        src="images/star.png"
-                        style={{ width: "1rem" }}
-                        alt="Star 4"
-                      />
-                      <img
-                        src="images/no-star.png"
-                        style={{ width: "1rem" }}
-                        alt="No Star"
-                      />
-                    </div>
-                  </Flex>
-                </div>
-              </Card>
-            </SwiperSlide>
             {productItemOnTopSold.map((product) => (
             <SwiperSlide key={product.id}>
               <Card hoverable>
                 <div className="best-seller-card-item">
                   <a style={{ display: "flex" }}>
                     <img
-                      src={product.product.images[0].url}
+                      src={product.images[0].url}
                       style={{
                         borderRadius: "6px",
                         objectFit: "contain",
@@ -505,23 +438,18 @@ export default function page() {
                         overflow: "hidden",
                       }}
                     >
-                      {product.product.name}
+                      {product.name}
                     </div>
                     <div style={{ color: "#4BAF47", fontWeight: "600" }}>
-                      {currencyFormat(product.price)}
+                      {currencyFormat(product.minPrice)} - {currencyFormat(product.maxPrice)}
                     </div>
                     <div className="item-description">
-                      {product.product.description}
+                      {product.description}
                     </div>
                     <div className="star">
-                      {[...Array(5)].map((_, index) => (
-                        <img
-                          key={index}
-                          src={index < product.stars ? "images/star.png" : "images/no-star.png"}
-                          style={{ width: "1rem" }}
-                          alt={`Star ${index + 1}`}
-                        />
-                      ))}
+                      <Flex gap="middle" vertical>
+                        <Rate value={product.avgRating} />
+                      </Flex>
                     </div>
                   </Flex>
                 </div>
