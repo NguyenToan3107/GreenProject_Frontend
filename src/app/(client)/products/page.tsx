@@ -1,5 +1,5 @@
 "use client";
-import {SetStateAction, useEffect, useState} from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import {
@@ -7,12 +7,12 @@ import {
   faHeart as faHeartEmpty,
 } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as faHeartFilled } from "@fortawesome/free-solid-svg-icons";
-import {Button, Dropdown, Menu, Checkbox, Pagination,Image} from "antd";
+import { Button, Dropdown, Menu, Checkbox, Pagination, Image } from "antd";
 import "../../../app/globals.css";
 import "antd/dist/reset.css";
 import { useProductStore } from "@/app/store/ProductStore";
-import {PRODUCT_ITEM_PAGE_SIZE} from "@/app/util/constant";
-import {getAllProductsView} from "@/apis/modules/product";
+import { PRODUCT_ITEM_PAGE_SIZE } from "@/app/util/constant";
+import { getAllProductsView } from "@/apis/modules/product";
 
 const products = [
   {
@@ -138,27 +138,23 @@ export default function page() {
   const [currentPage, setCurrentPage] = useState(1);
   const [productsView, setProductsView] = useState([]);
   const [total, setTotal] = useState(0);
-  const [loading,setLoading]=useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const fetchProduct=async (page:number)=>{
-    setLoading(true)
-    const res:any=await getAllProductsView(page);
-    console.log(res)
+  const fetchProduct = async (page: number) => {
+    setLoading(true);
+    const res: any = await getAllProductsView(page);
+    console.log(res);
     setLoading(false);
-    if(res.code==200){
-      setProductsView(res.data.content)
-      setCurrentPage(res.data.currentPage)
-      setTotal(res.data.totalElements)
-
+    if (res.code == 200) {
+      setProductsView(res.data.content);
+      setCurrentPage(res.data.currentPage);
+      setTotal(res.data.totalElements);
     }
-
-
-  }
+  };
 
   useEffect(() => {
     fetchProduct(currentPage);
   }, []);
-
 
   const handleButtonClick = (buttonType: SetStateAction<string>) => {
     setActiveButton(buttonType);
@@ -179,10 +175,6 @@ export default function page() {
       return newLikes;
     });
   };
-
-
-
-
 
   return (
     <div className="mx-0 px-0">
@@ -297,17 +289,15 @@ export default function page() {
               </Dropdown>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 rounded cursor-pointer">
-              {productsView.map((product:any) => (
+              {productsView.map((product: any) => (
                 <div
                   key={product.id}
                   className="border rounded overflow-hidden shadow-md flex flex-col"
                 >
-                  <Image
+                  <img
                     src={product.images[1].url}
                     alt={product.name}
-                    width={150}
-                    height={100}
-                    className="object-cover w-full h-45"
+                    className="object-cover w-full h-45 object-center aspect-square"
                   />
                   <div className="p-4 flex-1">
                     <h3 className="text-lg font-semibold mb-2">
@@ -317,9 +307,7 @@ export default function page() {
                       {product.minPrice}đ-{product.maxPrice}đ
                     </p>
                     <div className="flex justify-between">
-                      <div className="flex items-center mb-2">
-
-                      </div>
+                      <div className="flex items-center mb-2"></div>
                       <div className="flex items-center justify-between">
                         <FontAwesomeIcon
                           icon={
@@ -342,7 +330,11 @@ export default function page() {
             </div>
             {/* Phân trang */}
             <div className="flex justify-center mt-8 space-x-2">
-              <Pagination defaultCurrent={currentPage} defaultPageSize={PRODUCT_ITEM_PAGE_SIZE} total={total} />
+              <Pagination
+                defaultCurrent={currentPage}
+                defaultPageSize={PRODUCT_ITEM_PAGE_SIZE}
+                total={total}
+              />
             </div>
           </main>
         </div>
