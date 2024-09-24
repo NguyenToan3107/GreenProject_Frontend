@@ -14,106 +14,7 @@ import { useProductStore } from "@/app/store/ProductStore";
 import {PRODUCT_ITEM_PAGE_SIZE} from "@/app/util/constant";
 import {getAllProductsView} from "@/apis/modules/product";
 
-const products = [
-  {
-    id: 1,
-    name: "Sản phẩm 1",
-    image: "/client/products/product2.png",
-    price: "100,000",
-    description: "Mô tả sản phẩm 1",
-  },
-  {
-    id: 2,
-    name: "Sản phẩm 2",
-    image: "/client/products/product2.png",
-    price: "200,000",
-    description: "Mô tả sản phẩm 2",
-  },
-  {
-    id: 3,
-    name: "Sản phẩm 3",
-    image: "/client/products/product2.png",
-    price: "300,000",
-    description: "Mô tả sản phẩm 3",
-  },
-  {
-    id: 4,
-    name: "Sản phẩm 4",
-    image: "/client/products/product2.png",
-    price: "400,000",
-    description: "Mô tả sản phẩm 4",
-  },
-  {
-    id: 5,
-    name: "Sản phẩm 5",
-    image: "/client/products/product2.png",
-    price: "500,000",
-    description: "Mô tả sản phẩm 5",
-  },
-  {
-    id: 6,
-    name: "Sản phẩm 6",
-    image: "/client/products/product2.png",
-    price: "600,000",
-    description: "Mô tả sản phẩm 6",
-  },
-  {
-    id: 7,
-    name: "Sản phẩm 7",
-    image: "/client/products/product2.png",
-    price: "700,000",
-    description: "Mô tả sản phẩm 7",
-  },
-  {
-    id: 8,
-    name: "Sản phẩm 8",
-    image: "/client/products/product2.png",
-    price: "800,000",
-    description: "Mô tả sản phẩm 8",
-  },
-  {
-    id: 9,
-    name: "Sản phẩm 9",
-    image: "/client/products/product2.png",
-    price: "900,000",
-    description: "Mô tả sản phẩm 9",
-  },
-  {
-    id: 10,
-    name: "Sản phẩm 10",
-    image: "/client/products/product2.png",
-    price: "1,000,000",
-    description: "Mô tả sản phẩm 10",
-  },
-  {
-    id: 11,
-    name: "Sản phẩm 11",
-    image: "/client/products/product2.png",
-    price: "1,100,000",
-    description: "Mô tả sản phẩm 11",
-  },
-  {
-    id: 12,
-    name: "Sản phẩm 11",
-    image: "/client/products/product2.png",
-    price: "1,100,000",
-    description: "Mô tả sản phẩm 11",
-  },
-  {
-    id: 13,
-    name: "Sản phẩm 11",
-    image: "/client/products/product2.png",
-    price: "1,100,000",
-    description: "Mô tả sản phẩm 11",
-  },
-  {
-    id: 14,
-    name: "Sản phẩm 11",
-    image: "/client/products/product2.png",
-    price: "1,100,000",
-    description: "Mô tả sản phẩm 11",
-  },
-];
+
 
 const sortOptions = (
   <Menu>
@@ -125,9 +26,9 @@ const sortOptions = (
 
 const categoryMenu = (
   <Menu>
-    <Menu.Item key="1">Danh mục con 1</Menu.Item>
-    <Menu.Item key="2">Danh mục con 2</Menu.Item>
-    <Menu.Item key="3">Danh mục con 3</Menu.Item>
+    <Menu.Item key="4">Danh mục con 1</Menu.Item>
+    <Menu.Item key="5">Danh mục con 2</Menu.Item>
+    <Menu.Item key="6">Danh mục con 3</Menu.Item>
   </Menu>
 );
 
@@ -164,9 +65,7 @@ export default function page() {
     setActiveButton(buttonType);
   };
 
-  const filteredProducts = products.filter((product: { name: string }) =>
-    product.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+
 
   const toggleLike = (productId: number) => {
     setLikedProducts((prevLikes) => {
@@ -179,6 +78,10 @@ export default function page() {
       return newLikes;
     });
   };
+
+  const handlePageChange=async (value:any)=>{
+    await fetchProduct(value)
+  }
 
 
 
@@ -342,7 +245,7 @@ export default function page() {
             </div>
             {/* Phân trang */}
             <div className="flex justify-center mt-8 space-x-2">
-              <Pagination defaultCurrent={currentPage} defaultPageSize={PRODUCT_ITEM_PAGE_SIZE} total={total} />
+              <Pagination onChange={handlePageChange} defaultCurrent={currentPage} defaultPageSize={PRODUCT_ITEM_PAGE_SIZE} total={total} />
             </div>
           </main>
         </div>
