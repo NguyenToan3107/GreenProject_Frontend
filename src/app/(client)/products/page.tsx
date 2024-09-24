@@ -218,7 +218,7 @@ export default function page() {
                               className="object-cover w-full h-45 object-center aspect-square"
                           />
                           <div className="p-4 flex-1">
-                            <h3 className="text-lg font-semibold mb-2">
+                            <h3 className="text-lg font-semibold mb-2 whitespace-nowrap overflow-hidden text-ellipsis">
                               {product.name}
                             </h3>
                             <p className="text-brand-primary mb-2 font-bold">
@@ -226,7 +226,7 @@ export default function page() {
                             </p>
                             <div className="flex justify-between">
                               <div className="flex items-center mb-2">
-                                <Rate allowHalf defaultValue={product.avgRating} disabled />
+                                <Rate allowHalf defaultValue={product.avgRating} disabled/>
                               </div>
                               <div className="flex items-center justify-between">
                                 <FontAwesomeIcon
@@ -246,7 +246,7 @@ export default function page() {
                             </div>
                           </div>
                         </div>
-</Link>
+                        </Link>
                     ))}
                   </div>
 
