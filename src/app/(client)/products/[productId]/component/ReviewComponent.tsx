@@ -1,5 +1,5 @@
 import React from 'react';
-import { Flex, Row, Col, Rate, Pagination, Input } from 'antd';
+import { Flex, Row, Col, Rate, Pagination, Input,Image } from 'antd';
 
 const { TextArea } = Input;
 
@@ -20,7 +20,7 @@ const ReviewComponent = () => {
                 </Flex>
                 <div className="review-container">
                     <div className="avatar-container">
-                        <img src="client/products/product2.png" alt="Avatar" className="avatar" />
+                        <Image src="https://cdn-icons-png.flaticon.com/128/17286/17286792.png" alt="Avatar" className="avatar" />
                     </div>
                     <TextArea placeholder="Nhập đánh giá" className="custom-textarea" />
                 </div>
@@ -47,7 +47,8 @@ const ReviewComponent = () => {
                                 </Flex>
                             </Col>
                             <Col span={6} pull={18}>
-                                <img src="client/products/product2.png" alt="Avatar" className="avatar" />
+                                <Image src="https://cdn-icons-png.flaticon.com/128/17286/17286792.png" alt="Avatar" className="avatar" />
+                                {/* <Image src="public/client/user/default_user.jpg" alt="Avatar" className="avatar" /> */}
                             </Col>
                         </Row>
                     ))}
