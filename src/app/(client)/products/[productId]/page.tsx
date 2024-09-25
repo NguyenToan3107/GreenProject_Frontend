@@ -37,6 +37,7 @@ export default function page({params}:any) {
 
     return (
         <div style={{width:'1200px',marginLeft:'auto',marginRight:'auto',marginBottom:'2rem'}}>
+
         <div className="grid-container">
 
             <div style={{gridArea:'image'}}>
@@ -153,6 +154,7 @@ export default function page({params}:any) {
                     </Flex>
                 </div>
             </Flex>
+
             <div style={{gridArea:'review'}}>
                     <Flex gap={'middle'} vertical>
                         <h2 style={{fontWeight:'600',fontSize:'1.5rem'}}>Đánh giá sản phẩm</h2>
@@ -241,6 +243,7 @@ export default function page({params}:any) {
                         </Flex>
                     </Flex>
             </div>
+
         </div>
 
             <Flex vertical gap={"middle"} >

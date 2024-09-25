@@ -10,7 +10,6 @@ import {
 
 interface ProductItemState {
     productItems: any[];
-    productItemOnTopSold: any[];
     productId:number,
     setProductId: (key: number) => void;
     search: string;
@@ -26,7 +25,6 @@ interface ProductItemState {
 
 export const useProductItemStore = create<ProductItemState>((set, get) => ({
     productItems: [],
-    productItemOnTopSold: [],
     search: "",
     current: 1,
     totalElements: 0,
