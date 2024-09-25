@@ -1,18 +1,49 @@
 "use client";
 import Sidebar from "@/app/(client)/_components/Sidebar";
-import Link from "next/link";
-import React, { useState } from "react";
-import { Form, Input, Button, Upload, Image } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
+import React from "react";
+import { Form, Input, Button, message } from "antd";
+import { changePassword } from "@/apis/modules/user";
 
 const { Item } = Form;
 
-export default function page() {
+export default function Page() {
   const [form] = Form.useForm();
 
-  const onFinish = (values: any) => {
-    console.log("Form values:", values);
+  const changePass = async (
+    oldPassword: string,
+    newPassword: string,
+    confirmPassword: string
+  ) => {
+    const payload = {
+      oldPassword,
+      newPassword,
+      confirmPassword,
+    };
+
+    try {
+      const res: any = await changePassword(payload);
+
+      if (res.code === 200) {
+        message.success("Mật khẩu đã được thay đổi thành công.");
+      } else {
+        message.error(res.message || "Đã xảy ra lỗi!");
+      }
+    } catch (error) {
+      message.error("Lỗi máy chủ, vui lòng thử lại sau.");
+    }
   };
+
+  const onFinish = async (values: any) => {
+    const { oldPassword, newPassword, confirmPassword } = values;
+
+    if (newPassword !== confirmPassword) {
+      message.error("Mật khẩu mới không trùng khớp.");
+      return;
+    }
+
+    await changePass(oldPassword, newPassword, confirmPassword);
+  };
+
   return (
     <div className="flex w-full h-screen justify-between my-16 px-6">
       {/* Sidebar */}
@@ -38,16 +69,16 @@ export default function page() {
                 </div>
                 <div className="w-2/4">
                   <Form.Item
-                    name="password"
+                    name="oldPassword"
                     className="m-0 mt-0"
                     rules={[
                       {
                         required: true,
-                        message: "Vui lòng nhập tên đăng nhập!",
+                        message: "Vui lòng nhập mật khẩu cũ!",
                       },
                     ]}
                   >
-                    <Input placeholder="Nhập mật khẩu" />
+                    <Input.Password placeholder="Nhập mật khẩu cũ" />
                   </Form.Item>
                 </div>
               </div>
@@ -58,16 +89,16 @@ export default function page() {
                 </div>
                 <div className="w-2/4">
                   <Form.Item
-                    name="password"
+                    name="newPassword"
                     className="m-0 mt-0"
                     rules={[
                       {
                         required: true,
-                        message: "Vui lòng nhập tên đăng nhập!",
+                        message: "Vui lòng nhập mật khẩu mới!",
                       },
                     ]}
                   >
-                    <Input placeholder="Nhập mật khẩu" />
+                    <Input.Password placeholder="Nhập mật khẩu mới" />
                   </Form.Item>
                 </div>
               </div>
@@ -78,16 +109,16 @@ export default function page() {
                 </div>
                 <div className="w-2/4">
                   <Form.Item
-                    name="password"
+                    name="confirmPassword"
                     className="m-0 mt-0"
                     rules={[
                       {
                         required: true,
-                        message: "Vui lòng nhập tên đăng nhập!",
+                        message: "Vui lòng nhập lại mật khẩu mới!",
                       },
                     ]}
                   >
-                    <Input placeholder="Nhập mật khẩu" />
+                    <Input.Password placeholder="Nhập lại mật khẩu mới" />
                   </Form.Item>
                 </div>
               </div>
