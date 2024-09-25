@@ -16,7 +16,11 @@ const RelatedProductComponent: React.FC<{ relatedProduct: any[] }> = ({ relatedP
                             key={product.id} // Add a unique key prop here
                             hoverable
                             style={{ width: 230, height: 350 }}
-                            cover={<img src={product.images[0].url} alt={product.name} />}
+                            cover={<img src={product.images[0].url} alt={product.name}  style={{
+                                width: '100%', 
+                                height: '240px', 
+                                objectFit: 'cover'
+                            }}/>}
                         >
                             <Flex vertical align="start">
                                 <div style={{ fontSize: "1.2rem", fontWeight: "600", whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
