@@ -21,7 +21,6 @@ import "../../../app/globals.css";
 import "antd/dist/reset.css";
 import { PRODUCT_ITEM_PAGE_SIZE } from "@/app/util/constant";
 import {
-  getAllProducts,
   getAllProductsView,
   getProductOnTopSold,
 } from "@/apis/modules/product";
