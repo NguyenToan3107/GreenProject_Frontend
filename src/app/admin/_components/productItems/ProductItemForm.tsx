@@ -1,5 +1,5 @@
 "use client"
-import {Col, Form, Input, Modal, Row, Select, Spin, TreeSelect} from "antd";
+import {Col, Form, Input, message, Modal, Row, Select, Spin, TreeSelect} from "antd";
 import React, {useEffect, useState} from "react";
 import {useProductStore} from "@/app/store/ProductStore";
 import {useVariationStore} from "@/app/store/VariationStore";
@@ -37,6 +37,7 @@ export default function ProductItemForm({productItem, isModalOpen, setIsModalOpe
             quantity: productItem.quantity,
             price: productItem.price,
         };
+        fetchVariations(productItem.product.id);
 
         // Set variation fields (variation_X)
         productItem.variationOptions.forEach((variationOption: any) => {
@@ -52,17 +53,11 @@ export default function ProductItemForm({productItem, isModalOpen, setIsModalOpe
     }, [isModalOpen]);
     const fetchVariations = async (productId:number) => {
         setLoadingVariations(true);
-        console.log(loadingVariations)
         await getAllVariationsByProductId(productId);
         setLoadingVariations(false);
     };
 
-    useEffect(() => {
-        if(productItem!=null){
-            fetchVariations(productItem.product.id);
-        }
 
-    }, [productItem]);
 
 
     async function handleOk() {
@@ -99,6 +94,10 @@ export default function ProductItemForm({productItem, isModalOpen, setIsModalOpe
     }
 
     function handleCancel() {
+        if(loadingVariations){
+            message.warning("Có thao tác đang thực hiện")
+            return;
+        }
         if (isModalOpen && setIsModalOpen) {
             setIsModalOpen(false);
 
@@ -108,7 +107,7 @@ export default function ProductItemForm({productItem, isModalOpen, setIsModalOpe
 
     async function handleChangeSelect(value:any) {
         console.log(value)
-        fetchVariations(value);
+        await fetchVariations(value);
 
     }
 
