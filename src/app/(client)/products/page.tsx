@@ -1,5 +1,5 @@
 "use client";
-import {SetStateAction, useEffect, useState} from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import {
@@ -7,14 +7,26 @@ import {
   faHeart as faHeartEmpty,
 } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as faHeartFilled } from "@fortawesome/free-solid-svg-icons";
-import {Button, Dropdown, Menu, Checkbox, Pagination, Image, Spin, Rate} from "antd";
+import {
+  Button,
+  Dropdown,
+  Menu,
+  Checkbox,
+  Pagination,
+  Image,
+  Spin,
+  Rate,
+} from "antd";
 import "../../../app/globals.css";
 import "antd/dist/reset.css";
-import {PRODUCT_ITEM_PAGE_SIZE} from "@/app/util/constant";
-import {getAllProductsView} from "@/apis/modules/product";
+import { PRODUCT_ITEM_PAGE_SIZE } from "@/app/util/constant";
+import {
+  getAllProducts,
+  getAllProductsView,
+  getProductOnTopSold,
+} from "@/apis/modules/product";
 import Link from "next/link";
-
-
+import { getAllCategoriesParent } from "@/apis/modules/category";
 
 const sortOptions = (
   <Menu>
@@ -24,47 +36,66 @@ const sortOptions = (
   </Menu>
 );
 
-const categoryMenu = (
-  <Menu>
-    <Menu.Item key="4">Danh mục con 1</Menu.Item>
-    <Menu.Item key="5">Danh mục con 2</Menu.Item>
-    <Menu.Item key="6">Danh mục con 3</Menu.Item>
-  </Menu>
-);
-
 export default function page() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeButton, setActiveButton] = useState("popular");
   const [likedProducts, setLikedProducts] = useState(new Set());
   const [currentPage, setCurrentPage] = useState(1);
   const [productsView, setProductsView] = useState([]);
+  const [categoriesView, setCategoriesView] = useState([]);
   const [total, setTotal] = useState(0);
-  const [loading,setLoading]=useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const fetchProduct=async (page:number)=>{
-    setLoading(true)
-    const res:any=await getAllProductsView(page);
+  const fetchProduct = async (page: number) => {
+    setLoading(true);
+    const res: any = await getAllProductsView(page);
     setLoading(false);
-    if(res.code==200){
-      setProductsView(res.data.content)
-      setCurrentPage(res.data.currentPage)
-      setTotal(res.data.totalElements)
-
+    if (res.code == 200) {
+      console.log(res);
+      setProductsView(res.data.content);
+      setCurrentPage(res.data.currentPage);
+      setTotal(res.data.totalElements);
     }
+  };
 
+  const fetchProductOnTopSold = async (limit: number) => {
+    setLoading(true);
+    const res: any = await getProductOnTopSold(limit);
+    setLoading(false);
+    if (res.code == 200) {
+      console.log(res);
+      // setProductsView(res.data.content);
+      // setCurrentPage(res.data.currentPage);
+      // setTotal(res.data.totalElements);
+    }
+  };
 
-  }
+  const fetchCategory = async () => {
+    setLoading(true);
+    const res: any = await getAllCategoriesParent();
+    setLoading(false);
+    if (res.code == 200) {
+      setCategoriesView(res.data);
+    }
+  };
 
   useEffect(() => {
     fetchProduct(currentPage);
+    fetchCategory();
   }, []);
 
+  useEffect(() => {}, [searchQuery]);
 
-  const handleButtonClick = (buttonType: SetStateAction<string>) => {
+  const handleButtonClick = async (buttonType: SetStateAction<string>) => {
     setActiveButton(buttonType);
+    console.log(buttonType);
+    if (buttonType == "latest") {
+    } else if (buttonType == "best-seller") {
+      await fetchProductOnTopSold(15);
+    } else {
+      await fetchProduct(1);
+    }
   };
-
-
 
   const toggleLike = (productId: number) => {
     setLikedProducts((prevLikes) => {
@@ -78,13 +109,26 @@ export default function page() {
     });
   };
 
-  const handlePageChange=async (value:any)=>{
-    await fetchProduct(value)
-  }
+  const handlePageChange = async (value: any) => {
+    await fetchProduct(value);
+  };
 
-
-
-
+  // Hàm đệ quy để render các category con
+  const renderMenuItems = (category: any) => {
+    if (category.children && category.children.length > 0) {
+      return (
+        <Menu.SubMenu
+          key={category.id}
+          title={category.name}
+          style={{ color: "#4BAF47" }}
+        >
+          {category.children.map((child: any) => renderMenuItems(child))}
+        </Menu.SubMenu>
+      );
+    } else {
+      return <Menu.Item key={category.id}>{category.name}</Menu.Item>;
+    }
+  };
 
   return (
     <div className="mx-0 px-0">
@@ -118,26 +162,9 @@ export default function page() {
             />
             <h2 className="text-xl font-semibold mb-4">Danh Mục</h2>
             <Menu mode="inline" className="space-y-2">
-              <Menu.SubMenu
-                key="sub1"
-                title="Ống hút từ tre"
-                className="no-arrow"
-              >
-                <Menu.Item key="1" className="pl-8">
-                  Ống hút từ tre 1
-                </Menu.Item>
-                <Menu.Item key="2" className="pl-8">
-                  Ống hút từ tre 2
-                </Menu.Item>
-                <Menu.Item key="3" className="pl-8">
-                  Ống hút từ tre 3
-                </Menu.Item>
-              </Menu.SubMenu>
-              <Menu.Item key="4">Ống hút từ cau</Menu.Item>
-              <Menu.Item key="5">Ống hút từ gỗ</Menu.Item>
-              <Menu.Item key="5">Ống hút từ nhựa</Menu.Item>
-              <Menu.Item key="5">Ống hút từ nứa</Menu.Item>
+              {categoriesView.map((category: any) => renderMenuItems(category))}
             </Menu>
+
             {/* Đánh giá */}
             <h2 className="text-xl font-semibold mt-6 mb-4">Đánh Giá</h2>
             <div className="space-y-2">
@@ -198,65 +225,69 @@ export default function page() {
                 </Button>
               </Dropdown>
             </div>
-            {
-              loading ? (
-                  <div className="flex justify-center items-center h-screen">
-                    <Spin size="large" />
-                  </div>
-              ): (
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-6 rounded cursor-pointer">
-
-                    {productsView.map((product: any) => (
-                        <Link href={`/products/${product.id}`}>
-                        <div
-                            key={product.id}
-                            className="border rounded overflow-hidden shadow-md flex flex-col"
-                        >
-                          <img
-                              src={product.images[1].url}
-                              alt={product.name}
-                              className="object-cover w-full h-45 object-center aspect-square"
-                          />
-                          <div className="p-4 flex-1">
-                            <h3 className="text-lg font-semibold mb-2 whitespace-nowrap overflow-hidden text-ellipsis">
-                              {product.name}
-                            </h3>
-                            <p className="text-brand-primary mb-2 font-bold">
-                              {product.minPrice}đ-{product.maxPrice}đ
-                            </p>
-                            <div className="flex justify-between">
-                              <div className="flex items-center mb-2">
-                                <Rate allowHalf defaultValue={product.avgRating} disabled/>
-                              </div>
-                              <div className="flex items-center justify-between">
-                                <FontAwesomeIcon
-                                    icon={
-                                      likedProducts.has(product.id)
-                                          ? faHeartFilled
-                                          : faHeartEmpty
-                                    }
-                                    className={`cursor-pointer ${
-                                        likedProducts.has(product.id)
-                                            ? "text-red-500"
-                                            : "text-gray-500"
-                                    }`}
-                                    onClick={() => toggleLike(product.id)}
-                                />
-                              </div>
-                            </div>
+            {loading ? (
+              <div className="flex justify-center items-center h-screen">
+                <Spin size="large" />
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6 rounded cursor-pointer">
+                {productsView.map((product: any) => (
+                  <Link href={`/products/${product.id}`}>
+                    <div
+                      key={product.id}
+                      className="border rounded overflow-hidden shadow-md flex flex-col"
+                    >
+                      <img
+                        src={product.images[1].url}
+                        alt={product.name}
+                        className="object-cover w-full h-45 object-center aspect-square"
+                      />
+                      <div className="p-4 flex-1">
+                        <h3 className="text-lg font-semibold mb-2 whitespace-nowrap overflow-hidden text-ellipsis">
+                          {product.name}
+                        </h3>
+                        <p className="text-brand-primary mb-2 font-bold">
+                          {product.minPrice}đ-{product.maxPrice}đ
+                        </p>
+                        <div className="flex justify-between">
+                          <div className="flex items-center mb-2">
+                            <Rate
+                              allowHalf
+                              defaultValue={product.avgRating}
+                              disabled
+                            />
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <FontAwesomeIcon
+                              icon={
+                                likedProducts.has(product.id)
+                                  ? faHeartFilled
+                                  : faHeartEmpty
+                              }
+                              className={`cursor-pointer ${
+                                likedProducts.has(product.id)
+                                  ? "text-red-500"
+                                  : "text-gray-500"
+                              }`}
+                              onClick={() => toggleLike(product.id)}
+                            />
                           </div>
                         </div>
-                        </Link>
-                    ))}
-                  </div>
-
-              )
-            }
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
 
             {/* Phân trang */}
             <div className="flex justify-center mt-8 space-x-2">
-              <Pagination onChange={handlePageChange} defaultCurrent={currentPage}
-                          defaultPageSize={PRODUCT_ITEM_PAGE_SIZE} total={total}/>
+              <Pagination
+                onChange={handlePageChange}
+                defaultCurrent={currentPage}
+                defaultPageSize={PRODUCT_ITEM_PAGE_SIZE}
+                total={total}
+              />
             </div>
           </main>
         </div>
