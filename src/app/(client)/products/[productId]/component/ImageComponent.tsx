@@ -11,7 +11,7 @@ const ImageComponent: React.FC<any> = ({ product }) => {
                         <Flex justify='space-between' align='center' gap={"small"} wrap>
                             {
                                 product?.images.map((i:any)=>(
-                                    <Image style={{ width: '140px', height: '140px',objectFit:'contain'}} src={i.url}/>
+                                    <Image key={i.id} style={{ width: '140px', height: '140px',objectFit:'contain'}} src={i.url}/>
                                 ))
                             }
                         </Flex>

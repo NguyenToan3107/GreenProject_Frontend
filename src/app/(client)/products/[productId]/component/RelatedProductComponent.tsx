@@ -13,6 +13,7 @@ const RelatedProductComponent: React.FC<{ relatedProduct: any[] }> = ({ relatedP
                 {relatedProduct && relatedProduct.length > 0 ? (
                     relatedProduct.map((product: any) => (
                         <Card
+                            key={product.id} // Add a unique key prop here
                             hoverable
                             style={{ width: 230, height: 350 }}
                             cover={<img src={product.images[0].url} alt={product.name} />}

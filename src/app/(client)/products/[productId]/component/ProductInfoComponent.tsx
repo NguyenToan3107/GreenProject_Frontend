@@ -69,7 +69,7 @@ const ProductInfoComponent:React.FC<any> = ({ product }) => {
                         }} style={{border:'1px solid #000',borderRadius:'8px',width:'40px',height:'40px'}}>
                         <MinusOutlined style={{ fontSize: '0.8rem', color: '#ff4d4f' }}/>
                     </button>
-                    <input type='number' value={qty} style={{border:'1px solid #000',borderRadius:'8px',width:'40px',height:'40px',textAlign:'center',display: 'inline-flex'}}/>
+                    <input type='number' onChange={()=>console.log("change quantity")} value={qty} style={{border:'1px solid #000',borderRadius:'8px',width:'40px',height:'40px',textAlign:'center',display: 'inline-flex'}}/>
                     <button
                         onClick={()=>{
                         setQty((st:number)=>{
