@@ -9,7 +9,7 @@ const RelatedProductComponent: React.FC<{ relatedProduct: any[] }> = ({ relatedP
         <Flex vertical gap={"middle"}>
             <h2 style={{ textTransform: 'uppercase', fontSize: '1.4rem', fontWeight: '600' }}>Sản phẩm liên quan</h2>
             <Flex wrap gap={"small"} justify='start' align='center' style={{ marginLeft: 'auto', marginRight: 'auto' }}>
-                {/* Kiểm tra nếu relatedProduct tồn tại và là một mảng */}
+
                 {relatedProduct && relatedProduct.length > 0 ? (
                     relatedProduct.map((product: any) => (
                         <Card

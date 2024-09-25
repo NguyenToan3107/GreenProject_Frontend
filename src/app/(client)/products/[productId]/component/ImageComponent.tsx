@@ -1,5 +1,5 @@
 import React from 'react';
-import { Flex, Image, Input } from 'antd';
+import { Flex, Image } from 'antd';
 
 const ImageComponent: React.FC<any> = ({ product }) => {
 

@@ -32,6 +32,7 @@ export function getProductOnTopSold(limit:number){
     return api.get(`products/top_sold/limit=${limit}`);
 }
 
+
 export function getAllProductsView(pageNum:number){
     return api.get(`products/view?pageNum=${pageNum}&pageSize=${PRODUCT_ITEM_PAGE_SIZE}`);
 }
