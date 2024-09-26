@@ -21,7 +21,12 @@ export default function page() {
   } = useProductStore((state) => state);
 
   const fetchProductItemOnTopSold=async ()=>{
-    await getProductOnTopSold(8);
+
+     const res:any = await getProductOnTopSold();
+     console.log(res)
+     if(res.code == 200){
+      console.log(productItemOnTopSold)
+     }
   }
 
   function currencyFormat(num: number) {

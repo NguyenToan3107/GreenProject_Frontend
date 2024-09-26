@@ -1,6 +1,6 @@
 import api from "@/apis/request";
 import {ProductDto} from "@/app/admin/_components/products/ProductForm";
-import {PAGE_SIZE, PRODUCT_ITEM_PAGE_SIZE} from "@/app/util/constant";
+import {PAGE_SIZE, PRODUCT_ITEM_PAGE_SIZE,TOP_SOLD_PAGE_NUM,TOP_SOLD_PAGE_SIZE} from "@/app/util/constant";
 
 
 export function getAllProducts(pageNum:number,search:string,categoryId:number) {
@@ -28,8 +28,8 @@ export function getAllRelatedProduct(pageNum:number,categoryId:number){
     return api.get(`products/related_product?pageNum=${pageNum}&pageSize=${PAGE_SIZE}&categoryId=${categoryId}`);
 }
 
-export function getProductOnTopSold(limit:number){
-    return api.get(`products/top_sold/limit=${limit}`);
+export function getProductOnTopSold(){
+    return api.get(`products/top_sold?pageNum=${TOP_SOLD_PAGE_NUM}&pageSize=${TOP_SOLD_PAGE_SIZE}`);
 }
 
 export function getAllProductsView(pageNum:number){

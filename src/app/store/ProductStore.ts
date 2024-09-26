@@ -19,13 +19,11 @@ interface ProductState {
     createProduct: (product: ProductDto) => Promise<void>;
     updateProduct: (id: number, product: ProductDto) => Promise<void>;
     deleteProduct: (id: number) => Promise<void>;
-    getProductOnTopSold: (id:number) => Promise<void>;
+    getProductOnTopSold: () => Promise<void>;
     current: number;
     totalElements: number;
     categoryId:number;
     setCategoryId:(key: number) => void;
-
-
 }
 
 export const useProductStore = create<ProductState>((set, get) => ({
@@ -46,12 +44,13 @@ export const useProductStore = create<ProductState>((set, get) => ({
         set({ categoryId: key });
     },
 
-    getProductOnTopSold: async(limit:number)=>{
-        const apiCall = () => getProductOnTopSold(limit);
+
+    getProductOnTopSold: async()=>{
+        const apiCall = () => getProductOnTopSold();
         const onSuccess = (response: any) => {
                 console.log(response)
                 set({
-                    productItemOnTopSold: response.data,
+                    productItemOnTopSold: response.data.content,
                 });
 
         };
