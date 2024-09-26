@@ -30,7 +30,7 @@ const RelatedProductComponent: React.FC<{ relatedProduct: any[] }> = ({ relatedP
                                     {product.minPrice.toLocaleString('vi-VN')}đ - {product.maxPrice.toLocaleString('vi-VN')}đ
                                 </div>
                                 <div className="star">
-                                    <Rate allowHalf defaultValue={5} disabled />
+                                    <Rate allowHalf defaultValue={product.avgRating} disabled />
                                 </div>
                             </Flex>
                         </Card>

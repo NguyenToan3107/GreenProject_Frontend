@@ -2,7 +2,7 @@
 import {useEffect, useState} from 'react';
 import './product_details.css'
 import { MinusOutlined,PlusOutlined } from '@ant-design/icons';
-import {Image, PaginationProps, Rate} from 'antd';
+import {Image, PaginationProps, Rate, Spin} from 'antd';
 import { Button,Card,Input, Divider, Flex, Radio ,Col, Row, Pagination  } from 'antd';
 import {getProductById,getAllRelatedProduct} from "@/apis/modules/product";
 import ReviewComponent from './component/ReviewComponent';
@@ -11,10 +11,10 @@ import ProductInfoComponent from './component/ProductInfoComponent';
 import RelatedProductComponent from './component/RelatedProductComponent';
 
 export default function page({params}:any) {
-    const [qty,setQty]=useState(1);
     const [product,setProduct]=useState<any>(null);
     const [relatedProduct,setRelatedProduct] = useState<any>(null);
     const [loading,setLoading]=useState(false);
+
 
     const getProduct=async (productId:number)=>{
         setLoading(true)
@@ -23,8 +23,7 @@ export default function page({params}:any) {
         console.log(res)
         if(res.code==200){
             setProduct(res.data);
-
-            getRelatedProduct(1, res.data.category.id);
+            await getRelatedProduct(1, res.data.category.id);
         }
     }
 
@@ -46,15 +45,21 @@ export default function page({params}:any) {
 
     return (
         <div style={{width:'1200px',marginLeft:'auto',marginRight:'auto',marginBottom:'2rem'}}>
-            <div className="grid-container">
+            {loading ? (
+                <div style={{ textAlign: 'center', marginTop: '50px' }}>
+                    <Spin size="large" />
+                </div>
+            ) : (
+                <>
+                    <div className="grid-container">
+                        <ImageComponent product={product} />
+                        <ProductInfoComponent product={product} />
+                        <ReviewComponent />
+                    </div>
+                    <RelatedProductComponent relatedProduct={relatedProduct} />
+                </>
+            )}
 
-                <ImageComponent product={product}/>
-
-                <ProductInfoComponent product={product}/>
-                
-                <ReviewComponent/>
-            </div>
-            <RelatedProductComponent relatedProduct={relatedProduct}/>
         </div>
     );
 }

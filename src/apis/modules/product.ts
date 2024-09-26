@@ -32,6 +32,7 @@ export function getProductOnTopSold(){
     return api.get(`products/top_sold?pageNum=${TOP_SOLD_PAGE_NUM}&pageSize=${TOP_SOLD_PAGE_SIZE}`);
 }
 
+
 export function getAllProductsView(pageNum:number){
     return api.get(`products/view?pageNum=${pageNum}&pageSize=${PRODUCT_ITEM_PAGE_SIZE}`);
 }
