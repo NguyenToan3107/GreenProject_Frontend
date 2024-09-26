@@ -16,6 +16,7 @@ import {
   Image,
   Spin,
   Rate,
+  Input,
 } from "antd";
 import "../../../app/globals.css";
 import "antd/dist/reset.css";
@@ -44,28 +45,29 @@ export default function page() {
   const [categoriesView, setCategoriesView] = useState([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(0);
 
-  const fetchProduct = async (page: number) => {
+  const fetchProduct = async (page: number, categoryId = 0, search = "") => {
     setLoading(true);
-    const res: any = await getAllProductsView(page);
+    const res: any = await getAllProductsView(page, search, categoryId);
+    setLoading(false);
+    if (res.code == 200) {
+      setProductsView(res.data.content);
+      console.log(res);
+      setCurrentPage(res.data.currentPage);
+      setTotal(res.data.totalElements);
+    }
+  };
+
+  const fetchProductOnTopSold = async () => {
+    setLoading(true);
+    const res: any = await getProductOnTopSold();
     setLoading(false);
     if (res.code == 200) {
       console.log(res);
       setProductsView(res.data.content);
       setCurrentPage(res.data.currentPage);
       setTotal(res.data.totalElements);
-    }
-  };
-
-  const fetchProductOnTopSold = async (limit: number) => {
-    setLoading(true);
-    const res: any = await getProductOnTopSold(limit);
-    setLoading(false);
-    if (res.code == 200) {
-      console.log(res);
-      // setProductsView(res.data.content);
-      // setCurrentPage(res.data.currentPage);
-      // setTotal(res.data.totalElements);
     }
   };
 
@@ -79,21 +81,24 @@ export default function page() {
   };
 
   useEffect(() => {
-    fetchProduct(currentPage);
+    fetchProduct(currentPage, selectedCategory, searchQuery);
     fetchCategory();
-  }, []);
-
-  useEffect(() => {}, [searchQuery]);
+  }, [currentPage, selectedCategory]);
 
   const handleButtonClick = async (buttonType: SetStateAction<string>) => {
     setActiveButton(buttonType);
-    console.log(buttonType);
+
     if (buttonType == "latest") {
     } else if (buttonType == "best-seller") {
-      await fetchProductOnTopSold(15);
+      await fetchProductOnTopSold();
     } else {
-      await fetchProduct(1);
+      await fetchProduct(1, selectedCategory, searchQuery);
     }
+  };
+
+  const handleCategoryChange = (categoryId: number) => {
+    setSelectedCategory(categoryId);
+    fetchProduct(1, categoryId, searchQuery);
   };
 
   const toggleLike = (productId: number) => {
@@ -108,8 +113,20 @@ export default function page() {
     });
   };
 
+  // const handlePageChange = async (value: any) => {
+  //   if (activeButton == "popolar") {
+  //     await fetchProduct(value);
+  //   } else if (activeButton == "best-seller") {
+  //     await fetchProductOnTopSold();
+  //   }
+  // };
+
   const handlePageChange = async (value: any) => {
-    await fetchProduct(value);
+    await fetchProduct(value, selectedCategory, searchQuery);
+  };
+
+  const handleSearchClick = () => {
+    fetchProduct(1, selectedCategory, searchQuery);
   };
 
   // Hàm đệ quy để render các category con
@@ -125,7 +142,14 @@ export default function page() {
         </Menu.SubMenu>
       );
     } else {
-      return <Menu.Item key={category.id}>{category.name}</Menu.Item>;
+      return (
+        <Menu.Item
+          key={category.id}
+          onClick={() => handleCategoryChange(category.id)}
+        >
+          {category.name}
+        </Menu.Item>
+      );
     }
   };
 
@@ -152,13 +176,24 @@ export default function page() {
           {/* Thanh bên trái */}
           <aside className="w-1/4 h-min bg-[#F5F5F5] p-4 rounded py-10">
             <h2 className="text-xl font-semibold mb-4">Tìm Kiếm</h2>
-            <input
-              type="text"
-              placeholder="Bạn muốn mua gì..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="border rounded p-2 w-full mb-4 focus:border-transparent focus:outline-none focus:ring-0"
-            />
+            <div className="flex mb-4">
+              {/* Input search */}
+              <Input
+                type="text"
+                placeholder="Bạn muốn mua gì..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="border rounded w-full focus:border-transparent focus:outline-none focus:ring-0"
+              />
+              {/* Button search */}
+              <Button
+                type="primary"
+                className="ml-2"
+                onClick={handleSearchClick} // Gọi hàm tìm kiếm khi nhấn nút
+              >
+                Tìm kiếm
+              </Button>
+            </div>
             <h2 className="text-xl font-semibold mb-4">Danh Mục</h2>
             <Menu mode="inline" className="space-y-2">
               {categoriesView.map((category: any) => renderMenuItems(category))}
