@@ -36,6 +36,11 @@ export function getProductOnTopSold(){
 //     return api.get(`products/view?pageNum=${pageNum}&pageSize=${PRODUCT_ITEM_PAGE_SIZE}`);
 // }
 
+export function getAllProductsSort(pageNum:number){
+    return api.get(`products/sort?pageNum=${pageNum}&pageSize=${PRODUCT_ITEM_PAGE_SIZE}`);
+}
+
+
 export function getAllProductsView(pageNum:number,search:string,categoryId:number) {
     if(pageNum==0){
         return api.get("products");

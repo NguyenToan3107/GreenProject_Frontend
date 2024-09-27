@@ -22,19 +22,12 @@ import "../../../app/globals.css";
 import "antd/dist/reset.css";
 import { PRODUCT_ITEM_PAGE_SIZE } from "@/app/util/constant";
 import {
+  getAllProductsSort,
   getAllProductsView,
   getProductOnTopSold,
 } from "@/apis/modules/product";
 import Link from "next/link";
 import { getAllCategoriesParent } from "@/apis/modules/category";
-
-const sortOptions = (
-  <Menu>
-    <Menu.Item key="1">Tất cả</Menu.Item>
-    <Menu.Item key="2">Danh mục 1</Menu.Item>
-    <Menu.Item key="3">Danh mục 2</Menu.Item>
-  </Menu>
-);
 
 export default function page() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -46,6 +39,8 @@ export default function page() {
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(0);
+  const [sortByPrice, setSortByPrice] = useState(false);
+  const [topSold, setTopSole] = useState(false);
 
   const fetchProduct = async (page: number, categoryId = 0, search = "") => {
     setLoading(true);
@@ -67,6 +62,34 @@ export default function page() {
       console.log(res);
       setProductsView(res.data.content);
       setCurrentPage(res.data.currentPage);
+      setTotal(res.data.content.length);
+    }
+  };
+
+  const handleMenuClick = async (e: { key: string }) => {
+    if (e.key === "2") {
+      setSortByPrice(true);
+      await fetchProductSortPrice(1);
+    } else {
+      setSortByPrice(false);
+    }
+  };
+
+  const sortOptions = (
+    <Menu onClick={handleMenuClick}>
+      <Menu.Item key="1">Tất cả</Menu.Item>
+      <Menu.Item key="2">Giá</Menu.Item>
+      {/* <Menu.Item key="3">Danh mục 2</Menu.Item> */}
+    </Menu>
+  );
+  const fetchProductSortPrice = async (page: number) => {
+    setLoading(true);
+    const res: any = await getAllProductsSort(page);
+    setLoading(false);
+    if (res.code == 200) {
+      console.log(res);
+      setProductsView(res.data.content);
+      setCurrentPage(res.data.currentPage);
       setTotal(res.data.totalElements);
     }
   };
@@ -83,13 +106,14 @@ export default function page() {
   useEffect(() => {
     fetchProduct(currentPage, selectedCategory, searchQuery);
     fetchCategory();
-  }, [currentPage, selectedCategory]);
+  }, [selectedCategory]);
 
   const handleButtonClick = async (buttonType: SetStateAction<string>) => {
     setActiveButton(buttonType);
 
     if (buttonType == "latest") {
     } else if (buttonType == "best-seller") {
+      setTopSole(true);
       await fetchProductOnTopSold();
     } else {
       await fetchProduct(1, selectedCategory, searchQuery);
@@ -113,16 +137,14 @@ export default function page() {
     });
   };
 
-  // const handlePageChange = async (value: any) => {
-  //   if (activeButton == "popolar") {
-  //     await fetchProduct(value);
-  //   } else if (activeButton == "best-seller") {
-  //     await fetchProductOnTopSold();
-  //   }
-  // };
-
   const handlePageChange = async (value: any) => {
-    await fetchProduct(value, selectedCategory, searchQuery);
+    if (sortByPrice) {
+      await fetchProductSortPrice(value);
+    } else if (topSold) {
+      await fetchProductOnTopSold();
+    } else {
+      await fetchProduct(value, selectedCategory, searchQuery);
+    }
   };
 
   const handleSearchClick = () => {
