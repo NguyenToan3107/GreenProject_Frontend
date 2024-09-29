@@ -5,8 +5,10 @@ import {Flex, Rate, Button, Radio, message} from 'antd';
 import {MinusOutlined, PlusOutlined, ShoppingCartOutlined, StockOutlined, TagOutlined} from '@ant-design/icons';
 import {DeepSet} from "@/app/util/DeepSet";
 import {useReviewStore} from "@/app/store/ReviewStore";
+import {addCart} from "@/apis/modules/item";
+import {handleApiRequest} from "@/app/util/utils";
 
-const ProductInfoComponent:React.FC<any> = ({ product }) => {
+const ProductInfoComponent:React.FC<any> = ({ product,productItems }) => {
     const [qty,setQty]=useState(1);
     const [productItem,setProductItem]=useState<any>(null)
     const [variations,setVariations]=useState([]);
@@ -48,9 +50,8 @@ const ProductInfoComponent:React.FC<any> = ({ product }) => {
 
             return aggregatedVariations;
         };
-        if (product?.productItems) {
-            console.log(product)
-            const result = aggregateVariationOptions(product?.productItems);
+        if (productItems) {
+            const result = aggregateVariationOptions(productItems);
             const defaultOptions = result.map((v: any) => ({
                 name: v.name,
                 id: v.values[0]?.id
@@ -62,25 +63,24 @@ const ProductInfoComponent:React.FC<any> = ({ product }) => {
 
     useEffect(() => {
         const foundItem = findProductItemByOptions();
-        console.log("item:"+foundItem)
         setProductItem(foundItem);
     }, [optionData, product]);
 
     const findProductItemByOptions = () => {
-        if (product?.productItems) {
-            const optionIds = optionData.map((o: any) => o.id); // Lấy mảng option ID
+        if (productItems) {
+            const optionIds = optionData.map((o: any) => o.id);
             console.log(optionIds);
 
 
-            const foundProductItem = product.productItems.find((item: any) => {
+            const foundProductItem =productItems.find((item: any) => {
                 return optionIds.every(optionId =>
                     item.variationOptions.some((variation: any) => variation.id === optionId)
                 );
             });
 
             /*------------------------------------- */
-            setCurrentProductItemId(foundProductItem.id)
-            console.log(currentProductItemId)
+            //setCurrentProductItemId(foundProductItem.id)
+            //console.log(currentProductItemId)
             /*------------------------------------- */
 
 
@@ -113,7 +113,7 @@ const ProductInfoComponent:React.FC<any> = ({ product }) => {
 
         const data:any={productItemId:productItem.id,quantity:qty}
         const apiCall=()=> addCart(data);
-        await handleApiRequest(apiCall,(response)=>{
+        await handleApiRequest(apiCall,(response:any)=>{
             console.log(response)
         })
 

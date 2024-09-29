@@ -1,31 +1,47 @@
 "use client"
 import {useEffect, useState} from 'react';
 import './product_details.css'
-import { MinusOutlined,PlusOutlined } from '@ant-design/icons';
-import {Image, PaginationProps, Rate, Spin} from 'antd';
-import { Button,Card,Input, Divider, Flex, Radio ,Col, Row, Pagination  } from 'antd';
+import {Image, PaginationProps, Spin} from 'antd';
 import {getProductById,getAllRelatedProduct} from "@/apis/modules/product";
 import ReviewComponent from './component/ReviewComponent';
 import ImageComponent from './component/ImageComponent';
 import ProductInfoComponent from './component/ProductInfoComponent';
 import RelatedProductComponent from './component/RelatedProductComponent';
+import {getAllProductItemByProductId} from "@/apis/modules/product_item";
+import axios from "axios";
 
 export default function page({params}:any) {
     const [product,setProduct]=useState<any>(null);
+    const [productItems,setProductItems]=useState<any>([]);
     const [relatedProduct,setRelatedProduct] = useState<any>(null);
     const [loading,setLoading]=useState(false);
 
 
-    const getProduct=async (productId:number)=>{
-        setLoading(true)
-        const res:any=await getProductById(productId);
-        setLoading(false)
-        console.log(res)
-        if(res.code==200){
-            setProduct(res.data);
-            await getRelatedProduct(1, res.data.category.id);
+    const getProductData = async (productId: number) => {
+        setLoading(true);
+
+        try {
+            const [productRes, productItemsRes]:any = await axios.all([
+                getProductById(productId),
+                getAllProductItemByProductId(productId)
+            ]);
+            console.log(productRes, productItemsRes);
+
+
+            if (productRes.code === 200) {
+                setProduct(productRes.data);
+            }
+
+            if (productItemsRes.code === 200) {
+                setProductItems(productItemsRes.data);
+            }
+
+        } catch (error) {
+            console.error("Error fetching product data:", error);
+        } finally {
+            setLoading(false);
         }
-    }
+    };
 
     const getRelatedProduct = async (pageNum:number, categoryId: number)=>{
         const res:any = await getAllRelatedProduct(pageNum,categoryId);
@@ -36,7 +52,7 @@ export default function page({params}:any) {
     }
 
     useEffect(() => {
-        getProduct(params.productId)
+        getProductData(params.productId)
     }, []);
 
     const onShowSizeChange: PaginationProps['onShowSizeChange'] = (current, pageSize) => {
@@ -53,7 +69,7 @@ export default function page({params}:any) {
                 <>
                     <div className="grid-container">
                         <ImageComponent product={product} />
-                        <ProductInfoComponent product={product} />
+                        <ProductInfoComponent product={product} productItems={productItems} />
                         <ReviewComponent />
                     </div>
                     <RelatedProductComponent relatedProduct={relatedProduct} />
