@@ -45,7 +45,7 @@ export default function page() {
     <div>
       <div
         className="container"
-        style={{ width: "1200px", marginRight: "auto", marginLeft: "auto",marginTop:'5rem',marginBottom:'4rem' }}
+        style={{ width: "1440px", marginRight: "auto", marginLeft: "auto",marginTop:'5rem',marginBottom:'4rem' }}
       >
         <div
           style={{

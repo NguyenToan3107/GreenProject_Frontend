@@ -4,6 +4,7 @@ import React from 'react';
 import { Flex, Rate, Button,Radio } from 'antd';
 import {MinusOutlined, PlusOutlined, ShoppingCartOutlined, StockOutlined, TagOutlined} from '@ant-design/icons';
 import {DeepSet} from "@/app/util/DeepSet";
+import {useReviewStore} from "@/app/store/ReviewStore";
 
 const ProductInfoComponent:React.FC<any> = ({ product }) => {
     const [qty,setQty]=useState(1);
@@ -12,6 +13,13 @@ const ProductInfoComponent:React.FC<any> = ({ product }) => {
     const [optionData,setOptionData]=useState([]);
 
 
+    /*------------------------------------- */
+    const {
+        currentProductItemId,
+        setCurrentProductItemId,
+      } = useReviewStore((state) => state);
+    /*------------------------------------- */
+      
     useEffect(() => {
         const aggregateVariationOptions = (productItems:any) => {
             const variationMap: { [key: string]: DeepSet<any> } = {};
@@ -69,6 +77,12 @@ const ProductInfoComponent:React.FC<any> = ({ product }) => {
                     item.variationOptions.some((variation: any) => variation.id === optionId)
                 );
             });
+
+            /*------------------------------------- */
+            setCurrentProductItemId(foundProductItem.id)
+            console.log(currentProductItemId)
+            /*------------------------------------- */
+
 
             return foundProductItem || null;
         }

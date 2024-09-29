@@ -1,12 +1,48 @@
+"use client"
 import React from 'react';
+import {useEffect, useState} from 'react';
 import { Flex, Row, Col, Rate, Pagination, Input,Image } from 'antd';
+import {useReviewStore} from "@/app/store/ReviewStore";
+
 
 const { TextArea } = Input;
 
 const ReviewComponent = () => {
-    const onShowSizeChange = (current: number, size: number) => {
-        console.log(current, size);
-    };
+
+    const {
+        reviews,
+        current,
+        totalElements,
+        currentProductItemId,
+        setCurrent,
+        getAllReviewByProductItemId,
+        createReview,
+        updateReviewById,
+        deleteReviewById,
+    } = useReviewStore();
+
+    useEffect(() => {
+        if (currentProductItemId > 0) {
+            getAllReviewsByProductItemId()
+        }
+    }, [currentProductItemId,current]);
+
+
+    const getAllReviewsByProductItemId=async ()=>{
+        console.log(currentProductItemId)
+
+            const res:any = await getAllReviewByProductItemId(current, currentProductItemId);
+            console.log(res)
+            if(res.code == 200){
+             console.log(reviews)
+            }
+
+     }
+
+     const onPageChange = (page: any) => {
+        setCurrent(page);
+        console.log(current)
+      }
 
     return (
         <div>
@@ -32,18 +68,18 @@ const ReviewComponent = () => {
                     </Flex>
 
                     {/* List of reviews */}
-                    {[...Array(3)].map((_, index) => (
+                    {reviews.map((review, index) => (
                         <Row key={index} style={{ borderBottom: '1px solid #8c8b8b85', paddingBottom: '1rem' }}>
                             <Col span={18} push={6}>
                                 <Flex vertical gap={"small"}>
                                     <Flex justify='space-between'>
-                                        <div>Nguyễn Văn C</div>
+                                        <div>{review.user.username}</div>
                                         <time>12:30 15/11/2024</time>
                                     </Flex>
                                     <Flex className="star" gap={'small'}>
-                                        <Rate allowHalf defaultValue={5} disabled />
+                                        <Rate allowHalf value={review.rating}  disabled />
                                     </Flex>
-                                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit...</p>
+                                    <p>{review.content}</p>
                                 </Flex>
                             </Col>
                             <Col span={6} pull={18}>
@@ -57,9 +93,9 @@ const ReviewComponent = () => {
                         style={{ marginTop: '1rem' }}
                         align='end'
                         showSizeChanger
-                        onShowSizeChange={onShowSizeChange}
+                        onChange={onPageChange}
                         defaultCurrent={3}
-                        total={200}
+                        total={totalElements}
                     />
                 </Flex>
             </Flex>

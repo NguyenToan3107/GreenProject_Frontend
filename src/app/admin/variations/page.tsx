@@ -1,14 +1,12 @@
 "use client"
 import React, { useEffect, useState } from "react";
 import {Button, Col, Input, Modal, Row, Table, theme, TreeSelect, Upload} from "antd";
-import CategoryForm from "@/app/admin/_components/categories/CategoryForm";
 import { Header } from "antd/es/layout/layout";
 import { Category } from "@/app/model/Category";
 import {DeleteOutlined, EditOutlined, UploadOutlined} from "@ant-design/icons";
 import { useCategoryStore } from "@/app/store/CategoryStore";
 import { SearchProps } from "antd/es/input";
 import {useVariationStore} from "@/app/store/VariationStore";
-import {Variation} from "@/app/model/Variation";
 import VariationForm from "@/app/admin/_components/variations/VariationForm";
 import {PAGE_SIZE} from "@/app/util/constant";
 
