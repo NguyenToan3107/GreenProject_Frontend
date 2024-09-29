@@ -30,3 +30,7 @@ export function updateProductItemById(id:number,productItem:any){
 export function deleteProductItemById(id:number){
     return api.delete(`productItems/delete/${id}`);
 }
+
+export function getAllProductItemByProductId(productId:number){
+    return api.get(`productItems/product/${productId}`);
+}
