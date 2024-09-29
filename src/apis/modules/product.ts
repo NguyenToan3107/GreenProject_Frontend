@@ -32,35 +32,35 @@ export function getProductOnTopSold(){
 }
 
 
-// export function getAllProductsView(pageNum:number){
-//     return api.get(`products/view?pageNum=${pageNum}&pageSize=${PRODUCT_ITEM_PAGE_SIZE}`);
-// }
+export function getAllProductsView(pageNum:number){
+    return api.get(`products/view?pageNum=${pageNum}&pageSize=${PRODUCT_ITEM_PAGE_SIZE}`);
+}
 
 export function getAllProductsSort(pageNum:number){
     return api.get(`products/sort?pageNum=${pageNum}&pageSize=${PRODUCT_ITEM_PAGE_SIZE}`);
 }
 
 
-export function getAllProductsView(pageNum:number,search:string,categoryId:number) {
-    if(pageNum==0){
-        return api.get("products");
-    }
+// export function getAllProductsView(pageNum:number,search:string,categoryId:number) {
+//     if(pageNum==0){
+//         return api.get("products");
+//     }
 
-    if(search.trim()!=""&&categoryId!=0){
-        return api.get(`products?pageNum=${pageNum}&pageSize=${PRODUCT_ITEM_PAGE_SIZE}&search=${search.trim()}&categoryId=${categoryId}&view=true`);
-    }
+//     if(search.trim()!=""&&categoryId!=0){
+//         return api.get(`products?pageNum=${pageNum}&pageSize=${PRODUCT_ITEM_PAGE_SIZE}&search=${search.trim()}&categoryId=${categoryId}&view=true`);
+//     }
 
-    if(search.trim()!=""){
-        return api.get(`products?pageNum=${pageNum}&pageSize=${PRODUCT_ITEM_PAGE_SIZE}&search=${search.trim()}&view=true`);
-    }
+//     if(search.trim()!=""){
+//         return api.get(`products?pageNum=${pageNum}&pageSize=${PRODUCT_ITEM_PAGE_SIZE}&search=${search.trim()}&view=true`);
+//     }
 
-    if(categoryId!=0){
-        return api.get(`products?pageNum=${pageNum}&pageSize=${PRODUCT_ITEM_PAGE_SIZE}&categoryId=${categoryId}&view=true`);
-    }
+//     if(categoryId!=0){
+//         return api.get(`products?pageNum=${pageNum}&pageSize=${PRODUCT_ITEM_PAGE_SIZE}&categoryId=${categoryId}&view=true`);
+//     }
 
-    return api.get(`products?pageNum=${pageNum}&pageSize=${PRODUCT_ITEM_PAGE_SIZE}&view=true`);
+//     return api.get(`products?pageNum=${pageNum}&pageSize=${PRODUCT_ITEM_PAGE_SIZE}&view=true`);
 
-}
+// }
 
 
 export function getProductById(productId:number){

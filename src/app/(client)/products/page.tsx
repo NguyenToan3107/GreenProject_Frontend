@@ -27,7 +27,7 @@ import {
   getProductOnTopSold,
 } from "@/apis/modules/product";
 import Link from "next/link";
-import { getAllCategoriesParent } from "@/apis/modules/category";
+import { getAllCategories } from "@/apis/modules/category";
 
 export default function page() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -44,11 +44,11 @@ export default function page() {
 
   const fetchProduct = async (page: number, categoryId = 0, search = "") => {
     setLoading(true);
-    const res: any = await getAllProductsView(page, search, categoryId);
+    // const res: any = await getAllProductsView(page, search, categoryId);
+    const res: any = await getAllProductsView(page);
     setLoading(false);
     if (res.code == 200) {
       setProductsView(res.data.content);
-      console.log(res);
       setCurrentPage(res.data.currentPage);
       setTotal(res.data.totalElements);
     }
@@ -59,7 +59,6 @@ export default function page() {
     const res: any = await getProductOnTopSold();
     setLoading(false);
     if (res.code == 200) {
-      console.log(res);
       setProductsView(res.data.content);
       setCurrentPage(res.data.currentPage);
       setTotal(res.data.content.length);
@@ -79,7 +78,6 @@ export default function page() {
     <Menu onClick={handleMenuClick}>
       <Menu.Item key="1">Tất cả</Menu.Item>
       <Menu.Item key="2">Giá</Menu.Item>
-      {/* <Menu.Item key="3">Danh mục 2</Menu.Item> */}
     </Menu>
   );
   const fetchProductSortPrice = async (page: number) => {
@@ -87,7 +85,6 @@ export default function page() {
     const res: any = await getAllProductsSort(page);
     setLoading(false);
     if (res.code == 200) {
-      console.log(res);
       setProductsView(res.data.content);
       setCurrentPage(res.data.currentPage);
       setTotal(res.data.totalElements);
@@ -96,7 +93,8 @@ export default function page() {
 
   const fetchCategory = async () => {
     setLoading(true);
-    const res: any = await getAllCategoriesParent();
+    const res: any = await getAllCategories();
+    console.log(res);
     setLoading(false);
     if (res.code == 200) {
       setCategoriesView(res.data);
@@ -294,7 +292,7 @@ export default function page() {
                       className="border rounded overflow-hidden shadow-md flex flex-col"
                     >
                       <img
-                        src={product.images[1].url}
+                        src={product.imageCover}
                         alt={product.name}
                         className="object-cover w-full h-45 object-center aspect-square"
                       />
