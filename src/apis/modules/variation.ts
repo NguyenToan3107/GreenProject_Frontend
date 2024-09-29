@@ -2,7 +2,7 @@ import api from "@/apis/request";
 import {VariationDto} from "@/app/admin/_components/variations/VariationForm";
 import {PAGE_SIZE} from "@/app/util/constant";
 
-export function getAllVariations(pageNum:number,search:string,categoryId:number) {
+/*export function getAllVariations(pageNum:number,search:string,categoryId:number) {
     if(pageNum==0){
         return api.get(`variations`);
     }
@@ -18,9 +18,14 @@ export function getAllVariations(pageNum:number,search:string,categoryId:number)
     return api.get(`variations?pageNum=${pageNum}&pageSize=${PAGE_SIZE}`);
 
 
+}*/
+
+export function getAllVariations() {
+    return api.get(`variations`);
 }
+
 export function getAllVariationsByproductId(productId:number) {
-    return api.get(`variations/${productId}`);
+    return api.get(`variations/product/${productId}`);
 }
 
 

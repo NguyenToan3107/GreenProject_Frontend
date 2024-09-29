@@ -31,7 +31,7 @@ export default function Page() {
         totalElements
     } = useProductItemStore((state) => state);
 
-    const {productsSelect,getAllProducts}=useProductStore()
+    const {products,getAllProducts}=useProductStore()
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [productItem, setProductItem] = useState<any | null>(null);
@@ -66,15 +66,7 @@ export default function Page() {
 
         },
 
-        {
-            title: 'Variations',
-            dataIndex: 'variationOptions',
-            key: 'variation',
-            render: (_: any, record: any) => (
-                <span>{record.variationOptions.length !== 0 ? record.variationOptions.map((option: any) => option.value).join(', ') : 'N/A'}</span>
-            ),
 
-        },
 
         {
             title: 'Created At',
@@ -128,8 +120,8 @@ export default function Page() {
         if(productItems.length==0){
             fetchProductItem(current)
         }
-        if(productsSelect.length==0){
-            getAllProducts(0)
+        if(products.length==0){
+            getAllProducts()
         }
 
     }, []);
@@ -169,11 +161,7 @@ export default function Page() {
         setIsModalOpen(true);
     }
 
-    const onSearch: SearchProps['onSearch'] =async (value, _e, info) => {
-        setSearch(value);
-        await fetchProductItem(1);
 
-    }
 
     async function handleChangeSelect(value:any) {
         console.log(value)
@@ -214,17 +202,10 @@ export default function Page() {
             >
                 <Row gutter={16} className="flex items-center justify-between mb-4">
                     <Col>
-                        <Search
-                            placeholder="Tìm kiếm sản phẩm"
-                            allowClear
-                            onSearch={onSearch}
-                        />
-                    </Col>
-                    <Col>
                         <Select
                             onChange={handleChangeSelect}
                             placeholder="Chọn sản phẩm"
-                            options={productsSelect.map((p: any) => ({
+                            options={products.map((p: any) => ({
                                 label: p.name,
                                 value: p.id,
                             }))}

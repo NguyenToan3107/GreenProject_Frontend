@@ -17,50 +17,44 @@ const { Search } = Input;
 export default function Page() {
     const {
         variations,
-        setSearch,
         getAllVariations,
-        deleteVariation,
-        current,
-        setCategoryId,
-        totalElements
+        deleteVariation
     } = useVariationStore((state) => state);
-
-    const {categoriesTree,fetchCategories}=useCategoryStore();
-
-
-
+    const {categoriesTree,categories,getAllCategories}=useCategoryStore()
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [variation, setVariation] = useState<any | null>(null);
     const [loading,setLoading]=useState(false);
+    const [paginationVariation, setPaginationVariation] = useState({
+        current: 1,
+        total: 0,
+    });
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
-    const fetchVariations=async (page:number)=>{
+    const fetchVariations=async ()=>{
         setLoading(true);
-        const res =await getAllVariations(page);
+        const res =await getAllVariations();
         if(res!=null){
             setLoading(false);
+            setPaginationVariation({
+                ...paginationVariation,
+                total: variations.length,
+
+            });
         }
     }
 
     useEffect(() => {
         if(variations.length==0){
-           fetchVariations(current);
+           fetchVariations();
         }
         if(categoriesTree.length==0){
-            fetchCategories();
+            getAllCategories();
         }
 
     }, []);
-    const buildCategoryTree = (categories:any) => {
-        return categories.map((cat:any) => ({
-            title: cat.name,
-            value: cat.id,
-            children: cat.children ? buildCategoryTree(cat.children) : [],
-        }));
-    };
-    const categoryTreeData = buildCategoryTree(categoriesTree);
+
 
     const columns = [
         {
@@ -79,6 +73,15 @@ export default function Page() {
             render: (_: any, record: any) => (
                 <span>{record.category ? record.category.name : 'N/A'}</span>
             ),
+
+            filters: categories.map((parent:any )=> ({
+                text: parent.name,
+                value: parent.id,  // Ensure this is a string or number
+            })),
+            onFilter: (value:any, record:any) => {
+                // Assuming value is the parent ID which should match with record.parent.id
+                return record.category ? record.category.id === Number(value) : false;
+            },
         },
         {
             title: 'Created At',
@@ -142,8 +145,12 @@ export default function Page() {
         });
     };
 
-    const handleTableChange = async (pagination: { current: number; pageSize: number }) => {
-        await fetchVariations(pagination.current);
+    const handleTableChange =  (pagination: { current: number; pageSize: number }) => {
+        setPaginationVariation({
+            ...paginationVariation,
+            current: pagination.current,
+
+        });
     };
 
 
@@ -152,23 +159,9 @@ export default function Page() {
         setVariation(null);
         setIsModalOpen(true);
     }
-    const handleCategoryChange = async (value: any) => {
-        console.log(value)
-        if(value==undefined){
-            setCategoryId(0)
-        }else {
-            setCategoryId(value)
-        }
 
-        await fetchVariations(1)
 
-    };
 
-    const onSearch: SearchProps['onSearch'] =async (value, _e, info) => {
-        setSearch(value);
-        await fetchVariations(1);
-
-    }
 
     return (
         <>
@@ -197,24 +190,8 @@ export default function Page() {
                 }}
             >
                 <Row  className="flex items-center justify-between mb-4">
-                    <Col>
-                        <Search
-                            placeholder="Tìm kiếm biến thể"
-                            allowClear
-                            onSearch={onSearch}
-                        />
 
 
-                    </Col>
-                    <Col>
-                        <TreeSelect
-                            treeData={categoryTreeData}
-                            placeholder="Lọc theo danh mục"
-                            allowClear
-                            onChange={handleCategoryChange}
-                            style={{ width: 250 }}
-                        />
-                    </Col>
                     <Col className="flex justify-end">
                         <Button
                             type="primary"
@@ -233,12 +210,12 @@ export default function Page() {
                     loading={loading}
                     rowKey="id"
                     pagination={{
-                        current,
+                        current:paginationVariation.current,
                         pageSize:PAGE_SIZE,
-                        total: totalElements,
+                        total: paginationVariation.total,
                         showSizeChanger: true,
-                        onChange:async (page, size) => {
-                           await handleTableChange({ current: page, pageSize: size });
+                        onChange: (page, size) => {
+                            handleTableChange({ current: page, pageSize: size });
                         },
                     }}
                 />

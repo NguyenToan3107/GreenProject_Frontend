@@ -28,7 +28,7 @@ export default function Page() {
         totalElements
     } = useVariationOptionStore((state) => state);
 
-    const {variationsSelect,getAllVariations}=useVariationStore()
+    const {variations,getAllVariations}=useVariationStore()
 
 
 
@@ -50,8 +50,8 @@ export default function Page() {
         if(variationOptions.length==0){
             fetchOptions(current);
         }
-        if(variationsSelect.length==0){
-            getAllVariations(0)
+        if(variations.length==0){
+            getAllVariations()
         }
 
     }, []);
@@ -156,14 +156,7 @@ export default function Page() {
 
     }
 
-    async function handleSelectChange(value:any) {
-        if(value==undefined){
-            setVariationId(0)
-        }else {
-            setVariationId(value)
-        }
-        await fetchOptions(1)
-    }
+
 
     return (
         <>
@@ -192,25 +185,7 @@ export default function Page() {
                 }}
             >
                 <Row gutter={[16,16]} className="flex items-center justify-between mb-4">
-                    <Col>
-                        <Search
-                            placeholder="Tìm kiếm biến thể"
-                            allowClear
-                            onSearch={onSearch}
-                        />
-                    </Col>
-                    <Col>
-                        <Select
-                            style={{ width: '300px' }}
-                            placeholder="Chọn biến thể"
-                            options={variationsSelect.map((variation: any) => ({
-                                label: variation.name,
-                                value: variation.id,
-                            }))}
-                            allowClear
-                            onChange={handleSelectChange}
-                        />
-                    </Col>
+
                     <Col className="flex justify-end">
                         <Button
                             type="primary"

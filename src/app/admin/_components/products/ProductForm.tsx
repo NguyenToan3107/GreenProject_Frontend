@@ -75,14 +75,7 @@ export default function ProductForm({isModalOpen, setIsModalOpen, product}: Prod
         }
     };
 
-    const buildCategoryTree = (categories:any) => {
-        return categories.map((cat:any) => ({
-            title: cat.name,
-            value: cat.id,
-            children: cat.children ? buildCategoryTree(cat.children) : [],
-        }));
-    };
-    const categoryTreeData = buildCategoryTree(categoriesTree);
+
 
     return (
         <>
@@ -126,7 +119,7 @@ export default function ProductForm({isModalOpen, setIsModalOpen, product}: Prod
                     >
                         <TreeSelect
                             placeholder="Select a category"
-                            treeData={categoryTreeData}
+                            treeData={categoriesTree}
                             allowClear
                         />
                     </Form.Item>

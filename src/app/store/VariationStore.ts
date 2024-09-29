@@ -12,20 +12,15 @@ import {
 import {VariationDto} from "@/app/admin/_components/variations/VariationForm";
 
 import {handleApiRequest} from "@/app/util/utils";
-import {PAGE_SIZE} from "@/app/util/constant";
+
 
 interface VariationState {
     variations: any[];
-    variationsSelect: any[];
     variationsByproductId:any[];
     setVariationsByproductId:(v:any[])=>void;
-    search: string;
     categoryId:number;
-    current: number;
-    totalElements: number;
-    setSearch: (key: string) => void;
     setCategoryId: (key: number) => void;
-    getAllVariations: (page: number) => Promise<void>;
+    getAllVariations: () => Promise<void>;
     getAllVariationsByProductId: (productId:number) => Promise<void>;
     createVariation: (variation: VariationDto) => Promise<void>;
     updateVariation: (id: number, variation: VariationDto) => Promise<void>;
@@ -36,43 +31,23 @@ interface VariationState {
 
 export const useVariationStore=create<VariationState>((set,get)=>({
     variations:[],
-    variationsSelect:[],
     variationsByproductId:[],
-    loading: false,
-    search:"",
-    current: 1,
-    totalElements: 0,
     categoryId:0,
-
-
     setVariationsByproductId:(a:any[])=> {
         set({variationsByproductId:a})
 
     },
-    setSearch:(s)=>{
-        set({search:s})
-    },
+
     setCategoryId:(id:number)=>{
         set({categoryId:id})
     },
 
-    getAllVariations: async (page: number) => {
-        const apiCall = () => getAllVariations(page, get().search,get().categoryId);
+    getAllVariations: async () => {
+        const apiCall = () => getAllVariations();
         const onSuccess = (response: any) => {
-            if(!response.data.content){
-                set({
-                    variationsSelect:response.data,
-                })
-            }else {
-                set({
-                    variations: response.data.content,
-                    current: page,
-                    totalElements: response.data.totalElements,
-
-                });
-            }
-
-
+            set({
+                variations:response.data,
+            })
         };
 
 
@@ -90,8 +65,10 @@ export const useVariationStore=create<VariationState>((set,get)=>({
     createVariation: async (variation:VariationDto) => {
         const apiCall = () => createVariation(variation);
         const onSuccess = (response: any) => {
-            get().getAllVariations(get().current);
-            get().getAllVariations(0);
+            set({
+                variations:[...get().variations,response.data]
+            })
+
 
         };
         return await handleApiRequest(apiCall, onSuccess);
@@ -99,8 +76,13 @@ export const useVariationStore=create<VariationState>((set,get)=>({
     updateVariation:async (id:number,v:VariationDto)=>{
         const apiCall = () => updateVariationById(id, v);
         const onSuccess = (response: any) => {
-            get().getAllVariations(get().current);
-            get().getAllVariations(0);
+            const updatedVariations = get().variations.map((v: any) =>
+                v.id === id ? response.data : v
+            );
+
+            set({
+                variations: updatedVariations
+            });
 
         };
         return await handleApiRequest(apiCall, onSuccess);
@@ -108,12 +90,12 @@ export const useVariationStore=create<VariationState>((set,get)=>({
     deleteVariation:async (id:number)=>{
         const apiCall = () => deleteVariationById(id);
         const onSuccess = (response: any) => {
-            if (get().variations.length === 1 && get().current > 1) {
-                get().getAllVariations(get().current - 1);
-            } else {
-                get().getAllVariations(get().current);
-            }
-            get().getAllVariations(0);
+            const updatedVariations = get().variations.filter((v: any) => v.id !== id);
+            // Cập nhật lại danh sách categories
+            set({
+                variations: updatedVariations
+            });
+
         };
         return await handleApiRequest(apiCall, onSuccess);
     }

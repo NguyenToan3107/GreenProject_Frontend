@@ -1,9 +1,11 @@
 "use client";
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { Button, InputNumber } from "antd";
 import Link from "next/link";
+import {handleApiRequest} from "@/app/util/utils";
+import {getMyCart} from "@/apis/modules/item";
 
-// Mảng sản phẩm ban đầu
+
 const initialCartItems = [
   {
     id: 1,
@@ -31,6 +33,15 @@ const initialCartItems = [
 export default function Page() {
   // Sử dụng useState để quản lý giỏ hàng
   const [cartItems, setCartItems] = useState(initialCartItems);
+  useEffect(() => {
+    const fetchMyCart=async ()=>{
+      const apiCall=()=>getMyCart();
+      await handleApiRequest(apiCall,(response)=>{
+        console.log(response)
+      })
+    }
+    fetchMyCart()
+  }, []);
 
   // Hàm tính tổng số tiền cho mỗi sản phẩm
   const calculateTotal = (price: number, quantity: number) => {

@@ -3,17 +3,25 @@ import {CategoryDto} from "@/app/admin/_components/categories/CategoryForm";
 import {PAGE_SIZE} from "@/app/util/constant";
 
 
-export function getAllCategories(pageNum:any,search:string) {
+/*export function getAllCategories(pageNum:any,search:string) {
+    if(pageNum==0){
+        return api.get(`categories`);
+    }
     if(search.trim()!=""){
         return api.get(`categories?pageNum=${pageNum}&pageSize=${PAGE_SIZE}&search=${search.trim()}`);
-    }else {
-        return api.get(`categories?pageNum=${pageNum}&pageSize=${PAGE_SIZE}`);
     }
+    return api.get(`categories?pageNum=${pageNum}&pageSize=${PAGE_SIZE}`);
+
+
+}*/
+
+export function getAllCategories() {
+    return api.get(`categories`);
 
 }
-export function getAllCategoriesParent() {
+/*export function getAllCategoriesParent() {
     return api.get(`categories/parents`);
-}
+}*/
 
 export function createNewCategory(category:CategoryDto){
     return api.post('categories/create',category)

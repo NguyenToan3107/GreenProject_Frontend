@@ -5,6 +5,8 @@ import {useProductStore} from "@/app/store/ProductStore";
 import {useVariationStore} from "@/app/store/VariationStore";
 import {useProductItemStore} from "@/app/store/ProductItemStore";
 import {LoadingOutlined} from "@ant-design/icons";
+import {findByProductItemId} from "@/apis/modules/variation_option";
+import {handleApiRequest} from "@/app/util/utils";
 
 
 interface ProductItemFormProps {
@@ -16,11 +18,13 @@ interface ProductItemFormProps {
 export default function ProductItemForm({productItem, isModalOpen, setIsModalOpen}: ProductItemFormProps) {
 
     const [form] = Form.useForm();
-    const {productsSelect,getAllProducts}=useProductStore();
+    const {products}=useProductStore();
     const {getAllVariationsByProductId,variationsByproductId,setVariationsByproductId}=useVariationStore();
     const {createProductItem,updateProductItem}=useProductItemStore()
     const [loading,setLoading]=useState(false);
+    const [variationOptionList,setVariationOptionList]=useState<any>([])
     const [loadingVariations,setLoadingVariations]=useState(false);
+    const [initialFormValues,setInitialFormValues]=useState<any>({})
 
     useEffect(() => {
         if (!isModalOpen) {
@@ -32,29 +36,53 @@ export default function ProductItemForm({productItem, isModalOpen, setIsModalOpe
             return;
 
         }
-        const initialFormValues: any = {
+        setInitialFormValues({
             productId: productItem.product.id,
             quantity: productItem.quantity,
             price: productItem.price,
-        };
-        fetchVariations(productItem.product.id);
+        })
+        fetchData()
 
         // Set variation fields (variation_X)
-        productItem.variationOptions.forEach((variationOption: any) => {
-            initialFormValues[`variation_${variationOption.variation.id}`] = variationOption.id;
-        });
-
-
         form.setFieldsValue(initialFormValues);
 
 
 
 
     }, [isModalOpen]);
+    useEffect(() => {
+        if (variationOptionList.length > 0) {
+            const updatedFormValues = { ...initialFormValues };
+            variationOptionList.forEach((variationOption: any) => {
+                updatedFormValues[`variation_${variationOption.variation.id}`] = variationOption.id;
+            });
+            form.setFieldsValue(updatedFormValues); // Cập nhật form sau khi có dữ liệu
+        }
+    }, [variationOptionList]);
+
+
     const fetchVariations = async (productId:number) => {
+         await getAllVariationsByProductId(productId);
+
+    };
+
+    const fetchOptionProductItem = async () => {const callApi = () => findByProductItemId(productItem.id);
+       await handleApiRequest(callApi, (res) => {
+            setVariationOptionList(res.data);
+        });
+
+    };
+
+
+    const fetchData = async () => {
         setLoadingVariations(true);
-        await getAllVariationsByProductId(productId);
-        setLoadingVariations(false);
+        try {
+            await Promise.all([fetchVariations(productItem.product.id), fetchOptionProductItem()]);
+        } catch (error) {
+            console.error("Lỗi khi tải dữ liệu:", error);
+        } finally {
+            setLoadingVariations(false);
+        }
     };
 
 
@@ -88,7 +116,7 @@ export default function ProductItemForm({productItem, isModalOpen, setIsModalOpe
 
 
         if (setIsModalOpen&&res){
-            setIsModalOpen(false);
+            //setIsModalOpen(false);
         }
 
     }
@@ -106,8 +134,9 @@ export default function ProductItemForm({productItem, isModalOpen, setIsModalOpe
 
 
     async function handleChangeSelect(value:any) {
-        console.log(value)
+        setLoadingVariations(true);
         await fetchVariations(value);
+        setLoadingVariations(false);
 
     }
 
@@ -146,7 +175,7 @@ export default function ProductItemForm({productItem, isModalOpen, setIsModalOpe
                                     onChange={handleChangeSelect}
                                     disabled={!!productItem}
                                     placeholder="Chọn sản phẩm"
-                                    options={productsSelect.map((p: any) => ({
+                                    options={products.map((p: any) => ({
                                         label: p.name,
                                         value: p.id,
                                     }))}
