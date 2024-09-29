@@ -79,8 +79,10 @@ const ProductInfoComponent:React.FC<any> = ({ product,productItems }) => {
             });
 
             /*------------------------------------- */
-            //setCurrentProductItemId(foundProductItem.id)
-            //console.log(currentProductItemId)
+            if(foundProductItem){
+                setCurrentProductItemId(foundProductItem.id)
+                console.log(foundProductItem)
+            }
             /*------------------------------------- */
 
 

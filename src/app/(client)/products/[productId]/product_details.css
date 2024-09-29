@@ -38,12 +38,6 @@ input[type="number"] {
     -webkit-appearance: none;
   }
 
-
-
-  .review-container {
-    display: flex;
-    align-items: center;
-  }
   
   .avatar-container {
     margin-right: 8px; /* Khoảng cách giữa ảnh và TextArea */

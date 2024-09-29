@@ -16,7 +16,7 @@ const RelatedProductComponent: React.FC<{ relatedProduct: any[] }> = ({ relatedP
                             key={product.id} // Add a unique key prop here
                             hoverable
                             style={{ width: 230, height: 350 }}
-                            cover={<img src={product.images[0].url} alt={product.name}  style={{
+                            cover={<img src={product.imageCover} alt={product.name}  style={{
                                 width: '100%', 
                                 height: '240px', 
                                 objectFit: 'cover'

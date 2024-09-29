@@ -30,11 +30,14 @@ export default function page({params}:any) {
 
             if (productRes.code === 200) {
                 setProduct(productRes.data);
+
+                getRelatedProduct(1,productRes.data.category.id)
             }
 
             if (productItemsRes.code === 200) {
                 setProductItems(productItemsRes.data);
             }
+
 
         } catch (error) {
             console.error("Error fetching product data:", error);

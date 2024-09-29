@@ -1,7 +1,7 @@
 "use client"
 import React from 'react';
 import {useEffect, useState} from 'react';
-import { Flex, Row, Col, Rate, Pagination, Input,Image } from 'antd';
+import { Flex, Row, Col, Rate, Pagination, Input,Image ,Menu} from 'antd';
 import {useReviewStore} from "@/app/store/ReviewStore";
 
 
@@ -9,7 +9,7 @@ const { TextArea } = Input;
 
 const ReviewComponent = () => {
 
-    const [rating, setRating] = useState(5); // Giá trị sao mặc định
+    const [rating, setRating] = useState(0); // Giá trị sao mặc định
     const [content, setContent] = useState(''); // Nội dung đánh giá
 
     const {
@@ -25,6 +25,7 @@ const ReviewComponent = () => {
     } = useReviewStore();
 
     useEffect(() => {
+        console.log(currentProductItemId)
         if (currentProductItemId > 0) {
             getAllReviewsByProductItemId()
         }
@@ -45,6 +46,11 @@ const ReviewComponent = () => {
      const handleSubmit = () => {
         console.log('Rating:', rating);
         console.log('Content:', content);
+
+        createReview({rating:rating,content:content,productItemId:currentProductItemId},currentProductItemId)
+
+        setRating(0)
+        setContent("")
     }
 
      const onPageChange = (page: any) => {
@@ -60,20 +66,28 @@ const ReviewComponent = () => {
                     <span style={{ fontSize: '1.6rem', fontWeight: '700' }}>4.89</span>
                     <div className="star">
                         <Rate allowHalf 
-                        value={rating} 
-                        onChange={setRating}  />
+                        value={4.89} 
+                        disabled  />
                     </div>
                 </Flex>
-                <div className="review-container">
+                <Flex className="review-container" align='start' gap={'small'}>
+
                     <div className="avatar-container">
                         <Image src="https://cdn-icons-png.flaticon.com/128/17286/17286792.png" alt="Avatar" className="avatar" />
                     </div>
-                    <TextArea 
-                    placeholder="Nhập đánh giá" 
-                    className="custom-textarea"
-                    value={content} // Gán giá trị nội dung
-                    onChange={(e) => setContent(e.target.value)} />
-                </div>
+                    <Flex vertical style={{width:'100%'}} gap={"small"}>
+                        <div className="star">
+                            <Rate allowHalf 
+                            value={rating} 
+                            onChange={setRating}  />
+                        </div>
+                        <TextArea 
+                        placeholder="Nhập đánh giá" 
+                        className="custom-textarea"
+                        value={content} // Gán giá trị nội dung
+                        onChange={(e) => setContent(e.target.value)} />
+                    </Flex>
+                </Flex>
                 <button className='review-button' onClick={handleSubmit}>Đánh giá</button>
 
                 <Flex vertical gap={"middle"}>
@@ -82,26 +96,31 @@ const ReviewComponent = () => {
                     </Flex>
 
                     {/* List of reviews */}
-                    {reviews.map((review, index) => (
-                        <Row key={index} style={{ borderBottom: '1px solid #8c8b8b85', paddingBottom: '1rem' }}>
-                            <Col span={18} push={6}>
-                                <Flex vertical gap={"small"}>
-                                    <Flex justify='space-between'>
-                                        <div>{review.user.username}</div>
-                                        <time>12:30 15/11/2024</time>
+                    
+                    {reviews && reviews.length > 0 ? (
+                        reviews.map((review, index) => (
+                            <Row key={index} style={{ borderBottom: '1px solid #8c8b8b85', paddingBottom: '1rem' }}>
+                                <Col span={18} push={6}>
+                                    <Flex vertical gap={"small"}>
+                                        <Flex justify='space-between'>
+                                            <div>{review.user.username}</div>
+                                            <time>12:30 15/11/2024</time>
+                                        </Flex>
+                                        <Flex className="star" gap={'small'}>
+                                            <Rate allowHalf value={review.rating} disabled />
+                                        </Flex>
+                                        <p>{review.content}</p>
                                     </Flex>
-                                    <Flex className="star" gap={'small'}>
-                                        <Rate allowHalf value={review.rating}  disabled />
-                                    </Flex>
-                                    <p>{review.content}</p>
-                                </Flex>
-                            </Col>
-                            <Col span={6} pull={18}>
-                                <Image src="https://cdn-icons-png.flaticon.com/128/17286/17286792.png" alt="Avatar" className="avatar" />
-                                {/* <Image src="public/client/user/default_user.jpg" alt="Avatar" className="avatar" /> */}
-                            </Col>
-                        </Row>
-                    ))}
+                                </Col>
+                                <Col span={6} pull={18}>
+                                    <Image src="https://cdn-icons-png.flaticon.com/128/17286/17286792.png" alt="Avatar" className="avatar" />
+                                </Col>
+                            </Row>
+                        ))
+                    ) : (
+                        <p>Không có bình luận nào</p> // Hiển thị thông báo khi không có bình luận
+                    )}
+
 
                     <Pagination
                         style={{ marginTop: '1rem' }}
