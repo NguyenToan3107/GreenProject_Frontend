@@ -2,6 +2,7 @@
 import {create} from "zustand";
 import {handleApiRequest} from "@/app/util/utils";
 import {createVoucher,getAllVouchers,updateVoucherById,deleteVoucherById} from "@/apis/modules/voucher";
+import {PAGE_SIZE} from "@/app/util/constant";
 
 interface VoucherState {
     vouchers: any[];
@@ -44,26 +45,42 @@ export const useVoucherStore=create<VoucherState>((set,get)=>({
     createVoucher: async (voucher:any) => {
         const apiCall = () => createVoucher(voucher);
         const onSuccess = (response: any) => {
-            get().getAllVouchers(get().current);
+            if(get().vouchers.length<PAGE_SIZE){
+                set({
+                    vouchers:[...get().vouchers,response.data],
+                })
+                return;
+            }
+            get().getAllVouchers(get().current + 1);
         };
         return await handleApiRequest(apiCall, onSuccess);
     },
     updateVoucher:async (id:number,voucher:any)=>{
         const apiCall = () => updateVoucherById(id, voucher);
         const onSuccess = (response: any) => {
-            get().getAllVouchers(get().current);
+            const updated = get().vouchers.map((op: any) =>
+                op.id === id ? response.data : op
+            );
+
+            set({
+                vouchers: updated
+            });
         };
         return await handleApiRequest(apiCall, onSuccess);
     },
     deleteVoucher:async (id:number)=>{
         const apiCall = () => deleteVoucherById(id);
         const onSuccess = (response: any) => {
+            const updated = get().vouchers.filter((op: any) => op.id !== id);
+
             if (get().vouchers.length === 1 && get().current > 1) {
                 get().getAllVouchers(get().current - 1);
-            } else {
-
-                get().getAllVouchers(get().current);
+                return;
             }
+            set({
+                vouchers: updated,
+
+            });
         };
         return await handleApiRequest(apiCall, onSuccess);
     }

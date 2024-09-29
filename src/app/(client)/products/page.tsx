@@ -26,6 +26,7 @@ import {
 } from "@/apis/modules/product";
 import Link from "next/link";
 import { getAllCategoriesParent } from "@/apis/modules/category";
+import {handleApiRequest} from "@/app/util/utils";
 
 const sortOptions = (
   <Menu>
@@ -47,7 +48,9 @@ export default function page() {
 
   const fetchProduct = async (page: number) => {
     setLoading(true);
-    const res: any = await getAllProductsView(page);
+    const apiCall=()=>getAllProductsView(page);
+
+    const res: any = await handleApiRequest(apiCall,()=>{})
     setLoading(false);
     if (res.code == 200) {
       console.log(res);
@@ -57,9 +60,9 @@ export default function page() {
     }
   };
 
-  const fetchProductOnTopSold = async (limit: number) => {
+  const fetchProductOnTopSold = async () => {
     setLoading(true);
-    const res: any = await getProductOnTopSold(limit);
+    const res: any = await getProductOnTopSold();
     setLoading(false);
     if (res.code == 200) {
       console.log(res);
@@ -90,7 +93,7 @@ export default function page() {
     console.log(buttonType);
     if (buttonType == "latest") {
     } else if (buttonType == "best-seller") {
-      await fetchProductOnTopSold(15);
+      await fetchProductOnTopSold();
     } else {
       await fetchProduct(1);
     }

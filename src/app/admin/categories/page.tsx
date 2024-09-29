@@ -1,48 +1,56 @@
 "use client"
 import React, { useEffect, useState } from "react";
-import {Button, Col, Input, Modal, Popconfirm, Row, Table, theme, Upload} from "antd";
+import {Button, Col, Input, Modal, Row, Table, theme} from "antd";
 import CategoryForm from "@/app/admin/_components/categories/CategoryForm";
 import { Header } from "antd/es/layout/layout";
 import { Category } from "@/app/model/Category";
-import {DeleteOutlined, EditOutlined, UploadOutlined} from "@ant-design/icons";
+import {DeleteOutlined, EditOutlined, SearchOutlined} from "@ant-design/icons";
 import { useCategoryStore } from "@/app/store/CategoryStore";
-import { SearchProps } from "antd/es/input";
+import removeAccents from 'remove-accents';
 import {PAGE_SIZE} from "@/app/util/constant";
-
-
+import {Key} from "antd/es/table/interface";
 const { confirm } = Modal;
-const { Search } = Input;
+
 
 export default function Page() {
     const {
         categories,
         deleteCategory,
         getAllCategories,
-        setSearch,
-        current,
-        totalElements
     } = useCategoryStore((state) => state);
     const [loading,setLoading]=useState(false);
-
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [category, setCategory] = useState<Category | null>(null);
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
-    const fetchCategories=async (page:number)=>{
+    const [paginationCategory, setPaginationCategory] = useState({
+        current: 1,
+        total: 0,
+    });
+
+
+
+    const fetchCategories=async ()=>{
         setLoading(true);
-        const res = await getAllCategories(page);
+        const res = await getAllCategories();
         if(res!=null){
             setLoading(false);
+            setPaginationCategory({
+                ...paginationCategory,
+                total: categories.length,
+
+            });
         }
     }
     useEffect(() => {
-
         if(categories.length==0){
-           fetchCategories(current);
+           fetchCategories();
         }
 
     }, []);
+
+
 
     const columns = [
         {
@@ -53,6 +61,33 @@ export default function Page() {
         {
             title: 'Name',
             dataIndex: 'name',
+            filterDropdown: ({
+                                 setSelectedKeys,
+                                 selectedKeys,
+                                 confirm,
+                             }: any) => {
+                return (
+                    <Input
+                        autoFocus
+                        placeholder="Nhập văn bản ở đây"
+                        value={selectedKeys[0]}
+                        onChange={(e) => {
+                            setSelectedKeys(e.target.value ? [e.target.value] : []);
+                            confirm({ closeDropdown: false });
+                        }}
+                        onPressEnter={() => {
+                            confirm();
+                        }}
+                        onBlur={() => {
+                            confirm();
+                        }}
+                    />
+                );
+            },
+            filterIcon: () => <SearchOutlined />,
+            onFilter: (value: any, record: any) => {
+                return removeAccents(record.name.toLowerCase()).includes(removeAccents(value.toLowerCase()));
+            },
             key: 'name',
         },
         {
@@ -61,6 +96,14 @@ export default function Page() {
             render: (_: any, record: Category) => (
                 <span>{record.parent ? record.parent.name : 'N/A'}</span>
             ),
+            filters: categories.map((parent:any )=> ({
+                text: parent.name,
+                value: parent.id,  // Ensure this is a string or number
+            })),
+            onFilter: (value:any, record:any) => {
+                // Assuming value is the parent ID which should match with record.parent.id
+                return record.parent ? record.parent.id === Number(value) : false;
+            },
         },
         {
             title: 'Created At',
@@ -77,9 +120,8 @@ export default function Page() {
         {
             title: 'Action',
             key: 'action',
-            align: 'right' as const,
             render: (_: any, record: Category) => (
-                <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+                <div style={{ display: 'flex', gap: '8px' }}>
                     <Button
                         type="primary"
                         icon={<EditOutlined />}
@@ -117,8 +159,6 @@ export default function Page() {
             cancelText: 'Không',
             onOk: async () => {
                 await deleteCategory(record.id);
-
-
             },
             onCancel() {
                 console.log('Hủy bỏ xóa');
@@ -126,8 +166,12 @@ export default function Page() {
         });
     };
 
-    const handleTableChange = async (pagination: { current: number; pageSize: number }) => {
-        await fetchCategories(pagination.current);
+    const handleTableChange =  (pagination: { current: number; pageSize: number }) => {
+        setPaginationCategory({
+            ...paginationCategory,
+            current: pagination.current,
+
+        });
     };
 
 
@@ -137,11 +181,8 @@ export default function Page() {
         setIsModalOpen(true);
     }
 
-    const onSearch: SearchProps['onSearch'] =async (value, _e, info) => {
-        setSearch(value);
-        await fetchCategories(1);
 
-    }
+
 
     return (
         <>
@@ -170,13 +211,7 @@ export default function Page() {
                 }}
             >
                 <Row gutter={16} className="flex items-center justify-between mb-4">
-                    <Col>
-                        <Search
-                            placeholder="Tìm kiếm danh mục"
-                            allowClear
-                            onSearch={onSearch}
-                        />
-                    </Col>
+
                     <Col className="flex justify-end">
                         <Button
                             type="primary"
@@ -195,12 +230,12 @@ export default function Page() {
                     loading={loading}
                     rowKey="id"
                     pagination={{
-                        current,
+                        current:paginationCategory.current,
                         pageSize:PAGE_SIZE,
-                        total: totalElements,
+                        total: paginationCategory.total,
                         showSizeChanger: true,
-                        onChange:async (page, size) => {
-                            await handleTableChange({ current: page, pageSize: size });
+                        onChange: (page, size) => {
+                             handleTableChange({ current: page, pageSize: size });
                         },
                     }}
                 />

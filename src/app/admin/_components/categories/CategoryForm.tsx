@@ -19,14 +19,8 @@ export default function CategoryForm({
                                          setIsModalOpen,
                                      }: CategoryModalProps) {
     const [form] = Form.useForm();
-    const { categoriesTree, createCategory, updateCategory,fetchCategories } = useCategoryStore();
+    const { categoriesTree, createCategory, updateCategory } = useCategoryStore();
     const [loading,setLoading]=useState(false);
-    useEffect(() => {
-        if(categoriesTree.length==0){
-            fetchCategories();
-        }
-    }, []);
-
     const handleCancel = () => {
         if (isModalOpen && setIsModalOpen) {
             setIsModalOpen(false);
@@ -45,10 +39,12 @@ export default function CategoryForm({
             name: category.name,
             parentId: category.parent ? category.parent.id : null,
         });
-    }, [isModalOpen]);
+
+    }, [isModalOpen,categoriesTree]);
+
+
 
     const handleOk = async () => {
-
         const values = await form.validateFields();
         let res;
         setLoading(true);
@@ -62,14 +58,7 @@ export default function CategoryForm({
             setIsModalOpen(false);
         }
     };
-    const buildCategoryTree = (categories:any) => {
-        return categories.map((cat:any) => ({
-            title: cat.name,
-            value: cat.id,
-            children: cat.children ? buildCategoryTree(cat.children) : [],
-        }));
-    };
-    const categoryTreeData = buildCategoryTree(categoriesTree);
+
 
     return (
         <Modal title={category ? "Cập nhật danh mục" : "Tạo mới danh mục"}
@@ -90,7 +79,7 @@ export default function CategoryForm({
 
                     <Form.Item label="Danh mục cha" name="parentId">
                         <TreeSelect
-                            treeData={categoryTreeData}
+                            treeData={categoriesTree}
                             placeholder="Chọn danh mục cha"
                             allowClear
 

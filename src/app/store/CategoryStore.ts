@@ -5,25 +5,56 @@ import {
     createNewCategory,
     updateCategoryById,
     deleteCategoryById,
-    getAllCategoriesParent
 } from "@/apis/modules/category";
 import { Category } from "@/app/model/Category";
 import { CategoryDto } from "@/app/admin/_components/categories/CategoryForm";
 import {handleApiRequest} from "@/app/util/utils";
+const buildCategoryTree = (categories: any):any => {
+    const categoryMap: { [key: number]: any } = {};
+    const clonedCategories = categories.map((category:any) => ({
+        ...category,
+        children: [],
+    }));
+
+    clonedCategories.forEach((category:any) => {
+        categoryMap[category.id] = category;
+    });
+
+    const tree: any[] = [];
+    clonedCategories.forEach((category:any) => {
+        if (category.parent === null) {
+            // Root category
+            tree.push(category);
+        } else {
+            const parent = categoryMap[category.parent.id];
+            if (parent) {
+                parent.children.push(category);
+            }
+        }
+    });
+    const buildSelectTree=(categories:any)=>{
+        return categories.map((cat:any) => ({
+            title: cat.name,
+            value: cat.id,
+            children:
+                cat.children && cat.children.length > 0
+                    ? buildSelectTree(cat.children)
+                    : undefined,
+        }));
+    }
+    return buildSelectTree(tree);
+
+
+};
 
 interface CategoryState {
     categoriesTree: any[];
     categories: Category[];
-    loading: boolean;
-    search: string;
-    current: number;
-    totalElements: number;
-    setSearch: (key: string) => void;
-    fetchCategories: () => Promise<void>;
-    getAllCategories: (page: number) => Promise<void>;
+    getAllCategories: () => Promise<void>;
     createCategory: (newCategory: CategoryDto) => Promise<void>;
     updateCategory: (id: number, category: CategoryDto) => Promise<void>;
     deleteCategory: (id: number) => Promise<void>;
+
 
 
 }
@@ -31,39 +62,17 @@ interface CategoryState {
 export const useCategoryStore = create<CategoryState>((set, get) => ({
     categoriesTree: [],
     categories: [],
-    loading: false,
-    search: "",
-    current: 1,
-    totalElements: 0,
 
 
 
-
-
-    setSearch: (key: string) => {
-        set({ search: key });
-    },
-
-
-    fetchCategories: async () => {
-        const apiCall = () => getAllCategoriesParent();
+    getAllCategories: async () => {
+        const apiCall = () => getAllCategories();
         const onSuccess = (response: any) => {
             set({
-                categoriesTree: response.data,
+                categories: response.data,
+                categoriesTree: buildCategoryTree(response.data),
             });
-        };
-        return await handleApiRequest(apiCall, onSuccess);
-    },
 
-
-    getAllCategories: async (page: number) => {
-        const apiCall = () => getAllCategories(page, get().search);
-        const onSuccess = (response: any) => {
-            set({
-                categories: response.data.content,
-                current: page,
-                totalElements: response.data.totalElements,
-            });
         };
         return await handleApiRequest(apiCall, onSuccess);
     },
@@ -72,8 +81,12 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
     createCategory: async (newCategory: CategoryDto) => {
         const apiCall = () => createNewCategory(newCategory);
         const onSuccess = (response: any) => {
-            get().getAllCategories(get().current);
-            get().fetchCategories();
+            const updatedCategories = [...get().categories, response.data];
+            set({
+                categories:updatedCategories,
+                categoriesTree: buildCategoryTree(updatedCategories),
+            })
+
 
         };
         return await handleApiRequest(apiCall, onSuccess);
@@ -83,8 +96,15 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
     updateCategory: async (id: number, category: CategoryDto) => {
         const apiCall = () => updateCategoryById(id, category);
         const onSuccess = (response: any) => {
-            get().getAllCategories(get().current);
-            get().fetchCategories();
+            const updatedCategories = get().categories.map((cat) =>
+                cat.id === id ? response.data : cat
+            );
+            set({
+                categories: updatedCategories,
+                categoriesTree: buildCategoryTree(updatedCategories),
+            });
+
+
 
         };
         return await handleApiRequest(apiCall, onSuccess);
@@ -94,13 +114,12 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
     deleteCategory: async (id: number) => {
         const apiCall = () => deleteCategoryById(id);
         const onSuccess = (response: any) => {
-            if (get().categories.length === 1 && get().current > 1) {
-                get().getAllCategories(get().current - 1);
-            } else {
+            const updatedCategories = get().categories.filter((cat) => cat.id !== id);
+            set({
+                categories: updatedCategories,
+                categoriesTree: buildCategoryTree(updatedCategories),
+            });
 
-                get().getAllCategories(get().current);
-            }
-            get().fetchCategories();
         };
         return await handleApiRequest(apiCall, onSuccess);
     },

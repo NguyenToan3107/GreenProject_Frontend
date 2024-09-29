@@ -18,6 +18,11 @@ export function getAllVariationOptions(pageNum:number,search:string,variationId:
 
 
 }
+export function findByProductItemId(productItemId:number){
+    return api.get(`variation_options/product_item/${productItemId}`)
+}
+
+
 export function createVariationOption(variation:VariationOptionDto){
     return api.post('variation_options/create',variation)
 }

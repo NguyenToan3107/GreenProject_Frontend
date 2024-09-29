@@ -7,6 +7,7 @@ import {
     getAllProductItems,
     updateProductItemById
 } from "@/apis/modules/product_item";
+import {PAGE_SIZE} from "@/app/util/constant";
 
 interface ProductItemState {
     productItems: any[];
@@ -53,7 +54,13 @@ export const useProductItemStore = create<ProductItemState>((set, get) => ({
     createProductItem: async (productItem: any) => {
         const apiCall = () => createNewProductItem(productItem);
         const onSuccess = (response: any) =>{
-            get().getAllProductItems(get().current)
+            if(get().productItems.length<PAGE_SIZE){
+                set({
+                    productItems:[...get().productItems,response.data],
+                })
+                return;
+            }
+            get().getAllProductItems(get().current + 1);
 
 
         }
@@ -63,7 +70,13 @@ export const useProductItemStore = create<ProductItemState>((set, get) => ({
     updateProductItem: async (id: number, productItem: any) => {
         const apiCall = () => updateProductItemById(id, productItem);
         const onSuccess = (response: any) => {
-            get().getAllProductItems(get().current)
+            const updated = get().productItems.map((op: any) =>
+                op.id === id ? response.data : op
+            );
+
+            set({
+                productItems: updated
+            });
         }
         return await handleApiRequest(apiCall, onSuccess);
     },
@@ -71,12 +84,16 @@ export const useProductItemStore = create<ProductItemState>((set, get) => ({
     deleteProductItem: async (id: number) => {
         const apiCall = () => deleteProductItemById(id);
         const onSuccess = (response: any) => {
+            const updated = get().productItems.filter((op: any) => op.id !== id);
+
             if (get().productItems.length === 1 && get().current > 1) {
                 get().getAllProductItems(get().current - 1);
-            } else {
-
-                get().getAllProductItems(get().current);
+                return;
             }
+            set({
+                productItems: updated,
+
+            });
         }
         return await handleApiRequest(apiCall, onSuccess);
     },

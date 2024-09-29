@@ -19,6 +19,7 @@ export const handleApiRequest = async (
     try {
         console.log("call api")
         const response = await apiCall();
+        console.log(response)
         if (response.code === 200 || response.code === 201) {
             //message.success(response.message);
             onSuccess(response);
@@ -28,6 +29,7 @@ export const handleApiRequest = async (
         return response;
     } catch (error: any) {
         //message.error(error.response?.message || "Error occurred");
+
 
          showAlert(error.response?.message || "Error occurred");
 

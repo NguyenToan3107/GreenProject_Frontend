@@ -21,7 +21,7 @@ export default function OptionForm({
                                           setIsModalOpen,
                                       }: VariationOptionModalProps) {
     const [form] = Form.useForm();
-    const { variationsSelect,getAllVariations } = useVariationStore();
+    const { variations,getAllVariations } = useVariationStore();
     const { updateVariationOption,createVariationOption } = useVariationOptionStore();
     const [loading,setLoading]=useState(false);
 
@@ -87,7 +87,7 @@ export default function OptionForm({
                     <Form.Item label="Chọn biến thể" name="variationId" rules={[{ required: true, message: 'Vui lòng chọn biến thể!' }]}>
                         <Select
                             placeholder="Chọn biến thể"
-                            options={variationsSelect.map((variation: any) => ({
+                            options={variations.map((variation: any) => ({
                                 label: variation.name,
                                 value: variation.id,
                             }))}

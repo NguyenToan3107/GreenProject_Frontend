@@ -3,7 +3,7 @@ import {ProductDto} from "@/app/admin/_components/products/ProductForm";
 import {PAGE_SIZE, PRODUCT_ITEM_PAGE_SIZE,TOP_SOLD_PAGE_NUM,TOP_SOLD_PAGE_SIZE} from "@/app/util/constant";
 
 
-export function getAllProducts(pageNum:number,search:string,categoryId:number) {
+/*export function getAllProducts(pageNum:number,search:string,categoryId:number) {
     if(pageNum==0){
         return api.get("products");
     }
@@ -23,7 +23,13 @@ export function getAllProducts(pageNum:number,search:string,categoryId:number) {
     return api.get(`products?pageNum=${pageNum}&pageSize=${PAGE_SIZE}`);
 
 
+}*/
+
+export function getAllProducts(){
+    return api.get("products");
 }
+
+
 export function getAllRelatedProduct(pageNum:number,categoryId:number){
     return api.get(`products/related_product?pageNum=${pageNum}&pageSize=${PAGE_SIZE}&categoryId=${categoryId}`);
 }

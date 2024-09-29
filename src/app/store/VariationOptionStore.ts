@@ -6,6 +6,7 @@ import {
     getAllVariationOptions,
     updateVariationOptionById
 } from "@/apis/modules/variation_option";
+import {PAGE_SIZE} from "@/app/util/constant";
 
 interface VariationOptionState {
     variationOptions: any[];
@@ -19,6 +20,7 @@ interface VariationOptionState {
     deleteVariationOption: (id: number) => Promise<void>;
     current: number;
     totalElements: number;
+
 
 }
 
@@ -43,7 +45,6 @@ export const useVariationOptionStore=create<VariationOptionState>((set,get)=>({
                 variationOptions: response.data.content,
                 current: page,
                 totalElements: response.data.totalElements,
-
             });
         };
         return await handleApiRequest(apiCall, onSuccess);
@@ -51,7 +52,15 @@ export const useVariationOptionStore=create<VariationOptionState>((set,get)=>({
     createVariationOption: async (option:VariationOptionDto) => {
         const apiCall = () => createVariationOption(option);
         const onSuccess = (response: any) => {
-            get().getAllVariationOptions(get().current);
+            if(get().variationOptions.length<PAGE_SIZE){
+                set({
+                    variationOptions:[...get().variationOptions,response.data],
+                })
+                return;
+            }
+            get().getAllVariationOptions(get().current + 1);
+
+
 
         };
         return await handleApiRequest(apiCall, onSuccess);
@@ -59,19 +68,32 @@ export const useVariationOptionStore=create<VariationOptionState>((set,get)=>({
     updateVariationOption:async (id:number,option:VariationOptionDto)=>{
         const apiCall = () => updateVariationOptionById(id, option);
         const onSuccess = (response: any) => {
-            get().getAllVariationOptions(get().current);
+            const updated = get().variationOptions.map((op: any) =>
+                op.id === id ? response.data : op
+            );
+
+            set({
+                variationOptions: updated
+            });
+
         };
         return await handleApiRequest(apiCall, onSuccess);
     },
     deleteVariationOption:async (id:number)=>{
         const apiCall = () => deleteVariationOptionById(id);
         const onSuccess = (response: any) => {
+
+            const updated = get().variationOptions.filter((op: any) => op.id !== id);
+
             if (get().variationOptions.length === 1 && get().current > 1) {
                 get().getAllVariationOptions(get().current - 1);
-            } else {
-
-                get().getAllVariationOptions(get().current);
+                return;
             }
+            set({
+                variationOptions: updated,
+
+            });
+
         };
         return await handleApiRequest(apiCall, onSuccess);
     }

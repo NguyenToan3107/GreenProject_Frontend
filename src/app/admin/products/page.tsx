@@ -22,16 +22,17 @@ export default function Page() {
     const {
         products,
         getAllProducts,
-        deleteProduct,
-        setSearch,
-        setCategoryId,
-        current,
-        totalElements
+        deleteProduct
     } = useProductStore((state) => state);
     const [loading,setLoading]=useState(false);
 
     const {setProductId}=useImageStore((state) => state);
-    const {categoriesTree,fetchCategories}=useCategoryStore()
+    const {categoriesTree,getAllCategories}=useCategoryStore();
+
+    const [paginationProducts, setPaginationProducts] = useState({
+        current: 1,
+        total: 0,
+    });
 
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -114,31 +115,31 @@ export default function Page() {
             ),
         },
     ];
-    const fetchProduct=async (page:number)=>{
+    const fetchProduct=async ()=>{
         setLoading(true);
-        const res =await getAllProducts(page);
+        const res = await getAllProducts();
         if(res!=null){
             setLoading(false);
+            setPaginationProducts({
+                ...paginationProducts,
+                total: products.length,
+
+            });
+
         }
     }
 
     useEffect(() => {
         if(products.length==0){
-           fetchProduct(current);
+           fetchProduct();
         }
         if(categoriesTree.length==0){
-            fetchCategories();
+            getAllCategories();
         }
 
+
     }, []);
-    const buildCategoryTree = (categories:any) => {
-        return categories.map((cat:any) => ({
-            title: cat.name,
-            value: cat.id,
-            children: cat.children ? buildCategoryTree(cat.children) : [],
-        }));
-    };
-    const categoryTreeData = buildCategoryTree(categoriesTree);
+
 
     function handleUploadImage(record: Product) {
         setProductId(record.id)
@@ -167,21 +168,15 @@ export default function Page() {
         });
     };
 
-    const handleTableChange = async (pagination: { current: number; pageSize: number }) => {
-        await fetchProduct(pagination.current);
+    const handleTableChange =  (pagination: { current: number; pageSize: number }) => {
+        setPaginationProducts({
+            ...paginationProducts,
+            current: pagination.current,
+
+        });
     };
 
-    const handleCategoryChange = async (value: any) => {
-        console.log(value)
-        if(value==undefined){
-            setCategoryId(0)
-        }else {
-            setCategoryId(value)
-        }
 
-        await fetchProduct(1)
-
-    };
 
 
 
@@ -190,11 +185,7 @@ export default function Page() {
         setIsModalOpen(true);
     }
 
-    const onSearch: SearchProps['onSearch'] =async (value, _e, info) => {
-        setSearch(value);
-        await fetchProduct(1);
 
-    }
 
 
     return (
@@ -224,22 +215,7 @@ export default function Page() {
                 }}
             >
                 <Row gutter={16} className="flex items-center justify-between mb-4">
-                    <Col>
-                        <Search
-                            placeholder="Tìm kiếm sản phẩm"
-                            allowClear
-                            onSearch={onSearch}
-                        />
-                    </Col>
-                    <Col>
-                        <TreeSelect
-                            treeData={categoryTreeData}
-                            placeholder="Lọc theo danh mục"
-                            allowClear
-                            onChange={handleCategoryChange}
-                            style={{ width: 250 }}
-                        />
-                    </Col>
+
                     <Col className="flex justify-end">
                         <Button
                             type="primary"
@@ -258,12 +234,12 @@ export default function Page() {
                     loading={loading}
                     rowKey="id"
                     pagination={{
-                        current,
+                        current:paginationProducts.current,
                         pageSize:PAGE_SIZE,
-                        total: totalElements,
+                        total: paginationProducts.total,
                         showSizeChanger: true,
-                        onChange: async (page, size) => {
-                           await handleTableChange({ current: page, pageSize: size });
+                        onChange:  (page, size) => {
+                            handleTableChange({ current: page, pageSize: size });
                         },
                     }}
                 />

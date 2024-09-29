@@ -21,7 +21,7 @@ export default function VariationForm({
                                      }: VariationModalProps) {
     const [form] = Form.useForm();
     const { createVariation, updateVariation } = useVariationStore();
-    const { categoriesTree, fetchCategories } = useCategoryStore();
+    const { categoriesTree } = useCategoryStore();
     const [loading,setLoading]=useState(false);
 
 
@@ -63,14 +63,7 @@ export default function VariationForm({
 
         }
     };
-    const buildCategoryTree = (categories:any) => {
-        return categories.map((cat:any) => ({
-            title: cat.name,
-            value: cat.id,
-            children: cat.children ? buildCategoryTree(cat.children) : [],
-        }));
-    };
-    const categoryTreeData = buildCategoryTree(categoriesTree);
+
 
     return (
         <Modal title={variation ? "Cập nhật biến thể" : "Tạo mới biến thể"}
@@ -89,9 +82,9 @@ export default function VariationForm({
                     </Form.Item>
 
 
-                    <Form.Item label="Danh mục" name="categoryId">
+                    <Form.Item label="Danh mục" name="categoryId" rules={[{ required: true, message: 'Vui lòng chọn category!' }]}>
                         <TreeSelect
-                            treeData={categoryTreeData}
+                            treeData={categoriesTree}
                             placeholder="Chọn danh mục"
                             allowClear
 

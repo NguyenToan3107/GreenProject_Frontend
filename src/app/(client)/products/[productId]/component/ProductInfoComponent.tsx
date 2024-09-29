@@ -1,9 +1,11 @@
 "use client"
 import {useEffect, useState} from 'react';
 import React from 'react';
-import { Flex, Rate, Button,Radio } from 'antd';
+import {Flex, Rate, Button, Radio, message} from 'antd';
 import {MinusOutlined, PlusOutlined, ShoppingCartOutlined, StockOutlined, TagOutlined} from '@ant-design/icons';
 import {DeepSet} from "@/app/util/DeepSet";
+import {addCart} from "@/apis/modules/item";
+import {handleApiRequest} from "@/app/util/utils";
 
 const ProductInfoComponent:React.FC<any> = ({ product }) => {
     const [qty,setQty]=useState(1);
@@ -91,7 +93,21 @@ const ProductInfoComponent:React.FC<any> = ({ product }) => {
     };
 
 
-    function handleAddCart() {
+    async function handleAddCart() {
+        if(!productItem){
+            message.warning("Chưa có mặt hàng này!")
+            return;
+        }
+
+        const data:any={productItemId:productItem.id,quantity:qty}
+        const apiCall=()=> addCart(data);
+        await handleApiRequest(apiCall,(response)=>{
+            console.log(response)
+        })
+
+
+
+
 
     }
 
