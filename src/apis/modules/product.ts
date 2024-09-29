@@ -3,7 +3,7 @@ import {ProductDto} from "@/app/admin/_components/products/ProductForm";
 import {PAGE_SIZE, PRODUCT_ITEM_PAGE_SIZE,TOP_SOLD_PAGE_NUM,TOP_SOLD_PAGE_SIZE} from "@/app/util/constant";
 
 
-/*export function getAllProducts(pageNum:number,search:string,categoryId:number) {
+export function getAllProducts(pageNum:number,search:string,categoryId:number) {
     if(pageNum==0){
         return api.get("products");
     }
@@ -22,14 +22,7 @@ import {PAGE_SIZE, PRODUCT_ITEM_PAGE_SIZE,TOP_SOLD_PAGE_NUM,TOP_SOLD_PAGE_SIZE} 
 
     return api.get(`products?pageNum=${pageNum}&pageSize=${PAGE_SIZE}`);
 
-
-}*/
-
-export function getAllProducts(){
-    return api.get("products");
 }
-
-
 export function getAllRelatedProduct(pageNum:number,categoryId:number){
     return api.get(`products/related_product?pageNum=${pageNum}&pageSize=${PAGE_SIZE}&categoryId=${categoryId}`);
 }
@@ -39,9 +32,36 @@ export function getProductOnTopSold(){
 }
 
 
-export function getAllProductsView(pageNum:number){
-    return api.get(`products/view?pageNum=${pageNum}&pageSize=${PRODUCT_ITEM_PAGE_SIZE}`);
+// export function getAllProductsView(pageNum:number){
+//     return api.get(`products/view?pageNum=${pageNum}&pageSize=${PRODUCT_ITEM_PAGE_SIZE}`);
+// }
+
+export function getAllProductsSort(pageNum:number){
+    return api.get(`products/sort?pageNum=${pageNum}&pageSize=${PRODUCT_ITEM_PAGE_SIZE}`);
 }
+
+
+export function getAllProductsView(pageNum:number,search:string,categoryId:number) {
+    if(pageNum==0){
+        return api.get("products");
+    }
+
+    if(search.trim()!=""&&categoryId!=0){
+        return api.get(`products?pageNum=${pageNum}&pageSize=${PRODUCT_ITEM_PAGE_SIZE}&search=${search.trim()}&categoryId=${categoryId}&view=true`);
+    }
+
+    if(search.trim()!=""){
+        return api.get(`products?pageNum=${pageNum}&pageSize=${PRODUCT_ITEM_PAGE_SIZE}&search=${search.trim()}&view=true`);
+    }
+
+    if(categoryId!=0){
+        return api.get(`products?pageNum=${pageNum}&pageSize=${PRODUCT_ITEM_PAGE_SIZE}&categoryId=${categoryId}&view=true`);
+    }
+
+    return api.get(`products?pageNum=${pageNum}&pageSize=${PRODUCT_ITEM_PAGE_SIZE}&view=true`);
+
+}
+
 
 export function getProductById(productId:number){
     return api.get(`products/${productId}`);
