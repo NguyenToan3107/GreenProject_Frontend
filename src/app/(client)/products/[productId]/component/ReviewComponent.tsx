@@ -9,6 +9,9 @@ const { TextArea } = Input;
 
 const ReviewComponent = () => {
 
+    const [rating, setRating] = useState(5); // Giá trị sao mặc định
+    const [content, setContent] = useState(''); // Nội dung đánh giá
+
     const {
         reviews,
         current,
@@ -39,6 +42,11 @@ const ReviewComponent = () => {
 
      }
 
+     const handleSubmit = () => {
+        console.log('Rating:', rating);
+        console.log('Content:', content);
+    }
+
      const onPageChange = (page: any) => {
         setCurrent(page);
         console.log(current)
@@ -51,16 +59,22 @@ const ReviewComponent = () => {
                 <Flex align="center" gap={'small'}>
                     <span style={{ fontSize: '1.6rem', fontWeight: '700' }}>4.89</span>
                     <div className="star">
-                        <Rate allowHalf defaultValue={5} disabled />
+                        <Rate allowHalf 
+                        value={rating} 
+                        onChange={setRating}  />
                     </div>
                 </Flex>
                 <div className="review-container">
                     <div className="avatar-container">
                         <Image src="https://cdn-icons-png.flaticon.com/128/17286/17286792.png" alt="Avatar" className="avatar" />
                     </div>
-                    <TextArea placeholder="Nhập đánh giá" className="custom-textarea" />
+                    <TextArea 
+                    placeholder="Nhập đánh giá" 
+                    className="custom-textarea"
+                    value={content} // Gán giá trị nội dung
+                    onChange={(e) => setContent(e.target.value)} />
                 </div>
-                <button className='review-button'>Đánh giá</button>
+                <button className='review-button' onClick={handleSubmit}>Đánh giá</button>
 
                 <Flex vertical gap={"middle"}>
                     <Flex justify='space-between' align='center'>
