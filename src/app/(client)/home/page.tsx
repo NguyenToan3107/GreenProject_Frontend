@@ -423,7 +423,7 @@ export default function page() {
                 <div className="best-seller-card-item">
                   <a style={{ display: "flex" }}>
                     <img
-                      src={product.images[0].url}
+                      src={product.imageCover}
                       style={{
                         borderRadius: "6px",
                         objectFit: "contain",
