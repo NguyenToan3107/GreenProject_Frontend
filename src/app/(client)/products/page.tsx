@@ -28,6 +28,7 @@ import {
 } from "@/apis/modules/product";
 import Link from "next/link";
 import { getAllCategories } from "@/apis/modules/category";
+import { useCategoryStore } from "@/app/store/CategoryStore";
 
 export default function page() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -35,17 +36,19 @@ export default function page() {
   const [likedProducts, setLikedProducts] = useState(new Set());
   const [currentPage, setCurrentPage] = useState(1);
   const [productsView, setProductsView] = useState([]);
-  const [categoriesView, setCategoriesView] = useState([]);
+  // const [categoriesView, setCategoriesView] = useState<undefined: any>();
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(0);
   const [sortByPrice, setSortByPrice] = useState(false);
   const [topSold, setTopSole] = useState(false);
+  const { getAllCategories, categoriesTree } = useCategoryStore(
+    (state) => state
+  );
 
   const fetchProduct = async (page: number, categoryId = 0, search = "") => {
     setLoading(true);
-    // const res: any = await getAllProductsView(page, search, categoryId);
-    const res: any = await getAllProductsView(page);
+    const res: any = await getAllProductsView(page, search, categoryId);
     setLoading(false);
     if (res.code == 200) {
       setProductsView(res.data.content);
@@ -93,13 +96,15 @@ export default function page() {
 
   const fetchCategory = async () => {
     setLoading(true);
-    const res: any = await getAllCategories();
-    console.log(res);
+    const res: any = getAllCategories();
     setLoading(false);
     if (res.code == 200) {
-      setCategoriesView(res.data);
     }
   };
+
+  useEffect(() => {
+    getAllCategories();
+  }, []);
 
   useEffect(() => {
     fetchProduct(currentPage, selectedCategory, searchQuery);
@@ -120,7 +125,7 @@ export default function page() {
 
   const handleCategoryChange = (categoryId: number) => {
     setSelectedCategory(categoryId);
-    fetchProduct(1, categoryId, searchQuery);
+    fetchProduct(1, categoryId, "");
   };
 
   const toggleLike = (productId: number) => {
@@ -146,7 +151,7 @@ export default function page() {
   };
 
   const handleSearchClick = () => {
-    fetchProduct(1, selectedCategory, searchQuery);
+    fetchProduct(1, 0, searchQuery);
   };
 
   // Hàm đệ quy để render các category con
@@ -154,8 +159,8 @@ export default function page() {
     if (category.children && category.children.length > 0) {
       return (
         <Menu.SubMenu
-          key={category.id}
-          title={category.name}
+          key={category.value}
+          title={category.title}
           style={{ color: "#4BAF47" }}
         >
           {category.children.map((child: any) => renderMenuItems(child))}
@@ -164,10 +169,10 @@ export default function page() {
     } else {
       return (
         <Menu.Item
-          key={category.id}
-          onClick={() => handleCategoryChange(category.id)}
+          key={category.value}
+          onClick={() => handleCategoryChange(category.value)}
         >
-          {category.name}
+          {category.title}
         </Menu.Item>
       );
     }
@@ -216,7 +221,7 @@ export default function page() {
             </div>
             <h2 className="text-xl font-semibold mb-4">Danh Mục</h2>
             <Menu mode="inline" className="space-y-2">
-              {categoriesView.map((category: any) => renderMenuItems(category))}
+              {categoriesTree.map((category: any) => renderMenuItems(category))}
             </Menu>
 
             {/* Đánh giá */}

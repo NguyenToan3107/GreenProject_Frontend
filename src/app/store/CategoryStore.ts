@@ -64,7 +64,6 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
     categories: [],
 
 
-
     getAllCategories: async () => {
         const apiCall = () => getAllCategories();
         const onSuccess = (response: any) => {
@@ -72,7 +71,6 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
                 categories: response.data,
                 categoriesTree: buildCategoryTree(response.data),
             });
-
         };
         return await handleApiRequest(apiCall, onSuccess);
     },
