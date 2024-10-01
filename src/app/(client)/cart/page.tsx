@@ -36,11 +36,13 @@ export default function Page() {
 
   // Hàm xóa sản phẩm khỏi giỏ hàng
   const handleRemoveItem = (id: number) => {
+    const updatedItems = cartItems.filter(item => item.id !== id);
+    setCartItems(updatedItems);
 
     const deleteCartItem=async ()=>{
       const apiCall=()=>deleteCart(id);
       await handleApiRequest(apiCall,(response)=>{
-        fetchMyCart()
+
       })
     }
     deleteCartItem()
