@@ -59,7 +59,7 @@ export default function page() {
 
   const fetchProductOnTopSold = async () => {
     setLoading(true);
-    const res: any = await getProductOnTopSold();
+    const res: any = await getProductOnTopSold(1, 12);
     setLoading(false);
     if (res.code == 200) {
       setProductsView(res.data.content);
@@ -91,6 +91,7 @@ export default function page() {
       setProductsView(res.data.content);
       setCurrentPage(res.data.currentPage);
       setTotal(res.data.totalElements);
+      console.log(currentPage);
     }
   };
 
@@ -106,9 +107,14 @@ export default function page() {
     getAllCategories();
   }, []);
 
+  // useEffect(() => {
+  //   setCurrentPage(1);
+  // }, [currentPage]);
+
   useEffect(() => {
     fetchProduct(currentPage, selectedCategory, searchQuery);
     fetchCategory();
+    // setCurrentPage(1);
   }, [selectedCategory]);
 
   const handleButtonClick = async (buttonType: SetStateAction<string>) => {
@@ -124,7 +130,6 @@ export default function page() {
   };
 
   const handleCategoryChange = async (categoryId: number) => {
-    console.log(categoryId)
     setSelectedCategory(categoryId);
     setSearchQuery("");
     setCurrentPage(1);
@@ -149,11 +154,17 @@ export default function page() {
     } else if (topSold) {
       await fetchProductOnTopSold();
     } else {
+      if (selectedCategory && searchQuery) {
+        console.log("toan");
+        await fetchProduct(value, selectedCategory, searchQuery);
+      }
       if (selectedCategory) {
         await fetchProduct(value, selectedCategory, "");
       }
       if (searchQuery) {
         await fetchProduct(value, 0, searchQuery);
+      } else {
+        await fetchProduct(value, 0, "");
       }
     }
   };
@@ -240,7 +251,6 @@ export default function page() {
               {[5, 4, 3, 2, 1].map((star) => (
                 <div key={star} className="flex items-center space-x-2">
                   <Checkbox className="mr-2" />
-                  {/* Sao đã chọn */}
                   <div className="flex items-center">
                     {[...Array(star)].map((_, i) => (
                       <FontAwesomeIcon
@@ -249,7 +259,6 @@ export default function page() {
                         className="text-yellow-400 mr-1"
                       />
                     ))}
-                    {/* Sao chưa chọn */}
                     {[...Array(5 - star)].map((_, i) => (
                       <FontAwesomeIcon
                         key={i}
@@ -351,12 +360,14 @@ export default function page() {
 
             {/* Phân trang */}
             <div className="flex justify-center mt-8 space-x-2">
-              <Pagination
-                onChange={handlePageChange}
-                defaultCurrent={currentPage}
-                defaultPageSize={PRODUCT_ITEM_PAGE_SIZE}
-                total={total}
-              />
+              {currentPage && (
+                <Pagination
+                  onChange={handlePageChange}
+                  current={currentPage}
+                  defaultPageSize={PRODUCT_ITEM_PAGE_SIZE}
+                  total={total}
+                />
+              )}
             </div>
           </main>
         </div>
