@@ -1,13 +1,16 @@
 
 import {create} from "zustand";
 import {handleApiRequest} from "@/app/util/utils";
-import {getAllReviewByProductItemId,createReview,updateReviewById,deleteReviewById} from "@/apis/modules/review";
+import {getAllReviewByProductItemId,createReview,updateReviewById,deleteReviewById,getReviewById} from "@/apis/modules/review";
 import { Anybody } from "next/font/google";
 
 interface ReviewState {
     reviews: any[];
-    currentProductItemId: number;
-    setCurrentProductItemId:(id:number) => void,
+    currentProductItem: any;
+    alreadyReview:boolean;
+    setAlreadyReview:(isReview:boolean) => void,
+    setCurrentProductItem:(productItem:any) => void,
+    getReviewById: (productItemId:any) => Promise<void>;
     getAllReviewByProductItemId: (page: number,productItemId:any) => Promise<void>;
     createReview: (review: any,productItemId:any) => Promise<void>;
     updateReviewById: (productItemId:any) => Promise<void>;
@@ -21,14 +24,35 @@ export const useReviewStore=create<ReviewState>((set,get)=>({
     reviews:[],
     current: 1,
     totalElements: 0,
-    currentProductItemId:0,
+    alreadyReview: false,
+    currentProductItem:null,
+
+    setAlreadyReview:(isReview:boolean) =>{
+        set({alreadyReview:isReview});
+    },
 
     setCurrent:(cur:number) =>{
         set({current:cur});
     },
 
-    setCurrentProductItemId: (id:number) => {
-        set({ currentProductItemId: id });
+    setCurrentProductItem: (productItem:any) => {
+        set({ currentProductItem: productItem });
+    },
+
+    getReviewById: async (productItemId:any) =>{
+        const apiCall = () => getReviewById(productItemId);
+        const onSuccess = (response: any) => {
+               if(response.data == null){
+                    set({
+                        alreadyReview:false 
+                    })
+               }else{
+                    set({
+                        alreadyReview:true 
+                    })
+               }
+        };
+        return await handleApiRequest(apiCall, onSuccess);
     },
 
     getAllReviewByProductItemId: async (page: number,productItemId:any) => {

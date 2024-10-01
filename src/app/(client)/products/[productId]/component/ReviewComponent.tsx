@@ -16,26 +16,34 @@ const ReviewComponent = () => {
         reviews,
         current,
         totalElements,
-        currentProductItemId,
+        alreadyReview,
+        currentProductItem,
         setCurrent,
         getAllReviewByProductItemId,
         createReview,
+        getReviewById,
         updateReviewById,
         deleteReviewById,
     } = useReviewStore();
 
     useEffect(() => {
-        console.log(currentProductItemId)
-        if (currentProductItemId > 0) {
+        console.log(currentProductItem)
+        if (currentProductItem) {
             getAllReviewsByProductItemId()
-        }
-    }, [currentProductItemId,current]);
 
+            fetchReviewById(currentProductItem.id)
+        }
+    }, [currentProductItem,current]);
+
+    const fetchReviewById=async (producItemId:any)=>{
+        const res = await getReviewById(producItemId);
+        console.log(res)
+    }
 
     const getAllReviewsByProductItemId=async ()=>{
-        console.log(currentProductItemId)
+        console.log(currentProductItem)
 
-            const res:any = await getAllReviewByProductItemId(current, currentProductItemId);
+            const res:any = await getAllReviewByProductItemId(current, currentProductItem.id);
             console.log(res)
             if(res.code == 200){
              console.log(reviews)
@@ -47,7 +55,7 @@ const ReviewComponent = () => {
         console.log('Rating:', rating);
         console.log('Content:', content);
 
-        createReview({rating:rating,content:content,productItemId:currentProductItemId},currentProductItemId)
+        createReview({rating:rating,content:content,productItemId:currentProductItem.id},currentProductItem.id)
 
         setRating(0)
         setContent("")
@@ -61,34 +69,56 @@ const ReviewComponent = () => {
     return (
         <div>
             <Flex gap={'middle'} vertical>
-                <h2 style={{ fontWeight: '600', fontSize: '1.5rem' }}>Đánh giá sản phẩm</h2>
-                <Flex align="center" gap={'small'}>
-                    <span style={{ fontSize: '1.6rem', fontWeight: '700' }}>4.89</span>
-                    <div className="star">
-                        <Rate allowHalf 
-                        value={4.89} 
-                        disabled  />
-                    </div>
-                </Flex>
-                <Flex className="review-container" align='start' gap={'small'}>
-
-                    <div className="avatar-container">
-                        <Image src="https://cdn-icons-png.flaticon.com/128/17286/17286792.png" alt="Avatar" className="avatar" />
-                    </div>
-                    <Flex vertical style={{width:'100%'}} gap={"small"}>
+                <h2 style={{ fontWeight: '600', fontSize: '1.5rem' }}>Đánh giá sản phẩm 
+                    {currentProductItem ? (
+                    (<span style={{ fontSize: '1.5rem', fontWeight: '700' }}> ({currentProductItem.reviewCount })</span>)
+                    ): (
+                        <p>Đang load</p> // Hiển thị thông báo khi chưa load được productItem hiện tại
+                    )}
+                </h2>
+                {currentProductItem ? (
+                    <Flex align="center" gap={'small'}>
+                        <span style={{ fontSize: '1.8rem', fontWeight: '700' }}>{currentProductItem.reviewCount != 0 ? (currentProductItem.totalRating / currentProductItem.reviewCount).toFixed(2) : 0}</span>
                         <div className="star">
                             <Rate allowHalf 
-                            value={rating} 
-                            onChange={setRating}  />
+                            value={currentProductItem.totalRating / currentProductItem.reviewCount} 
+                            disabled  />
                         </div>
-                        <TextArea 
-                        placeholder="Nhập đánh giá" 
-                        className="custom-textarea"
-                        value={content} // Gán giá trị nội dung
-                        onChange={(e) => setContent(e.target.value)} />
                     </Flex>
-                </Flex>
-                <button className='review-button' onClick={handleSubmit}>Đánh giá</button>
+                ): (
+                    <p>Đang load</p> //  Hiển thị thông báo khi chưa load được productItem hiện tại
+                )}
+
+                                
+                {!alreadyReview ? (
+                <>
+                    <Flex className="review-container" align='start' gap={'small'}>
+                        <div className="avatar-container">
+                            <Image src="https://cdn-icons-png.flaticon.com/128/17286/17286792.png" alt="Avatar" className="avatar" />
+                        </div>
+                        <Flex vertical style={{width:'100%'}} gap={"small"}>
+                            <div className="star">
+                            <Rate 
+                                allowHalf 
+                                value={rating} 
+                                onChange={setRating} 
+                            />
+                            </div>
+                            <TextArea 
+                            placeholder="Nhập đánh giá" 
+                            className="custom-textarea"
+                            value={content} 
+                            onChange={(e) => setContent(e.target.value)} 
+                            />
+                        </Flex>
+                    </Flex>
+                    <button className='review-button' onClick={handleSubmit}>Đánh giá</button>
+                </>
+                ) : (
+                <div className="already-reviewed-message">
+                    Bạn đã đánh giá rồi!
+                </div>
+                )}
 
                 <Flex vertical gap={"middle"}>
                     <Flex justify='space-between' align='center'>

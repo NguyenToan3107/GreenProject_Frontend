@@ -17,8 +17,8 @@ const ProductInfoComponent:React.FC<any> = ({ product,productItems }) => {
 
     /*------------------------------------- */
     const {
-        currentProductItemId,
-        setCurrentProductItemId,
+        currentProductItem,
+        setCurrentProductItem,
       } = useReviewStore((state) => state);
     /*------------------------------------- */
       
@@ -80,7 +80,7 @@ const ProductInfoComponent:React.FC<any> = ({ product,productItems }) => {
 
             /*------------------------------------- */
             if(foundProductItem){
-                setCurrentProductItemId(foundProductItem.id)
+                setCurrentProductItem(foundProductItem)
                 console.log(foundProductItem)
             }
             /*------------------------------------- */

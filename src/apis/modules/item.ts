@@ -13,3 +13,7 @@ export function updateCart(quantity:number,itemId:number){
     return api.post(`items/update-cart/${itemId}`,{quantity:quantity})
 
 }
+
+export function deleteCart(itemId:number){
+    return api.delete(`items/delete-cart/${itemId}`)
+}

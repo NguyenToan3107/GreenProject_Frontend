@@ -16,9 +16,7 @@ interface ProductState {
     createProduct: (product: ProductDto) => Promise<void>;
     updateProduct: (id: number, product: ProductDto) => Promise<void>;
     deleteProduct: (id: number) => Promise<void>;
-    getProductOnTopSold: () => Promise<void>;
-
-
+    getProductOnTopSold: (pageNum:number, pageSize:number) => Promise<void>;
 
 
 }
@@ -27,8 +25,8 @@ export const useProductStore = create<ProductState>((set, get) => ({
     products: [],
     productItemOnTopSold: [],
 
-    getProductOnTopSold: async()=>{
-        const apiCall = () => getProductOnTopSold();
+    getProductOnTopSold: async(pageNum:number, pageSize:number)=>{
+        const apiCall = () => getProductOnTopSold(pageNum,pageSize);
         const onSuccess = (response: any) => {
                 console.log(response)
                 set({

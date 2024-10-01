@@ -2,7 +2,7 @@
 import {useEffect, useState} from 'react';
 import './product_details.css'
 import {Image, PaginationProps, Spin} from 'antd';
-import {getProductById,getAllRelatedProduct} from "@/apis/modules/product";
+import {getProductById, getAllProductsView} from "@/apis/modules/product";
 import ReviewComponent from './component/ReviewComponent';
 import ImageComponent from './component/ImageComponent';
 import ProductInfoComponent from './component/ProductInfoComponent';
@@ -47,7 +47,7 @@ export default function page({params}:any) {
     };
 
     const getRelatedProduct = async (pageNum:number, categoryId: number)=>{
-        const res:any = await getAllRelatedProduct(pageNum,categoryId);
+        const res:any = await getAllProductsView(pageNum,"",categoryId);
         console.log(res)
         if(res.code ==200){
             setRelatedProduct(res.data.content);

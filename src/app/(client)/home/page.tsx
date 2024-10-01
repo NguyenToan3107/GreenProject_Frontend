@@ -14,7 +14,8 @@ import {useProductStore} from "@/app/store/ProductStore";
 register();
 
 export default function page() {
-
+  const topSoldPageNum:number = 1;
+  const topSoldPageSize: number = 5;
   const {
     productItemOnTopSold,
     getProductOnTopSold,
@@ -22,7 +23,7 @@ export default function page() {
 
   const fetchProductItemOnTopSold=async ()=>{
 
-     const res:any = await getProductOnTopSold();
+     const res:any = await getProductOnTopSold(topSoldPageNum,topSoldPageSize);
      console.log(res)
      if(res.code == 200){
       console.log(productItemOnTopSold)

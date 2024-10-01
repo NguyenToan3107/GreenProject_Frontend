@@ -27,8 +27,8 @@ export function getAllRelatedProduct(pageNum:number,categoryId:number){
     return api.get(`products/related_product?pageNum=${pageNum}&pageSize=${PAGE_SIZE}&categoryId=${categoryId}`);
 }
 
-export function getProductOnTopSold(){
-    return api.get(`products/top_sold?pageNum=${TOP_SOLD_PAGE_NUM}&pageSize=${TOP_SOLD_PAGE_SIZE}`);
+export function getProductOnTopSold(pageNum:number,pageSize:number){
+    return api.get(`products/top_sold?pageNum=${pageNum}&pageSize=${pageSize}`);
 }
 
 
