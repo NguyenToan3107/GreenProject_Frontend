@@ -80,7 +80,7 @@ const ReviewComponent = () => {
                     <Flex align="center" gap={'small'}>
                         <span style={{ fontSize: '1.8rem', fontWeight: '700' }}>{currentProductItem.reviewCount != 0 ? (currentProductItem.totalRating / currentProductItem.reviewCount).toFixed(2) : 0}</span>
                         <div className="star">
-                            <Rate allowHalf 
+                            <Rate
                             value={currentProductItem.totalRating / currentProductItem.reviewCount} 
                             disabled  />
                         </div>

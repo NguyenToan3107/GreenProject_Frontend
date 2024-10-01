@@ -27,77 +27,39 @@ export default function Page() {
     return price * quantity;
   };
 
-  const handleQuantityChange = (value: number | null, id: number) => {
-    const updatedItems = cartItems.map(
-      (item) => (item.id === id ? { ...item, quantity: value ?? 1 } : item) // Đảm bảo quantity không bao giờ là null
-    );
-    setCartItems(updatedItems);
-  };
 
-
-   // Gọi hàm khi click ra ngoài inputNumber
-   const handleBlur = (id:number) => {
-    
-    const updateItem:any = cartItems.filter((item)=>item.id == id)
-
-    const updateCartQuantity=async ()=>{
-      const apiCall=()=>updateCart(updateItem[0].quantity,updateItem[0].id);
-      await handleApiRequest(apiCall,(response)=>{
-        fetchMyCart()
-      })
-    }
-    updateCartQuantity()
-  }
 
   // Hàm xóa sản phẩm khỏi giỏ hàng
-  const handleRemoveItem = (id: number) => {
-    const updatedItems = cartItems.filter(item => item.id !== id);
-    setCartItems(updatedItems);
+  const handleRemoveItem =async (id: number) => {
 
     const deleteCartItem=async ()=>{
       const apiCall=()=>deleteCart(id);
       await handleApiRequest(apiCall,(response)=>{
-
+        const updatedItems = cartItems.filter(item => item.id !== id);
+        setCartItems(updatedItems);
       })
     }
-    deleteCartItem()
+    await deleteCartItem()
   };
 
-  // Hàm tăng số lượng sản phẩm
-  const increaseQuantity = (id: number) => {
-    const updateCartItems = cartItems.map((item) =>
-      item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-    );
-    setCartItems(updateCartItems);
 
-    const updateItem:any = updateCartItems.filter((item)=>item.id == id)
+  const updateCartQuantity=async (quantity:number,id:number)=>{
+    const apiCall=()=>updateCart(quantity,id);
+    await handleApiRequest(apiCall,(response)=>{
+      setCartItems((prevItems) =>
+          prevItems.map((item) =>
+              item.id === id ? { ...item, quantity: quantity } : item
+          )
+      );
+    })
+  }
 
-    const updateCartQuantity=async ()=>{
-      const apiCall=()=>updateCart(updateItem[0].quantity,updateItem[0].id);
-      await handleApiRequest(apiCall,(response)=>{
-        setCartItems(updateCartItems);
-      })
-    }
-    updateCartQuantity()
+  const increaseQuantity = async (id: number,quantity:number) => {
+    await updateCartQuantity(quantity+1,id);
   };
 
-  // Hàm giảm số lượng sản phẩm
-  const decreaseQuantity = (id: number) => {
-    const updateCartItems = cartItems.map((item) =>
-      item.id === id ? { ...item, quantity: item.quantity - 1 } : item
-    );
-
-    setCartItems(updateCartItems);
-
-    const updateItem:any = updateCartItems.filter((item)=>item.id == id)
-
-    const updateCartQuantity=async ()=>{
-      const apiCall=()=>updateCart(updateItem[0].quantity,updateItem[0].id);
-      await handleApiRequest(apiCall,(response)=>{
-        setCartItems(updateCartItems);
-      })
-    }
-    updateCartQuantity()
+  const decreaseQuantity = async (id: number,quantity:number) => {
+    await updateCartQuantity(quantity-1,id)
   };
 
   return (
@@ -142,7 +104,7 @@ export default function Page() {
           {/* Cột giá */}
           <div className="col-span-2 text-center">
             <span className="font-semibold">
-              {item.totalPrice.toLocaleString("vi-VN")}đ
+              {item.productItem.price.toLocaleString("vi-VN")}đ
             </span>
           </div>
 
@@ -150,7 +112,7 @@ export default function Page() {
           <div className="col-span-2 text-center flex items-center justify-center">
             <Button
               type="default"
-              onClick={() => decreaseQuantity(item.id)}
+              onClick={() => decreaseQuantity(item.id,item.quantity)}
               disabled={item.quantity <= 1}
             >
               -
@@ -158,11 +120,10 @@ export default function Page() {
             <InputNumber
               min={1}
               value={item.quantity}
-              onChange={(value) => handleQuantityChange(value, item.id)}
-              onBlur={() => handleBlur(item.id)}
+              disabled={true}
               style={{ width: 60, margin: "0 8px" }}
             />
-            <Button type="default" onClick={() => increaseQuantity(item.id)}>
+            <Button type="default" onClick={() => increaseQuantity(item.id,item.quantity)}>
               +
             </Button>
           </div>
@@ -170,7 +131,7 @@ export default function Page() {
           {/* Cột số tiền */}
           <div className="col-span-2 text-center">
             <span className="font-semibold text-brand-primary">
-              {calculateTotal(item.totalPrice, item.quantity).toLocaleString(
+              {item.totalPrice.toLocaleString(
                 "vi-VN"
               )}{" "}
               đ
@@ -191,7 +152,7 @@ export default function Page() {
           {cartItems!
             .reduce(
               (total, item) =>
-                total + calculateTotal(item.totalPrice, item.quantity),
+                total + calculateTotal(item.productItem.price, item.quantity),
               0
             )
             .toLocaleString("vi-VN")}{" "}
