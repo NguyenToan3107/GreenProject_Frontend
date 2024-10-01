@@ -21,8 +21,8 @@ export function getProductOnTopSold(pageNum:number,pageSize:number){
 //     return api.get(`products/view?pageNum=${pageNum}&pageSize=${PRODUCT_ITEM_PAGE_SIZE}`);
 // }
 
-export function getAllProductsSort(pageNum:number){
-    return api.get(`products/sort?pageNum=${pageNum}&pageSize=${PRODUCT_ITEM_PAGE_SIZE}`);
+export function getAllProductsSort(pageNum:number,option:string){
+    return api.get(`products/sort?pageNum=${pageNum}&pageSize=${PRODUCT_ITEM_PAGE_SIZE}&option${option}`);
 }
 
 

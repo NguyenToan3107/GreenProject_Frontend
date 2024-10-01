@@ -31,6 +31,10 @@ import { getAllCategories } from "@/apis/modules/category";
 import { useCategoryStore } from "@/app/store/CategoryStore";
 
 export default function page() {
+
+  const topSoldPageNum:number = 1;
+  const topSoldPageSize: number = 20;
+
   const [searchQuery, setSearchQuery] = useState("");
   const [activeButton, setActiveButton] = useState("popular");
   const [likedProducts, setLikedProducts] = useState(new Set());
@@ -59,7 +63,8 @@ export default function page() {
 
   const fetchProductOnTopSold = async () => {
     setLoading(true);
-    const res: any = await getProductOnTopSold();
+    // Đây
+    const res: any = await getProductOnTopSold(topSoldPageNum,topSoldPageSize);
     setLoading(false);
     if (res.code == 200) {
       setProductsView(res.data.content);
@@ -83,9 +88,9 @@ export default function page() {
       <Menu.Item key="2">Giá</Menu.Item>
     </Menu>
   );
-  const fetchProductSortPrice = async (page: number) => {
+  const fetchProductSortPrice = async (page: number,option:string) => {
     setLoading(true);
-    const res: any = await getAllProductsSort(page);
+    const res: any = await getAllProductsSort(page,option);
     setLoading(false);
     if (res.code == 200) {
       setProductsView(res.data.content);
