@@ -3,45 +3,24 @@ import React, {useEffect, useState} from "react";
 import { Button, InputNumber } from "antd";
 import Link from "next/link";
 import {handleApiRequest} from "@/app/util/utils";
-import {getMyCart} from "@/apis/modules/item";
+import {getMyCart,updateCart,deleteCart} from "@/apis/modules/item";
 
-
-const initialCartItems = [
-  {
-    id: 1,
-    name: "Sản phẩm 1",
-    price: 50000,
-    quantity: 1,
-    imageUrl: "/client/products/product2.png",
-  },
-  {
-    id: 2,
-    name: "Sản phẩm 2",
-    price: 150000,
-    quantity: 2,
-    imageUrl: "/client/products/product2.png",
-  },
-  {
-    id: 3,
-    name: "Sản phẩm 3",
-    price: 300000,
-    quantity: 1,
-    imageUrl: "/client/products/product2.png",
-  },
-];
 
 export default function Page() {
   // Sử dụng useState để quản lý giỏ hàng
-  const [cartItems, setCartItems] = useState(initialCartItems);
+  const [cartItems, setCartItems] = useState<any[]>([]);
   useEffect(() => {
-    const fetchMyCart=async ()=>{
-      const apiCall=()=>getMyCart();
-      await handleApiRequest(apiCall,(response)=>{
-        console.log(response)
-      })
-    }
     fetchMyCart()
   }, []);
+
+  const fetchMyCart=async ()=>{
+    const apiCall=()=>getMyCart();
+    await handleApiRequest(apiCall,(response)=>{
+      console.log(response)
+      setCartItems(response.data);
+      console.log(cartItems)
+    })
+  }
 
   // Hàm tính tổng số tiền cho mỗi sản phẩm
   const calculateTotal = (price: number, quantity: number) => {
@@ -57,26 +36,63 @@ export default function Page() {
 
   // Hàm xóa sản phẩm khỏi giỏ hàng
   const handleRemoveItem = (id: number) => {
-    const updatedItems = cartItems.filter((item) => item.id !== id);
-    setCartItems(updatedItems);
+
+    const deleteCartItem=async ()=>{
+      const apiCall=()=>deleteCart(id);
+      await handleApiRequest(apiCall,(response)=>{
+        fetchMyCart()
+      })
+    }
+    deleteCartItem()
   };
+
+  // Gọi hàm khi click ra ngoài inputNumber
+  const handleBlur = (id:number) => {
+    const updateItem:any = cartItems.filter((item)=>item.id == id)
+
+    const updateCartQuantity=async ()=>{
+      const apiCall=()=>updateCart(updateItem[0].quantity,updateItem[0].id);
+      await handleApiRequest(apiCall,(response)=>{
+        fetchMyCart()
+      })
+    }
+    updateCartQuantity()
+  }
 
   // Hàm tăng số lượng sản phẩm
   const increaseQuantity = (id: number) => {
-    const updatedItems = cartItems.map((item) =>
+    const updateCartItems = cartItems.map((item) =>
       item.id === id ? { ...item, quantity: item.quantity + 1 } : item
     );
-    setCartItems(updatedItems);
+    setCartItems(updateCartItems);
+
+    const updateItem:any = cartItems.filter((item)=>item.id == id)
+
+    const updateCartQuantity=async ()=>{
+      const apiCall=()=>updateCart(updateItem[0].quantity,updateItem[0].id);
+      await handleApiRequest(apiCall,(response)=>{
+        fetchMyCart();
+      })
+    }
+    updateCartQuantity()
   };
 
   // Hàm giảm số lượng sản phẩm
   const decreaseQuantity = (id: number) => {
-    const updatedItems = cartItems.map((item) =>
-      item.id === id && item.quantity > 1
-        ? { ...item, quantity: item.quantity - 1 }
-        : item
+    const updateCartItems = cartItems.map((item) =>
+      item.id === id ? { ...item, quantity: item.quantity - 1 } : item
     );
-    setCartItems(updatedItems);
+    setCartItems(updateCartItems);
+
+    const updateItem:any = cartItems.filter((item)=>item.id == id)
+
+    const updateCartQuantity=async ()=>{
+      const apiCall=()=>updateCart(updateItem[0].quantity,updateItem[0].id);
+      await handleApiRequest(apiCall,(response)=>{
+        fetchMyCart();
+      })
+    }
+    updateCartQuantity()
   };
 
   return (
@@ -92,6 +108,7 @@ export default function Page() {
       </div>
 
       {/* Danh sách sản phẩm trong giỏ hàng */}
+      
       {cartItems.map((item) => (
         <div
           key={item.id}
@@ -101,17 +118,17 @@ export default function Page() {
           <div className="col-span-5">
             <div className="flex flex-row gap-8">
               <img
-                src={item.imageUrl}
-                alt={item.name}
+                src={item.productItem.product.images[0].url}
+                alt={item.productItem.product.name}
                 className="w-24 h-24 object-cover rounded-lg text-center"
               />
               <div className="flex flex-col">
-                <h3 className="text-lg font-semibold">{item.name}</h3>
+                <h3 className="text-lg font-semibold">{item.productItem.product.name}</h3>
                 <p className="text-sm text-gray-500">
-                  Danh mục: Đồ dùng bằng tre
+                  Danh mục: {item.productItem.product.category.name}
                 </p>
                 <p className="text-sm text-gray-500">
-                  Phân loại hàng: 31, Vàng
+                  Phân loại hàng: {item.productItem.variationOptions.map((option:any)=>option.value).join(' ,')}
                 </p>
               </div>
             </div>
@@ -120,7 +137,7 @@ export default function Page() {
           {/* Cột giá */}
           <div className="col-span-2 text-center">
             <span className="font-semibold">
-              {item.price.toLocaleString("vi-VN")}đ
+              {item.totalPrice.toLocaleString("vi-VN")}đ
             </span>
           </div>
 
@@ -137,6 +154,7 @@ export default function Page() {
               min={1}
               value={item.quantity}
               onChange={(value) => handleQuantityChange(value, item.id)}
+              onBlur={() => handleBlur(item.id)}
               style={{ width: 60, margin: "0 8px" }}
             />
             <Button type="default" onClick={() => increaseQuantity(item.id)}>
@@ -147,7 +165,7 @@ export default function Page() {
           {/* Cột số tiền */}
           <div className="col-span-2 text-center">
             <span className="font-semibold text-brand-primary">
-              {calculateTotal(item.price, item.quantity).toLocaleString(
+              {calculateTotal(item.totalPrice, item.quantity).toLocaleString(
                 "vi-VN"
               )}{" "}
               đ
@@ -165,10 +183,10 @@ export default function Page() {
       <div className="mt-8 flex flex-row justify-end items-center gap-4">
         <h2 className="text-lg font-bold">
           Tổng tiền:{" "}
-          {cartItems
+          {cartItems!
             .reduce(
               (total, item) =>
-                total + calculateTotal(item.price, item.quantity),
+                total + calculateTotal(item.totalPrice, item.quantity),
               0
             )
             .toLocaleString("vi-VN")}{" "}

@@ -10,7 +10,7 @@ export function getMyCart(){
 
 }
 export function updateCart(quantity:number,itemId:number){
-    return api.post(`items/update-cart/${itemId}`,{quantity:quantity})
+    return api.put(`items/update-cart/${itemId}`,{quantity:quantity})
 
 }
 
