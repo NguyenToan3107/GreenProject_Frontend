@@ -119,13 +119,15 @@ export default function page() {
       setTopSole(true);
       await fetchProductOnTopSold();
     } else {
-      await fetchProduct(1, selectedCategory, searchQuery);
+      await fetchProduct(1, 0, "");
     }
   };
 
-  const handleCategoryChange = (categoryId: number) => {
+  const handleCategoryChange = async (categoryId: number) => {
     setSelectedCategory(categoryId);
-    fetchProduct(1, categoryId, "");
+    setSearchQuery("");
+    setCurrentPage(1);
+    await fetchProduct(1, categoryId, "");
   };
 
   const toggleLike = (productId: number) => {
@@ -146,11 +148,18 @@ export default function page() {
     } else if (topSold) {
       await fetchProductOnTopSold();
     } else {
-      await fetchProduct(value, selectedCategory, searchQuery);
+      if (selectedCategory) {
+        await fetchProduct(value, selectedCategory, "");
+      }
+      if (searchQuery) {
+        await fetchProduct(value, 0, searchQuery);
+      }
     }
   };
 
   const handleSearchClick = () => {
+    setSelectedCategory(0);
+    setCurrentPage(1);
     fetchProduct(1, 0, searchQuery);
   };
 
