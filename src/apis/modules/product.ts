@@ -22,7 +22,7 @@ export function getProductOnTopSold(pageNum:number,pageSize:number){
 // }
 
 export function getAllProductsSort(pageNum:number,option:string){
-    return api.get(`products/sort?pageNum=${pageNum}&pageSize=${PRODUCT_ITEM_PAGE_SIZE}&option${option}`);
+    return api.get(`products/sort?pageNum=${pageNum}&pageSize=${PRODUCT_ITEM_PAGE_SIZE}&option=${option}`);
 }
 
 
