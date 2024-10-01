@@ -34,6 +34,21 @@ export default function Page() {
     setCartItems(updatedItems);
   };
 
+
+   // Gọi hàm khi click ra ngoài inputNumber
+   const handleBlur = (id:number) => {
+    
+    const updateItem:any = cartItems.filter((item)=>item.id == id)
+
+    const updateCartQuantity=async ()=>{
+      const apiCall=()=>updateCart(updateItem[0].quantity,updateItem[0].id);
+      await handleApiRequest(apiCall,(response)=>{
+        fetchMyCart()
+      })
+    }
+    updateCartQuantity()
+  }
+
   // Hàm xóa sản phẩm khỏi giỏ hàng
   const handleRemoveItem = (id: number) => {
     const updatedItems = cartItems.filter(item => item.id !== id);
@@ -47,19 +62,6 @@ export default function Page() {
     }
     deleteCartItem()
   };
-
-  // Gọi hàm khi click ra ngoài inputNumber
-  const handleBlur = (id:number) => {
-    const updateItem:any = cartItems.filter((item)=>item.id == id)
-
-    const updateCartQuantity=async ()=>{
-      const apiCall=()=>updateCart(updateItem[0].quantity,updateItem[0].id);
-      await handleApiRequest(apiCall,(response)=>{
-        fetchMyCart()
-      })
-    }
-    updateCartQuantity()
-  }
 
   // Hàm tăng số lượng sản phẩm
   const increaseQuantity = (id: number) => {
