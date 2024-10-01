@@ -31,10 +31,12 @@ import { getAllCategories } from "@/apis/modules/category";
 import { useCategoryStore } from "@/app/store/CategoryStore";
 
 export default function page() {
-
+  // ---------------Fix tạm------------------
   const topSoldPageNum:number = 1;
   const topSoldPageSize: number = 20;
+  // ----------------------------------------
 
+  
   const [searchQuery, setSearchQuery] = useState("");
   const [activeButton, setActiveButton] = useState("popular");
   const [likedProducts, setLikedProducts] = useState(new Set());
@@ -63,8 +65,10 @@ export default function page() {
 
   const fetchProductOnTopSold = async () => {
     setLoading(true);
-    // Đây
+    // ---------------Fix tạm------------------
     const res: any = await getProductOnTopSold(topSoldPageNum,topSoldPageSize);
+    // ----------------------------------------
+    
     setLoading(false);
     if (res.code == 200) {
       setProductsView(res.data.content);
@@ -76,7 +80,17 @@ export default function page() {
   const handleMenuClick = async (e: { key: string }) => {
     if (e.key === "2") {
       setSortByPrice(true);
-      await fetchProductSortPrice(1);
+       // ---------------Fix tạm------------------
+      await fetchProductSortPrice(1,"ascMinPrice");
+      // ------------------------------------
+      /* các option:
+      case "ascMinPrice" 
+      case "descMinPrice" 
+      case "ascMaxPrice" 
+      case "descMaxPrice" 
+      case "reviewCount" 
+      case "totalRating"
+      */
     } else {
       setSortByPrice(false);
     }
@@ -150,7 +164,17 @@ export default function page() {
 
   const handlePageChange = async (value: any) => {
     if (sortByPrice) {
-      await fetchProductSortPrice(value);
+      // -------------Fix tạm ---------------
+      await fetchProductSortPrice(value,"ascMinPrice");
+      // ------------------------------------
+      /* các option:
+      case "ascMinPrice" 
+      case "descMinPrice" 
+      case "ascMaxPrice" 
+      case "descMaxPrice" 
+      case "reviewCount" 
+      case "totalRating"
+      */
     } else if (topSold) {
       await fetchProductOnTopSold();
     } else {

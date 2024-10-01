@@ -14,8 +14,10 @@ import {useProductStore} from "@/app/store/ProductStore";
 register();
 
 export default function page() {
+
   const topSoldPageNum:number = 1;
   const topSoldPageSize: number = 5;
+
   const {
     productItemOnTopSold,
     getProductOnTopSold,
