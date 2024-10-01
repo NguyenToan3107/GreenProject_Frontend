@@ -1,50 +1,16 @@
 "use client";
-import React, { useState } from "react";
-import { Button, Checkbox, Input, InputNumber, Modal } from "antd";
+import React, {useEffect, useState} from "react";
+import {Button, Checkbox, Input, InputNumber, message, Modal} from "antd";
 import Link from "next/link";
+import {useOrderStore} from "@/app/store/OderStore";
+import {deleteOrder, getOrderByNow, updateContactOrder} from "@/apis/modules/order";
+import {handleApiRequest} from "@/app/util/utils";
+import {useRouter} from "next/navigation";
 
-// Mảng sản phẩm ban đầu
-const initialCartItems = [
-  {
-    id: 1,
-    name: "Sản phẩm 1",
-    price: 50000,
-    quantity: 1,
-    imageUrl: "/client/products/product2.png",
-  },
-  {
-    id: 2,
-    name: "Sản phẩm 2",
-    price: 150000,
-    quantity: 2,
-    imageUrl: "/client/products/product2.png",
-  },
-  {
-    id: 3,
-    name: "Sản phẩm 3",
-    price: 300000,
-    quantity: 1,
-    imageUrl: "/client/products/product2.png",
-  },
-];
+import ContactForm from "@/app/(client)/_components/ContactForm";
+import {useContactStore} from "@/app/store/ContactStore";
 
-const addresses = [
-  {
-    name: "NGUYEN VAN A",
-    phone: "0123456789",
-    address: "Đường Mễ Trì, Phường Mễ Trì, Quận Nam Từ Liêm, Hà Nội",
-  },
-  {
-    name: "NGUYEN VAN B",
-    phone: "0987654321",
-    address: "Số 10, Nguyễn Trãi, Thanh Xuân, Hà Nội",
-  },
-  {
-    name: "NGUYEN VAN C",
-    phone: "0222222222",
-    address: "Đường Láng, Đống Đa, Hà Nội",
-  },
-];
+
 
 const vouchers = [
   {
@@ -100,15 +66,41 @@ const paymentMethods = [
   },
 ];
 
+
+
 export default function Page() {
-  // Sử dụng useState để quản lý giỏ hàng
-  const [cartItems, setCartItems] = useState(initialCartItems);
-  const [selectedAddressIndex, setSelectedAddressIndex] = useState<
+  const {order,setContactToOrder}=useOrderStore(state => state);
+  const {contacts,getAllContact}=useContactStore(state => state);
+  const [isModalAddContactOpen,setIsModalAddContactOpen]=useState(false);
+
+  useEffect(() => {
+    if(contacts.length==0){
+      getAllContact();
+    }
+  }, []);
+  console.log(order)
+
+  if(order==null){
+    return <>
+      <h1>Khong co don hang</h1>
+    </>
+  }
+
+  function handlePayment() {
+    if(order.contact==null){
+      message.warning("No address!")
+      return;
+    }
+
+  }
+
+
+
+  const [selectedAddressId, setSelectedAddressId] = useState<
     number | null
   >(0); // Quản lý địa chỉ được chọn
   const [isModalVisibleAddress, setIsModalVisibleAddress] = useState(false);
-  const [isAddAddressModalVisible, setIsAddAddressModalVisible] =
-    useState(false); // For new address modal
+
 
   const [isVoucherModalVisible, setIsVoucherModalVisible] = useState(false); // For voucher modal
   const [selectedVoucher, setSelectedVoucher] = useState<number | null>(null);
@@ -123,25 +115,31 @@ export default function Page() {
     setIsModalVisibleAddress(true);
   };
 
-  const handleOkAddress = () => {
-    setIsModalVisibleAddress(false);
+  const handleOkAddress =async () => {
+    const apiCall=()=>updateContactOrder({orderId:order.id,contactId:selectedAddressId})
+    await handleApiRequest(apiCall,(res)=>{
+      const contact=contacts.filter((c:any)=>c.id===selectedAddressId)
+      console.log(contact)
+      setContactToOrder(contact[0])
+      setIsModalVisibleAddress(false);
+    })
+
+
   };
 
   const handleCancelAddress = () => {
     setIsModalVisibleAddress(false);
   };
 
-  const handleSelectAddress = (index: number) => {
-    setSelectedAddressIndex(index);
+  const handleSelectAddress = (id: number) => {
+    setSelectedAddressId(id);
   };
 
   const showAddAddressModal = () => {
-    setIsAddAddressModalVisible(true);
-    setIsModalVisibleAddress(false);
+    setIsModalAddContactOpen(true);
+    //setIsModalVisibleAddress(false);
   };
-  const handleAddAddressCancel = () => setIsAddAddressModalVisible(false);
 
-  //////////////////////
 
   // Xử lý modal voucher
   const showVoucherModal = () => setIsVoucherModalVisible(true);
@@ -157,37 +155,41 @@ export default function Page() {
 
   const handleSelectPaymentMethod = (index: number) =>
     setSelectedPaymentMethod(index);
-  //////////////////////
 
-  // Hàm tính tổng số tiền cho mỗi sản phẩm
-  const calculateTotal = (price: number, quantity: number) => {
-    return price * quantity;
-  };
 
-  // Hàm xóa sản phẩm khỏi giỏ hàng
-  const handleRemoveItem = (id: number) => {
-    const updatedItems = cartItems.filter((item) => item.id !== id);
-    setCartItems(updatedItems);
-  };
+  const router = useRouter();
+
+  async function handleDeleteOrder() {
+    const apiCall=()=>deleteOrder(order.id);
+    await handleApiRequest(apiCall,(res)=>{
+      router.push("/home")
+
+
+    })
+  }
 
   return (
     <div className="container p-10 my-10 mb-36">
       <h1 className="text-2xl font-bold mb-8">Thanh Toán Đơn Hàng</h1>
       <div className=" bg-[#F5F5F5] rounded-sm flex flex-row items-center justify-between p-6 mb-4">
-        <div className="flex flex-col gap-2">
+        {order.contact==null? (<div className="flex flex-col gap-2">
           <h2 className="font-semibold text-[17px]">Địa chỉ nhận hàng</h2>
           <div className="flex flex-row gap-5">
-            {/* <p>NGUYEN VAN A - 0123456789</p> */}
-            {/* <p>Đường Mễ Trì, Phường Mễ Trì, Quận Nam Từ Liêm, Hà Nội</p> */}
-            <p>
-              {addresses[selectedAddressIndex!]?.name} -{" "}
-              {addresses[selectedAddressIndex!]?.phone}
-            </p>
-            <p>{addresses[selectedAddressIndex!]?.address}</p>
+            <p>Chưa có địa chỉ</p>
           </div>
-        </div>
+        </div>) : (<div className="flex flex-col gap-2">
+          <h2 className="font-semibold text-[17px]">Địa chỉ nhận hàng</h2>
+          <div className="flex flex-row gap-5">
+            <p>
+              {order.contact.fullName} - {" "}
+              {order.contact.phoneNumber}
+            </p>
+            <p>{order.contact.houseAddress}, {order.contact.ward}, {order.contact.district}, {order.contact.city}</p>
+          </div>
+        </div>)}
+
         <p
-          className="underline cursor-pointer text-brand-primary"
+            className="underline cursor-pointer text-brand-primary"
           onClick={showModalAddress}
         >
           Thay đổi
@@ -195,36 +197,41 @@ export default function Page() {
       </div>
       <div>
         <div className="grid grid-cols-12 gap-6 bg-[#F5F5F5] p-4 rounded-lg">
-          <div className="col-span-5 font-semibold text-start ml-4">
+          <div className="col-span-6 font-semibold text-start ml-4">
             Sản phẩm
           </div>
           <div className="col-span-2 text-center font-semibold">Đơn giá</div>
           <div className="col-span-2 text-center font-semibold">Số lượng</div>
           <div className="col-span-2 text-center font-semibold">Số tiền</div>
-          <div className="col-span-1 text-center font-semibold">Thao tác</div>
+
         </div>
 
         {/* Danh sách sản phẩm trong giỏ hàng */}
-        {cartItems.map((item) => (
+        {order.items.map((item:any) => (
           <div
             key={item.id}
             className="grid grid-cols-12 gap-6 items-center bg-white p-4 mt-4 rounded-lg border-b"
           >
             {/* Cột sản phẩm */}
-            <div className="col-span-5">
+            <div className="col-span-6">
               <div className="flex flex-row gap-8">
                 <img
-                  src={item.imageUrl}
-                  alt={item.name}
+                  src={item.productItem.product.images[0].url}
+                  alt={item.productItem.product.name}
                   className="w-24 h-24 object-cover rounded-lg text-center"
                 />
                 <div className="flex flex-col">
-                  <h3 className="text-lg font-semibold">{item.name}</h3>
+                  <h3 className="text-lg font-semibold">{item.productItem.product.name}</h3>
                   <p className="text-sm text-gray-500">
-                    Danh mục: Đồ dùng bằng tre
+                    Danh mục: {item.productItem.product.category.name}
                   </p>
                   <p className="text-sm text-gray-500">
-                    Phân loại hàng: 31, Vàng
+                    Phân loại hàng: {item.productItem.variationOptions?.map((option:any,index:number) => (
+                      <span key={option.id}>
+                        {option.value}
+                        {index < item.productItem.variationOptions.length - 1 && ', '}
+                       </span>
+                  ))}
                   </p>
                 </div>
               </div>
@@ -233,7 +240,7 @@ export default function Page() {
             {/* Cột giá */}
             <div className="col-span-2 text-center">
               <span className="font-semibold">
-                {item.price.toLocaleString("vi-VN")}đ
+                {item.productItem.price.toLocaleString("vi-VN")}đ
               </span>
             </div>
 
@@ -245,17 +252,14 @@ export default function Page() {
             {/* Cột số tiền */}
             <div className="col-span-2 text-center">
               <span className="font-semibold text-brand-primary">
-                {calculateTotal(item.price, item.quantity).toLocaleString(
+                {item.totalPrice.toLocaleString(
                   "vi-VN"
                 )}{" "}
                 đ
               </span>
             </div>
 
-            {/* Nút xóa */}
-            <div className="col-span-1 text-center text-red-700 text-lg cursor-pointer">
-              <p onClick={() => handleRemoveItem(item.id)}>Xóa</p>
-            </div>
+
           </div>
         ))}
       </div>
@@ -317,46 +321,39 @@ export default function Page() {
           <div className="flex justify-between gap-36 w-full mb-2">
             <h2 className="text-lg">Tổng tiền hàng:</h2>
             <span className="text-brand-primary">
-              {cartItems
-                .reduce(
-                  (total, item) =>
-                    total + calculateTotal(item.price, item.quantity),
-                  0
-                )
-                .toLocaleString("vi-VN")}{" "}
-              đ
+              {
+                order.productTotalCost
+              }đ
             </span>
           </div>
 
           <div className="flex justify-between gap-36 w-full mb-2">
             <h2>Phí vận chuyển:</h2>
-            <span className="text-brand-primary">30,000đ</span>
+            <span className="text-brand-primary"> {
+              order.shippingCost
+            }đ</span>
           </div>
 
           <div className="flex justify-between gap-36 w-full mb-2">
             <h2>Giảm giá:</h2>
-            <span className="text-brand-primary">-50,000đ</span>
+            <span className="text-brand-primary">-{order.discountAmount}đ</span>
           </div>
 
           <div className="flex justify-between gap-36 w-full font-bold mt-4">
             <h2 className="text-lg">Thành tiền:</h2>
             <span className="text-brand-primary">
-              {cartItems
-                .reduce(
-                  (total, item) =>
-                    total + calculateTotal(item.price, item.quantity),
-                  0
-                )
-                .toLocaleString("vi-VN")}{" "}
-              đ
+              {order.totalCost}đ
             </span>
           </div>
         </div>
       </div>
 
-      <Link href={"/payment"}>
+
+
+
         <Button
           type="primary"
+          onClick={handlePayment}
           style={{
             borderColor: "#4BAF47",
             padding: "12px 28px",
@@ -367,11 +364,28 @@ export default function Page() {
           }}
         >
           Đặt hàng
+
         </Button>
-      </Link>
+      <Button
+          danger
+          onClick={handleDeleteOrder}
+          style={{
+            borderColor: "#4BAF47",
+            padding: "12px 28px",
+            fontSize: "1rem",
+            borderRadius: "6px",
+            marginTop: "16px",
+            marginRight:"20px",
+            float: "right",
+          }}
+      >
+        Hủy
+
+      </Button>
+
 
       <Modal
-        visible={isModalVisibleAddress}
+        open={isModalVisibleAddress}
         onOk={handleOkAddress}
         onCancel={handleCancelAddress}
         okText="Xác nhận"
@@ -389,18 +403,18 @@ export default function Page() {
             </p>
           </div>
           <div>
-            {addresses.map((item, index) => (
+            {contacts.map((item, index) => (
               <div
-                key={index}
+                key={item.id}
                 className="flex flex-row justify-start gap-3 items-center p-2 border-b"
               >
                 <Checkbox
-                  checked={selectedAddressIndex === index}
-                  onChange={() => handleSelectAddress(index)}
+                  checked={selectedAddressId === item.id}
+                  onChange={() => handleSelectAddress(item.id)}
                 />
                 <div>
-                  <h2 className="font-semibold mb-1">{`${item.name} - ${item.phone}`}</h2>
-                  <p className="text-gray-500">{item.address}</p>
+                  <h2 className="font-semibold mb-1">{`${item.fullName} - ${item.phoneNumber}`}</h2>
+                  <p className="text-gray-500">{`${item.houseAddress}, ${item.ward}, ${item.district}, ${item.city}`}</p>
                 </div>
               </div>
             ))}
@@ -409,26 +423,12 @@ export default function Page() {
       </Modal>
 
       {/* Add New Address Modal */}
-      <Modal
-        visible={isAddAddressModalVisible}
-        // onOk={handleAddNewAddress} // Save the new address
-        onCancel={handleAddAddressCancel}
-        okText="OK"
-        cancelText="Trở lại"
-      >
-        <h2 className="font-semibold">Thêm Địa Chỉ Mới</h2>
-        <Input placeholder="Họ và tên" name="name" className="mt-4" />
-        <Input placeholder="Số điện thoại" name="phone" className="mt-4" />
-        <Input
-          placeholder="Nhập địa chỉ mới của bạn"
-          name="address"
-          className="mt-4"
-        />
-      </Modal>
+      <ContactForm setIsModalOpen={setIsModalAddContactOpen} isModalOpen={isModalAddContactOpen}/>
+
 
       {/* Voucher Modal */}
       <Modal
-        visible={isVoucherModalVisible}
+        open={isVoucherModalVisible}
         onOk={handleVoucherModalCancel}
         onCancel={handleVoucherModalCancel}
         okText="OK"
@@ -469,7 +469,7 @@ export default function Page() {
 
       {/* Payment Modal */}
       <Modal
-        visible={isPaymentModalVisible}
+        open={isPaymentModalVisible}
         onOk={handlePaymentModalCancel}
         onCancel={handlePaymentModalCancel}
         okText="OK"

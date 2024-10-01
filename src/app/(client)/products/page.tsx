@@ -124,6 +124,7 @@ export default function page() {
   };
 
   const handleCategoryChange = async (categoryId: number) => {
+    console.log(categoryId)
     setSelectedCategory(categoryId);
     setSearchQuery("");
     setCurrentPage(1);

@@ -7,12 +7,16 @@ import {DeepSet} from "@/app/util/DeepSet";
 import {useReviewStore} from "@/app/store/ReviewStore";
 import {addCart} from "@/apis/modules/item";
 import {handleApiRequest} from "@/app/util/utils";
+import {createOrderByNow} from "@/apis/modules/order";
+import {useOrderStore} from "@/app/store/OderStore";
+import {useRouter} from "next/navigation";
 
 const ProductInfoComponent:React.FC<any> = ({ product,productItems }) => {
     const [qty,setQty]=useState(1);
     const [productItem,setProductItem]=useState<any>(null)
     const [variations,setVariations]=useState([]);
     const [optionData,setOptionData]=useState([]);
+    const {setOrder}=useOrderStore(state => state);
 
 
     /*------------------------------------- */
@@ -112,20 +116,27 @@ const ProductInfoComponent:React.FC<any> = ({ product,productItems }) => {
             message.warning("Chưa có mặt hàng này!")
             return;
         }
-
         const data:any={productItemId:productItem.id,quantity:qty}
         const apiCall=()=> addCart(data);
         await handleApiRequest(apiCall,(response:any)=>{
             console.log(response)
         })
 
-
-
-
-
     }
+    const router = useRouter();
 
-    function handleByNow() {
+    async function handleByNow() {
+        if(!productItem){
+            message.warning("Chưa có mặt hàng này!")
+            return;
+        }
+        const data:any={productItemId:productItem.id,quantity:qty}
+        const apiCall=()=> createOrderByNow(data);
+        await handleApiRequest(apiCall,(response:any)=>{
+            console.log(response)
+            setOrder(response.data);
+            router.replace("/payment")
+        })
 
     }
 
