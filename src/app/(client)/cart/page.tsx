@@ -66,12 +66,12 @@ export default function Page() {
     );
     setCartItems(updateCartItems);
 
-    const updateItem:any = cartItems.filter((item)=>item.id == id)
+    const updateItem:any = updateCartItems.filter((item)=>item.id == id)
 
     const updateCartQuantity=async ()=>{
       const apiCall=()=>updateCart(updateItem[0].quantity,updateItem[0].id);
       await handleApiRequest(apiCall,(response)=>{
-        fetchMyCart();
+        setCartItems(updateCartItems);
       })
     }
     updateCartQuantity()
@@ -82,14 +82,15 @@ export default function Page() {
     const updateCartItems = cartItems.map((item) =>
       item.id === id ? { ...item, quantity: item.quantity - 1 } : item
     );
+
     setCartItems(updateCartItems);
 
-    const updateItem:any = cartItems.filter((item)=>item.id == id)
+    const updateItem:any = updateCartItems.filter((item)=>item.id == id)
 
     const updateCartQuantity=async ()=>{
       const apiCall=()=>updateCart(updateItem[0].quantity,updateItem[0].id);
       await handleApiRequest(apiCall,(response)=>{
-        fetchMyCart();
+        setCartItems(updateCartItems);
       })
     }
     updateCartQuantity()
