@@ -4,6 +4,9 @@ import { Button, InputNumber } from "antd";
 import Link from "next/link";
 import {handleApiRequest} from "@/app/util/utils";
 import {getMyCart,updateCart,deleteCart} from "@/apis/modules/item";
+import {createOrderByCart} from "@/apis/modules/order";
+import {useRouter} from "next/navigation";
+import {useOrderStore} from "@/app/store/OderStore";
 
 
 export default function Page() {
@@ -61,6 +64,17 @@ export default function Page() {
   const decreaseQuantity = async (id: number,quantity:number) => {
     await updateCartQuantity(quantity-1,id)
   };
+  const router=useRouter();
+  const {setOrder}=useOrderStore(state => state);
+
+  async function handleCreateOrderByCart() {
+    const apiCall=()=>createOrderByCart();
+    await handleApiRequest(apiCall,(response)=>{
+      console.log(response)
+      setOrder(response.data);
+      router.replace("/payment")
+    })
+  }
 
   return (
     <div className="container p-10 my-10">
@@ -160,6 +174,7 @@ export default function Page() {
         </h2>
         <Link href={"/payment"}>
           <Button
+              onClick={handleCreateOrderByCart}
             type="primary"
             style={{
               borderColor: "#4BAF47",

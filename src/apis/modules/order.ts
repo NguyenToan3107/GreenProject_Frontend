@@ -3,6 +3,9 @@ import api from "@/apis/request";
 export function createOrderByNow(data:any){
     return api.post("orders/create",data)
 }
+export function createOrderByCart(){
+    return api.post("orders/createByCart")
+}
 
 export function getOrderByNow(id:number){
     return api.get(`orders/${id}`)
