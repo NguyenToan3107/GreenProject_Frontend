@@ -1,9 +1,8 @@
 "use client";
-import { SetStateAction, useEffect, useState } from "react";
+import React, { SetStateAction, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import {
-  faStar,
   faHeart as faHeartEmpty,
 } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as faHeartFilled } from "@fortawesome/free-solid-svg-icons";
@@ -13,10 +12,9 @@ import {
   Menu,
   Checkbox,
   Pagination,
-  Image,
   Spin,
   Rate,
-  Input,
+  Input, Tree, MenuProps,
 } from "antd";
 import "../../../app/globals.css";
 import "antd/dist/reset.css";
@@ -27,8 +25,8 @@ import {
   getProductOnTopSold,
 } from "@/apis/modules/product";
 import Link from "next/link";
-import { getAllCategories } from "@/apis/modules/category";
 import { useCategoryStore } from "@/app/store/CategoryStore";
+import {SortAscendingOutlined} from "@ant-design/icons";
 
 export default function page() {
   // ---------------Fix tạm------------------
@@ -63,7 +61,7 @@ export default function page() {
     }
   };
 
-  const fetchProductOnTopSold = async () => {
+  const fetchProductOnTopSold = async (page: number) => {
     setLoading(true);
     // ---------------Fix tạm------------------
     const res: any = await getProductOnTopSold(topSoldPageNum,topSoldPageSize);
@@ -71,9 +69,10 @@ export default function page() {
     
     setLoading(false);
     if (res.code == 200) {
+      console.log(res)
       setProductsView(res.data.content);
       setCurrentPage(res.data.currentPage);
-      setTotal(res.data.content.length);
+      setTotal(res.data.totalElements);
     }
   };
 
@@ -110,24 +109,28 @@ export default function page() {
       setProductsView(res.data.content);
       setCurrentPage(res.data.currentPage);
       setTotal(res.data.totalElements);
+      console.log(currentPage);
     }
   };
+  const convertTreeData = (data: any[]):any => {
+    return data.map(item => ({
+      title: item.title,
+      key: item.value, // Chuyển 'value' thành 'key'
+      children: item.children ? convertTreeData(item.children) : undefined,
+    }));
+  }
 
-  const fetchCategory = async () => {
-    setLoading(true);
-    const res: any = getAllCategories();
-    setLoading(false);
-    if (res.code == 200) {
-    }
-  };
+
 
   useEffect(() => {
-    getAllCategories();
+    if(categoriesTree.length==0){
+      getAllCategories();
+    }
   }, []);
+
 
   useEffect(() => {
     fetchProduct(currentPage, selectedCategory, searchQuery);
-    fetchCategory();
   }, [selectedCategory]);
 
   const handleButtonClick = async (buttonType: SetStateAction<string>) => {
@@ -136,18 +139,20 @@ export default function page() {
     if (buttonType == "latest") {
     } else if (buttonType == "best-seller") {
       setTopSole(true);
-      await fetchProductOnTopSold();
+      await fetchProductOnTopSold(1);
     } else {
       await fetchProduct(1, 0, "");
     }
   };
 
-  const handleCategoryChange = async (categoryId: number) => {
-    console.log(categoryId)
-    setSelectedCategory(categoryId);
-    setSearchQuery("");
-    setCurrentPage(1);
-    await fetchProduct(1, categoryId, "");
+
+  const onSelectCategory = async (selectedKeys: any) => {
+    if (selectedKeys.length > 0) {
+      const categoryId = selectedKeys[0];
+      console.log(categoryId)
+      await fetchProduct(1, categoryId, "");
+
+    }
   };
 
   const toggleLike = (productId: number) => {
@@ -176,46 +181,44 @@ export default function page() {
       case "totalRating"
       */
     } else if (topSold) {
-      await fetchProductOnTopSold();
+      await fetchProductOnTopSold(value);
     } else {
+      if (selectedCategory && searchQuery) {
+        await fetchProduct(value, selectedCategory, searchQuery);
+      }
       if (selectedCategory) {
         await fetchProduct(value, selectedCategory, "");
       }
       if (searchQuery) {
         await fetchProduct(value, 0, searchQuery);
+      } else {
+        await fetchProduct(value, 0, "");
       }
     }
   };
 
-  const handleSearchClick = () => {
+  const handleSearchClick =async () => {
     setSelectedCategory(0);
     setCurrentPage(1);
-    fetchProduct(1, 0, searchQuery);
+    await fetchProduct(1, 0, searchQuery);
   };
 
   // Hàm đệ quy để render các category con
-  const renderMenuItems = (category: any) => {
-    if (category.children && category.children.length > 0) {
-      return (
-        <Menu.SubMenu
-          key={category.value}
-          title={category.title}
-          style={{ color: "#4BAF47" }}
-        >
-          {category.children.map((child: any) => renderMenuItems(child))}
-        </Menu.SubMenu>
-      );
-    } else {
-      return (
-        <Menu.Item
-          key={category.value}
-          onClick={() => handleCategoryChange(category.value)}
-        >
-          {category.title}
-        </Menu.Item>
-      );
-    }
-  };
+  const items: MenuProps['items'] = [
+    {
+      key: 'minPrice',
+      label: 'Giá thấp nhất',
+    },
+    {
+      key: 'maxPrice',
+      label: 'Giá cao nhất',
+    },
+    {
+      key: 'bestSeller',
+      label: 'Bán chạy nhất',
+    },
+  ];
+
 
   return (
     <div className="mx-0 px-0">
@@ -259,9 +262,14 @@ export default function page() {
               </Button>
             </div>
             <h2 className="text-xl font-semibold mb-4">Danh Mục</h2>
-            <Menu mode="inline" className="space-y-2">
-              {categoriesTree.map((category: any) => renderMenuItems(category))}
-            </Menu>
+
+            <Tree
+                treeData={convertTreeData(categoriesTree)}
+                className="bg-white p-3 border border-gray-200 rounded-lg shadow-md text-lg" // Thêm các class Tailwind
+                defaultExpandAll
+                onSelect={onSelectCategory}
+
+            />
 
             {/* Đánh giá */}
             <h2 className="text-xl font-semibold mt-6 mb-4">Đánh Giá</h2>
@@ -269,23 +277,8 @@ export default function page() {
               {[5, 4, 3, 2, 1].map((star) => (
                 <div key={star} className="flex items-center space-x-2">
                   <Checkbox className="mr-2" />
-                  {/* Sao đã chọn */}
                   <div className="flex items-center">
-                    {[...Array(star)].map((_, i) => (
-                      <FontAwesomeIcon
-                        key={i}
-                        icon={faStar}
-                        className="text-yellow-400 mr-1"
-                      />
-                    ))}
-                    {/* Sao chưa chọn */}
-                    {[...Array(5 - star)].map((_, i) => (
-                      <FontAwesomeIcon
-                        key={i}
-                        icon={faStar}
-                        className="text-gray-300 mr-1"
-                      />
-                    ))}
+                    <Rate value={star} disabled/>
                   </div>
                   <span className="ml-2 text-gray-700">{star} sao</span>
                 </div>
@@ -317,11 +310,17 @@ export default function page() {
                   Bán chạy
                 </Button>
               </div>
-              <Dropdown overlay={sortOptions} trigger={["click"]}>
+              <Dropdown
+                  menu={{ items, onClick: handleMenuClick }} // Sử dụng items cho menu
+                  trigger={['click']}
+              >
                 <Button>
-                  Bộ lọc <FontAwesomeIcon icon={faStar} className="ml-2" />
+                  Sắp xếp <SortAscendingOutlined className="ml-2" />
                 </Button>
               </Dropdown>
+
+              {/*dropdown here*/}
+
             </div>
             {loading ? (
               <div className="flex justify-center items-center h-screen">
@@ -330,9 +329,9 @@ export default function page() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6 rounded cursor-pointer">
                 {productsView.map((product: any) => (
-                  <Link href={`/products/${product.id}`}>
+                  <Link  key={product.id} href={`/products/${product.id}`}>
                     <div
-                      key={product.id}
+
                       className="border rounded overflow-hidden shadow-md flex flex-col"
                     >
                       <img
@@ -351,7 +350,7 @@ export default function page() {
                           <div className="flex items-center mb-2">
                             <Rate
                               allowHalf
-                              defaultValue={product.avgRating}
+                              defaultValue={product.totalRating/product.totalReviews}
                               disabled
                             />
                           </div>
@@ -380,12 +379,14 @@ export default function page() {
 
             {/* Phân trang */}
             <div className="flex justify-center mt-8 space-x-2">
-              <Pagination
-                onChange={handlePageChange}
-                defaultCurrent={currentPage}
-                defaultPageSize={PRODUCT_ITEM_PAGE_SIZE}
-                total={total}
-              />
+              {currentPage && (
+                <Pagination
+                  onChange={handlePageChange}
+                  current={currentPage}
+                  defaultPageSize={PRODUCT_ITEM_PAGE_SIZE}
+                  total={total}
+                />
+              )}
             </div>
           </main>
         </div>
