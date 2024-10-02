@@ -22,7 +22,6 @@ const ReviewComponent = () => {
         getAllReviewByProductItemId,
         createReview,
         getReviewById,
-        updateReviewById,
         deleteReviewById,
     } = useReviewStore();
 

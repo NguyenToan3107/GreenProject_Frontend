@@ -32,4 +32,16 @@ export function getAllVoucherValid(page:number){
     }
     return api.get(`vouchers/valid?pageNum=${page}&pageSize=${PAGE_SIZE}`)
 }
+
+
+export function getMyVouchers(pageNum: any) {
+    if(pageNum == 0){
+        return api.get(`vouchers/my-voucher`);
+    }
+    return api.get(`vouchers/my-voucher?pageNum=${pageNum}&pageSize=${PAGE_SIZE}`);
+}
+
+export function redeemVoucher(voucherId: number) {
+    return api.post(`vouchers/redeem?voucherId=${voucherId}`)
+}
 /* Mới thêm */

@@ -1,15 +1,20 @@
 
 import {create} from "zustand";
 import {handleApiRequest} from "@/app/util/utils";
-import {createVoucher,getAllVouchers,updateVoucherById,deleteVoucherById,getAllVoucherValid} from "@/apis/modules/voucher";
+import {createVoucher,getAllVouchers,updateVoucherById,deleteVoucherById,getAllVoucherValid,getMyVouchers,redeemVoucher} from "@/apis/modules/voucher";
 import {PAGE_SIZE} from "@/app/util/constant";
 
 interface VoucherState {
     vouchers: any[];
+    validVouchers: any[];
+    userVouchers: any[];
     search: string;
     setSearch: (key: string) => void;
+    setUserVouchers : (vouchers:any)=> void;
     getAllVouchers: (page: number) => Promise<void>;
     getAllValidVoucher: (page:number) => Promise<void>;
+    getMyVoucher: (page: number) => Promise<void>;
+    redeemVoucher: (id:number) => Promise<void>;
     createVoucher: (voucher: any) => Promise<void>;
     updateVoucher: (id: number, voucher: any) => Promise<void>;
     deleteVoucher: (id: number) => Promise<void>;
@@ -19,13 +24,18 @@ interface VoucherState {
 
 export const useVoucherStore=create<VoucherState>((set,get)=>({
     vouchers:[],
+    validVouchers: [],
+    userVouchers: [],
     search:"",
     current: 1,
     totalElements: 0,
 
-
     setSearch:(s)=>{
         set({search:s})
+    },
+
+    setUserVouchers:(vouchers)=>{
+        set({userVouchers: vouchers})
     },
 
     getAllVouchers: async (page: number) => {
@@ -89,12 +99,33 @@ export const useVoucherStore=create<VoucherState>((set,get)=>({
         const apiCall = () => getAllVoucherValid(page);
         const onSuccess = (response: any) => {
             set({
-                vouchers: response.data.content,
+                validVouchers: response.data.content,
                 current: page,
                 totalElements: response.data.totalElements,
             });
         };
         return await handleApiRequest(apiCall, onSuccess);
+    },
+
+    getMyVoucher: async (page: number) => {
+        const apiCall = () => getMyVouchers(page);
+        const onSuccess = (response: any) => {
+                set({
+                    userVouchers: response.data.content,
+                    current: page,
+                    totalElements: response.data.totalElements,
+                });
+
+        };
+        return await handleApiRequest(apiCall, onSuccess);
+    },
+
+    redeemVoucher:async (id:number) => {
+        const apiCall = () => redeemVoucher(id);
+        const onSuccess = (response: any) => {
+        
+        };
+    return await handleApiRequest(apiCall, onSuccess);
     }
     /* Mới thêm */
 }))

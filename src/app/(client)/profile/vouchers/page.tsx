@@ -1,39 +1,54 @@
+"use client";
+import React, { useEffect, useState } from "react";
 import Sidebar from "@/app/(client)/_components/Sidebar";
-import React from "react";
 import { Button } from "antd";
-
-const vouchers = [
-  {
-    id: 1,
-    imageUrl: "/client/products/product2.png",
-    name: "Giảm giá 50%",
-    startDate: "01/09/2024",
-    endDate: "30/09/2024",
-  },
-  {
-    id: 2,
-    imageUrl: "/client/products/product2.png",
-    name: "Giảm giá 30%",
-    startDate: "05/09/2024",
-    endDate: "10/09/2024",
-  },
-  {
-    id: 3,
-    imageUrl: "/client/products/product2.png",
-    name: "Miễn phí vận chuyển",
-    startDate: "01/09/2024",
-    endDate: "15/09/2024",
-  },
-  {
-    id: 1,
-    imageUrl: "/client/products/product2.png",
-    name: "Giảm giá 50%",
-    startDate: "01/09/2024",
-    endDate: "30/09/2024",
-  },
-];
+import {useVoucherStore} from "@/app/store/VoucherStore";
 
 export default function Page() {
+  const {
+    userVouchers,
+    validVouchers,
+    setUserVouchers,
+    getMyVoucher,
+    getAllValidVoucher,
+    redeemVoucher,
+  } = useVoucherStore((state) => state);
+
+  const fetchMyVoucher=async ()=>{
+    const res:any = await getMyVoucher(0);
+
+    if(res.code == 200){
+      
+    }
+  }
+
+  const fetchValidVouchers=async ()=>{
+    const res:any = await getAllValidVoucher(0);
+
+    if(res.code == 200){
+      
+    }
+  }
+
+  useEffect(() => {
+    if (!userVouchers || userVouchers.length === 0) {
+      fetchMyVoucher(); 
+    }
+
+    if (!userVouchers || userVouchers.length === 0) {
+      fetchValidVouchers(); 
+    }
+  }, []); 
+
+  const handleRedeemVoucher = async(id:number) =>{
+    const res:any = await redeemVoucher(id);
+    console.log(res)
+    if(res.code == 200){
+      setUserVouchers([...userVouchers, res.data]);
+    }
+  }
+
+
   return (
     <div className="flex w-full h-auto justify-between my-16 mb-40 px-6">
       {/* Sidebar */}
@@ -46,17 +61,18 @@ export default function Page() {
           <p className="mb-2">Quản lý thông tin hồ sơ để bảo mật tài khoản</p>
 
           <div className="grid grid-cols-2 gap-6 mt-10 ml-6 h-[350px] overflow-y-auto">
-            {vouchers.map((voucher) => (
+            
+            {userVouchers.map((voucher) => (
               <div
                 key={voucher.id}
                 className="flex p-2 shadow-lg rounded-md items-center bg-white"
               >
                 {/* Voucher Image */}
-                <img
+                {/* <img
                   src={voucher.imageUrl}
                   alt={voucher.name}
                   className="w-28 h-28 object-cover rounded-lg"
-                />
+                /> */}
 
                 {/* Voucher Content */}
                 <div className="ml-10 flex flex-col justify-between">
@@ -68,9 +84,9 @@ export default function Page() {
                     Kết thúc: {voucher.endDate}
                   </p>
 
-                  <Button type="default" className="mt-2">
+                  {/* <Button type="default" className="mt-2">
                     Chọn
-                  </Button>
+                  </Button> */}
                 </div>
               </div>
             ))}
@@ -83,17 +99,22 @@ export default function Page() {
           <p className="mb-2">Quản lý thông tin hồ sơ để bảo mật tài khoản</p>
 
           <div className="grid grid-cols-2 gap-6 mt-10 ml-6 h-[350px] overflow-y-auto">
-            {vouchers.map((voucher) => (
+            {validVouchers.map((voucher) => (
               <div
                 key={voucher.id}
                 className="flex p-2 shadow-lg rounded-md items-center bg-white"
               >
                 {/* Voucher Image */}
                 <img
-                  src={voucher.imageUrl}
-                  alt={voucher.name}
-                  className="w-28 h-28 object-cover rounded-lg"
-                />
+                  src={
+                    voucher.type === 'FREE_SHIP' 
+                      ? './public/products/FREE_SHIP.png' 
+                      : voucher.type === 'DISCOUNT_AMOUNT' 
+                      ? './public/products/DISCOUNT.png' 
+                      : './public/products/DISCOUNT.png'
+                  }
+                alt={voucher.name}
+                className="w-28 h-28 object-cover rounded-lg" />
 
                 {/* Voucher Content */}
                 <div className="ml-10 flex flex-col justify-between">
@@ -104,8 +125,10 @@ export default function Page() {
                   <p className="text-gray-500 text-sm">
                     Kết thúc: {voucher.endDate}
                   </p>
-
-                  <Button type="default" className="mt-2">
+                  <p>
+                    Số điểm cần để đổi: {voucher.pointsRequired}
+                  </p>
+                  <Button onClick={ () =>handleRedeemVoucher(voucher.id)} type="default" className="mt-2">
                     Chọn
                   </Button>
                 </div>
