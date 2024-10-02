@@ -2,9 +2,7 @@
 import React, { SetStateAction, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import {
-  faHeart as faHeartEmpty,
-} from "@fortawesome/free-solid-svg-icons";
+import { faHeart as faHeartEmpty } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as faHeartFilled } from "@fortawesome/free-solid-svg-icons";
 import {
   Button,
@@ -14,7 +12,9 @@ import {
   Pagination,
   Spin,
   Rate,
-  Input, Tree, MenuProps,
+  Input,
+  Tree,
+  MenuProps,
 } from "antd";
 import "../../../app/globals.css";
 import "antd/dist/reset.css";
@@ -26,15 +26,14 @@ import {
 } from "@/apis/modules/product";
 import Link from "next/link";
 import { useCategoryStore } from "@/app/store/CategoryStore";
-import {SortAscendingOutlined} from "@ant-design/icons";
+import { SortAscendingOutlined } from "@ant-design/icons";
 
 export default function page() {
   // ---------------Fix tạm------------------
-  const topSoldPageNum:number = 1;
+  const topSoldPageNum: number = 1;
   const topSoldPageSize: number = 20;
   // ----------------------------------------
 
-  
   const [searchQuery, setSearchQuery] = useState("");
   const [activeButton, setActiveButton] = useState("popular");
   const [likedProducts, setLikedProducts] = useState(new Set());
@@ -53,6 +52,7 @@ export default function page() {
   const fetchProduct = async (page: number, categoryId = 0, search = "") => {
     setLoading(true);
     const res: any = await getAllProductsView(page, search, categoryId);
+    console.log(res);
     setLoading(false);
     if (res.code == 200) {
       setProductsView(res.data.content);
@@ -64,12 +64,12 @@ export default function page() {
   const fetchProductOnTopSold = async (page: number) => {
     setLoading(true);
     // ---------------Fix tạm------------------
-    const res: any = await getProductOnTopSold(topSoldPageNum,topSoldPageSize);
+    const res: any = await getProductOnTopSold(topSoldPageNum, topSoldPageSize);
     // ----------------------------------------
-    
+
     setLoading(false);
     if (res.code == 200) {
-      console.log(res)
+      console.log(res);
       setProductsView(res.data.content);
       setCurrentPage(res.data.currentPage);
       setTotal(res.data.totalElements);
@@ -77,10 +77,10 @@ export default function page() {
   };
 
   const handleMenuClick = async (e: { key: string }) => {
-    if (e.key === "2") {
+    if (e.key === "minPrice") {
       setSortByPrice(true);
-       // ---------------Fix tạm------------------
-      await fetchProductSortPrice(1,"ascMinPrice");
+      // ---------------Fix tạm------------------
+      await fetchProductSortPrice(1, "ascMinPrice");
       // ------------------------------------
       /* các option:
       case "ascMinPrice" 
@@ -90,20 +90,26 @@ export default function page() {
       case "reviewCount" 
       case "totalRating"
       */
+    } else if (e.key === "maxPrice") {
+      setSortByPrice(true);
+      await fetchProductSortPrice(1, "ascMaxPrice");
+    } else if (e.key === "bestSeller") {
+      setSortByPrice(true);
+      await fetchProductSortPrice(1, "ascMaxPrice");
     } else {
       setSortByPrice(false);
     }
   };
 
-  const sortOptions = (
-    <Menu onClick={handleMenuClick}>
-      <Menu.Item key="1">Tất cả</Menu.Item>
-      <Menu.Item key="2">Giá</Menu.Item>
-    </Menu>
-  );
-  const fetchProductSortPrice = async (page: number,option:string) => {
+  // const sortOptions = (
+  //   <Menu onClick={handleMenuClick}>
+  //     <Menu.Item key="1">Tất cả</Menu.Item>
+  //     <Menu.Item key="2">Giá</Menu.Item>
+  //   </Menu>
+  // );
+  const fetchProductSortPrice = async (page: number, option: string) => {
     setLoading(true);
-    const res: any = await getAllProductsSort(page,option);
+    const res: any = await getAllProductsSort(page, option);
     setLoading(false);
     if (res.code == 200) {
       setProductsView(res.data.content);
@@ -112,22 +118,19 @@ export default function page() {
       console.log(currentPage);
     }
   };
-  const convertTreeData = (data: any[]):any => {
-    return data.map(item => ({
+  const convertTreeData = (data: any[]): any => {
+    return data.map((item) => ({
       title: item.title,
       key: item.value, // Chuyển 'value' thành 'key'
       children: item.children ? convertTreeData(item.children) : undefined,
     }));
-  }
-
-
+  };
 
   useEffect(() => {
-    if(categoriesTree.length==0){
+    if (categoriesTree.length == 0) {
       getAllCategories();
     }
   }, []);
-
 
   useEffect(() => {
     fetchProduct(currentPage, selectedCategory, searchQuery);
@@ -145,13 +148,11 @@ export default function page() {
     }
   };
 
-
   const onSelectCategory = async (selectedKeys: any) => {
     if (selectedKeys.length > 0) {
       const categoryId = selectedKeys[0];
-      console.log(categoryId)
+      console.log(categoryId);
       await fetchProduct(1, categoryId, "");
-
     }
   };
 
@@ -170,7 +171,7 @@ export default function page() {
   const handlePageChange = async (value: any) => {
     if (sortByPrice) {
       // -------------Fix tạm ---------------
-      await fetchProductSortPrice(value,"ascMinPrice");
+      await fetchProductSortPrice(value, "ascMinPrice");
       // ------------------------------------
       /* các option:
       case "ascMinPrice" 
@@ -197,28 +198,27 @@ export default function page() {
     }
   };
 
-  const handleSearchClick =async () => {
+  const handleSearchClick = async () => {
     setSelectedCategory(0);
     setCurrentPage(1);
     await fetchProduct(1, 0, searchQuery);
   };
 
   // Hàm đệ quy để render các category con
-  const items: MenuProps['items'] = [
+  const items: MenuProps["items"] = [
     {
-      key: 'minPrice',
-      label: 'Giá thấp nhất',
+      key: "minPrice",
+      label: "Giá thấp nhất",
     },
     {
-      key: 'maxPrice',
-      label: 'Giá cao nhất',
+      key: "maxPrice",
+      label: "Giá cao nhất",
     },
     {
-      key: 'bestSeller',
-      label: 'Bán chạy nhất',
+      key: "bestSeller",
+      label: "Bán chạy nhất",
     },
   ];
-
 
   return (
     <div className="mx-0 px-0">
@@ -264,11 +264,10 @@ export default function page() {
             <h2 className="text-xl font-semibold mb-4">Danh Mục</h2>
 
             <Tree
-                treeData={convertTreeData(categoriesTree)}
-                className="bg-white p-3 border border-gray-200 rounded-lg shadow-md text-lg" // Thêm các class Tailwind
-                defaultExpandAll
-                onSelect={onSelectCategory}
-
+              treeData={convertTreeData(categoriesTree)}
+              className="bg-white p-3 border border-gray-200 rounded-lg shadow-md text-lg" // Thêm các class Tailwind
+              defaultExpandAll
+              onSelect={onSelectCategory}
             />
 
             {/* Đánh giá */}
@@ -278,7 +277,7 @@ export default function page() {
                 <div key={star} className="flex items-center space-x-2">
                   <Checkbox className="mr-2" />
                   <div className="flex items-center">
-                    <Rate value={star} disabled/>
+                    <Rate value={star} disabled />
                   </div>
                   <span className="ml-2 text-gray-700">{star} sao</span>
                 </div>
@@ -311,8 +310,8 @@ export default function page() {
                 </Button>
               </div>
               <Dropdown
-                  menu={{ items, onClick: handleMenuClick }} // Sử dụng items cho menu
-                  trigger={['click']}
+                menu={{ items, onClick: handleMenuClick }} // Sử dụng items cho menu
+                trigger={["click"]}
               >
                 <Button>
                   Sắp xếp <SortAscendingOutlined className="ml-2" />
@@ -320,7 +319,6 @@ export default function page() {
               </Dropdown>
 
               {/*dropdown here*/}
-
             </div>
             {loading ? (
               <div className="flex justify-center items-center h-screen">
@@ -329,11 +327,8 @@ export default function page() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6 rounded cursor-pointer">
                 {productsView.map((product: any) => (
-                  <Link  key={product.id} href={`/products/${product.id}`}>
-                    <div
-
-                      className="border rounded overflow-hidden shadow-md flex flex-col"
-                    >
+                  <Link key={product.id} href={`/products/${product.id}`}>
+                    <div className="border rounded overflow-hidden shadow-md flex flex-col">
                       <img
                         src={product.imageCover}
                         alt={product.name}
@@ -350,7 +345,9 @@ export default function page() {
                           <div className="flex items-center mb-2">
                             <Rate
                               allowHalf
-                              defaultValue={product.totalRating/product.totalReviews}
+                              defaultValue={
+                                product.totalRating / product.totalReviews
+                              }
                               disabled
                             />
                           </div>
