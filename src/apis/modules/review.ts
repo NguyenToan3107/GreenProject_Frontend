@@ -13,9 +13,9 @@ export function createReview(review:any){
     return api.post('reviews/create',review)
 }
 
-export function updateReviewById(review:any){
-    return api.put(`reviews/update`,review)
-}
+// export function updateReviewById(review:any){
+//     return api.put(`reviews/update`,review)
+// }
 
 export function deleteReviewById(productItemId:number){
     return api.delete(`reviews/delete/product_item/${productItemId}`)

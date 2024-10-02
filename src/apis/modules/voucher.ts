@@ -11,7 +11,6 @@ export function getAllVouchers(pageNum:any,search:string) {
     }else {
         return api.get(`vouchers?pageNum=${pageNum}&pageSize=${PAGE_SIZE}`);
     }
-
 }
 
 export function createVoucher(voucher:any){
@@ -25,3 +24,12 @@ export function updateVoucherById(id:number,voucher:any){
 export function deleteVoucherById(id:number){
     return api.delete(`vouchers/delete/${id}`)
 }
+
+/* Mới thêm */
+export function getAllVoucherValid(page:number){
+    if(page == 0){
+        return api.get('vouchers/valid')
+    }
+    return api.get(`vouchers/valid?pageNum=${page}&pageSize=${PAGE_SIZE}`)
+}
+/* Mới thêm */

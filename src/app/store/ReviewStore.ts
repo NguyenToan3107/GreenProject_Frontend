@@ -1,7 +1,7 @@
 
 import {create} from "zustand";
 import {handleApiRequest} from "@/app/util/utils";
-import {getAllReviewByProductItemId,createReview,updateReviewById,deleteReviewById,getReviewById} from "@/apis/modules/review";
+import {getAllReviewByProductItemId,createReview,deleteReviewById,getReviewById} from "@/apis/modules/review";
 import { Anybody } from "next/font/google";
 
 interface ReviewState {
@@ -13,7 +13,7 @@ interface ReviewState {
     getReviewById: (productItemId:any) => Promise<void>;
     getAllReviewByProductItemId: (page: number,productItemId:any) => Promise<void>;
     createReview: (review: any,productItemId:any) => Promise<void>;
-    updateReviewById: (productItemId:any) => Promise<void>;
+    // updateReviewById: (productItemId:any) => Promise<void>;
     deleteReviewById: (id: number,productItemId:any) => Promise<void>;
     current: number;
     setCurrent:(cur:number)=>void,
@@ -76,13 +76,13 @@ export const useReviewStore=create<ReviewState>((set,get)=>({
         return await handleApiRequest(apiCall, onSuccess);
     },
 
-    updateReviewById:async (productItemId:any)=>{
-        const apiCall = () => updateReviewById(productItemId);
-        const onSuccess = (response: any) => {
-            get().getAllReviewByProductItemId(get().current,productItemId);
-        };
-        return await handleApiRequest(apiCall, onSuccess);
-    },
+    // updateReviewById:async (productItemId:any)=>{
+    //     const apiCall = () => updateReviewById(productItemId);
+    //     const onSuccess = (response: any) => {
+    //         get().getAllReviewByProductItemId(get().current,productItemId);
+    //     };
+    //     return await handleApiRequest(apiCall, onSuccess);
+    // },
 
     deleteReviewById:async (id:number,productItemId:any)=>{
         const apiCall = () => deleteReviewById(id);

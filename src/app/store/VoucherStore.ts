@@ -1,7 +1,7 @@
 
 import {create} from "zustand";
 import {handleApiRequest} from "@/app/util/utils";
-import {createVoucher,getAllVouchers,updateVoucherById,deleteVoucherById} from "@/apis/modules/voucher";
+import {createVoucher,getAllVouchers,updateVoucherById,deleteVoucherById,getAllVoucherValid} from "@/apis/modules/voucher";
 import {PAGE_SIZE} from "@/app/util/constant";
 
 interface VoucherState {
@@ -9,13 +9,12 @@ interface VoucherState {
     search: string;
     setSearch: (key: string) => void;
     getAllVouchers: (page: number) => Promise<void>;
+    getAllValidVoucher: (page:number) => Promise<void>;
     createVoucher: (voucher: any) => Promise<void>;
     updateVoucher: (id: number, voucher: any) => Promise<void>;
     deleteVoucher: (id: number) => Promise<void>;
     current: number;
     totalElements: number;
-
-
 }
 
 export const useVoucherStore=create<VoucherState>((set,get)=>({
@@ -83,5 +82,19 @@ export const useVoucherStore=create<VoucherState>((set,get)=>({
             });
         };
         return await handleApiRequest(apiCall, onSuccess);
+    },
+
+    /* Mới thêm */
+    getAllValidVoucher:async (page:number) => {
+        const apiCall = () => getAllVoucherValid(page);
+        const onSuccess = (response: any) => {
+            set({
+                vouchers: response.data.content,
+                current: page,
+                totalElements: response.data.totalElements,
+            });
+        };
+        return await handleApiRequest(apiCall, onSuccess);
     }
+    /* Mới thêm */
 }))
