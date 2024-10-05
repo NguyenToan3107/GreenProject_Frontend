@@ -73,11 +73,6 @@ export default function page() {
   };
 
   return (
-    <div className="flex w-full h-screen justify-between my-16 px-6">
-      {/* Sidebar */}
-      <Sidebar />
-
-      {/* Profile Details */}
       <div className="w-4/5 bg-white p-16 shadow-lg h-[600px]">
         <h1 className="text-2xl font-bold mb-3">Hồ sơ của tôi</h1>
         <p className="mb-2">Quản lý thông tin hồ sơ để bảo mật tài khoản</p>
@@ -158,6 +153,6 @@ export default function page() {
           </Form>
         </div>
       </div>
-    </div>
+
   );
 }

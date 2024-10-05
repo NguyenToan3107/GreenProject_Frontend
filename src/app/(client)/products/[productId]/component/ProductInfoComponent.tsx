@@ -1,5 +1,5 @@
 "use client"
-import  {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Flex, message, Radio, Rate} from 'antd';
 import {MinusOutlined, PlusOutlined, ShoppingCartOutlined, StockOutlined, TagOutlined} from '@ant-design/icons';
 import {DeepSet} from "@/app/util/DeepSet";
@@ -21,7 +21,6 @@ const ProductInfoComponent:React.FC<any> = ({ product,productItems }) => {
 
     /*------------------------------------- */
     const {
-        currentProductItem,
         setCurrentProductItem,
       } = useReviewStore((state) => state);
     /*------------------------------------- */

@@ -45,11 +45,6 @@ export default function Page() {
   };
 
   return (
-    <div className="flex w-full h-screen justify-between my-16 px-6">
-      {/* Sidebar */}
-      <Sidebar />
-
-      {/* Profile Details */}
       <div className="w-4/5 bg-white p-16 shadow-lg h-[600px]">
         <h1 className="text-2xl font-bold mb-3">Đổi Mật Khẩu</h1>
         <p className="mb-2">Quản lý sự thay đổi mật khẩu để bảo vệ tài khoản</p>
@@ -136,6 +131,5 @@ export default function Page() {
           </Form>
         </div>
       </div>
-    </div>
   );
 }

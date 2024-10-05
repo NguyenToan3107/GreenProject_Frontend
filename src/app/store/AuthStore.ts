@@ -47,10 +47,11 @@ export const useAuthStore=create<AuthState>((set,get)=>({
     logout:async()=>{
         const apiCall = () => logoutRequest();
         const onSuccess = (response: any) => {
+            console.log(response)
             window.location.href="/auth"
 
         };
-        return  await handleApiRequest(apiCall, onSuccess);
+        return await handleApiRequest(apiCall, onSuccess);
 
     }
 }))

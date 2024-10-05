@@ -1,7 +1,14 @@
 "use client";
 import { getUserInfo } from "@/apis/modules/user";
 import { useUserStore } from "@/app/store/UserStore";
-import { UserOutlined, ShoppingCartOutlined, GiftOutlined, LockOutlined, EnvironmentOutlined } from '@ant-design/icons';
+import {
+  UserOutlined,
+  ShoppingCartOutlined,
+  GiftOutlined,
+  LockOutlined,
+  EnvironmentOutlined,
+  WalletOutlined
+} from '@ant-design/icons';
 import Link from 'next/link';
 import React, { useEffect, useState } from "react";
 
@@ -61,6 +68,12 @@ export default function Sidebar() {
             <Link href="/profile/address" className="flex items-center">
               <EnvironmentOutlined className="mr-3 text-gray-500"/>
               Địa chỉ
+            </Link>
+          </li>
+          <li className="flex items-center cursor-pointer hover:text-brand-primary">
+            <Link href="/profile/payment_account" className="flex items-center">
+              <WalletOutlined  className="mr-3 text-gray-500"/>
+              Tài khoản thanh toán
             </Link>
           </li>
         </ul>

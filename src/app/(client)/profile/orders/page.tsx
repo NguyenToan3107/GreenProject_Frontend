@@ -34,11 +34,6 @@ export default function Page() {
     return total + product.price * product.quantity;
   }, 0);
   return (
-    <div className="flex w-full h-screen justify-between my-16 px-6">
-      {/* Sidebar */}
-      <Sidebar />
-
-      {/* Orders */}
       <div className="w-4/5 bg-white p-12 shadow-lg h-[600px] overflow-auto">
         <h1 className="text-2xl font-bold mb-3">Đơn Mua</h1>
         <p className="mb-2">Quản lý thông tin đơn mua</p>
@@ -105,6 +100,5 @@ export default function Page() {
           </div>
         </div>
       </div>
-    </div>
   );
 }

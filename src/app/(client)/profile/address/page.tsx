@@ -21,20 +21,8 @@ export default function Page() {
 
 
 
-  const handleOk = () => {
-
-  };
-
-
-
-
-
   return (
-    <div className="flex w-full h-screen justify-between my-16 px-6">
-      {/* Sidebar */}
-      <Sidebar />
 
-      {/* Address Section */}
       <div className="w-4/5 bg-white p-16 shadow-lg h-[600px]">
         <h1 className="text-2xl font-bold mb-3">Địa chỉ của tôi</h1>
         <p className="mb-2">Quản lý địa chỉ giao hàng của bạn</p>
@@ -84,10 +72,11 @@ export default function Page() {
             Thêm địa chỉ
           </p>
         </div>
+          <ContactForm contact={contact} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}/>
       </div>
-      <ContactForm contact={contact} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}/>
 
 
-    </div>
+
+
   );
 }

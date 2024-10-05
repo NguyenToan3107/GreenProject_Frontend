@@ -429,18 +429,12 @@ export default function Page() {
                   className="flex p-2 shadow-lg items-center bg-white border-b"
               >
                 <Checkbox
-                    checked={selectedVoucher.id === voucher.id}
+                    checked={selectedVoucher?.id === voucher.id}
                     onChange={() => handleSelectVoucher(voucher)}
                 />
                 {/* Voucher Image */}
                 <img
-                    src={
-                      voucher.type === 'FREE_SHIP'
-                          ? '/client/products/FREE_SHIP.png'
-                          : voucher.type === 'DISCOUNT_AMOUNT'
-                              ? '/client/products/DISCOUNT.png'
-                              : '/client/products/DISCOUNT.png'
-                    }
+                    src={`/client/products/${voucher.type}.png`}
                     alt={voucher.name}
                     className="w-28 h-28 object-cover rounded-lg"/>
 
