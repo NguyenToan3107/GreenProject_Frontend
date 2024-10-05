@@ -7,7 +7,6 @@ import { faHeart as faHeartFilled } from "@fortawesome/free-solid-svg-icons";
 import {
   Button,
   Dropdown,
-  Menu,
   Checkbox,
   Pagination,
   Spin,
@@ -39,7 +38,6 @@ export default function page() {
   const [likedProducts, setLikedProducts] = useState(new Set());
   const [currentPage, setCurrentPage] = useState(1);
   const [productsView, setProductsView] = useState([]);
-  // const [categoriesView, setCategoriesView] = useState<undefined: any>();
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(0);
@@ -48,6 +46,7 @@ export default function page() {
   const { getAllCategories, categoriesTree } = useCategoryStore(
     (state) => state
   );
+  const [sortOption, setSortOption] = useState("");
 
   const fetchProduct = async (page: number, categoryId = 0, search = "") => {
     setLoading(true);
@@ -77,25 +76,30 @@ export default function page() {
   };
 
   const handleMenuClick = async (e: { key: string }) => {
-    if (e.key === "minPrice") {
+    if (e.key === "ascMinPrice") {
       setSortByPrice(true);
-      // ---------------Fix tạm------------------
+      setSortOption("ascMinPrice");
       await fetchProductSortPrice(1, "ascMinPrice");
-      // ------------------------------------
-      /* các option:
-      case "ascMinPrice" 
-      case "descMinPrice" 
-      case "ascMaxPrice" 
-      case "descMaxPrice" 
-      case "reviewCount" 
-      case "totalRating"
-      */
-    } else if (e.key === "maxPrice") {
+    } else if (e.key === "descMinPrice") {
       setSortByPrice(true);
-      await fetchProductSortPrice(1, "ascMaxPrice");
-    } else if (e.key === "bestSeller") {
+      setSortOption("descMinPrice");
+      await fetchProductSortPrice(1, "descMinPrice");
+    } else if (e.key === "ascMaxPrice") {
       setSortByPrice(true);
+      setSortOption("ascMaxPrice");
       await fetchProductSortPrice(1, "ascMaxPrice");
+    } else if (e.key === "descMaxPrice") {
+      setSortByPrice(true);
+      setSortOption("descMaxPrice");
+      await fetchProductSortPrice(1, "descMaxPrice");
+    } else if (e.key === "reviewCount") {
+      setSortByPrice(true);
+      setSortOption("reviewCount");
+      await fetchProductSortPrice(1, "reviewCount");
+    } else if (e.key === "totalRating") {
+      setSortByPrice(true);
+      setSortOption("totalRating");
+      await fetchProductSortPrice(1, "totalRating");
     } else {
       setSortByPrice(false);
     }
@@ -170,17 +174,24 @@ export default function page() {
 
   const handlePageChange = async (value: any) => {
     if (sortByPrice) {
-      // -------------Fix tạm ---------------
-      await fetchProductSortPrice(value, "ascMinPrice");
-      // ------------------------------------
-      /* các option:
-      case "ascMinPrice" 
-      case "descMinPrice" 
-      case "ascMaxPrice" 
-      case "descMaxPrice" 
-      case "reviewCount" 
-      case "totalRating"
-      */
+      if (sortOption === "ascMinPrice") {
+        await fetchProductSortPrice(value, "ascMinPrice");
+      }
+      if (sortOption === "descMinPrice") {
+        await fetchProductSortPrice(value, "descMinPrice");
+      }
+      if (sortOption === "ascMaxPrice") {
+        await fetchProductSortPrice(value, "ascMaxPrice");
+      }
+      if (sortOption === "descMaxPrice") {
+        await fetchProductSortPrice(value, "descMaxPrice");
+      }
+      if (sortOption === "reviewCount") {
+        await fetchProductSortPrice(value, "reviewCount");
+      }
+      if (sortOption === "totalRating") {
+        await fetchProductSortPrice(value, "totalRating");
+      }
     } else if (topSold) {
       await fetchProductOnTopSold(value);
     } else {
@@ -207,16 +218,28 @@ export default function page() {
   // Hàm đệ quy để render các category con
   const items: MenuProps["items"] = [
     {
-      key: "minPrice",
-      label: "Giá thấp nhất",
+      key: "ascMinPrice",
+      label: "Giá thấp nhất tăng dần",
     },
     {
-      key: "maxPrice",
-      label: "Giá cao nhất",
+      key: "descMinPrice",
+      label: "Giá thấp nhất giảm dần",
     },
     {
-      key: "bestSeller",
-      label: "Bán chạy nhất",
+      key: "ascMaxPrice",
+      label: "Giá cao nhất tăng dần",
+    },
+    {
+      key: "descMaxPrice",
+      label: "Giá cao nhất giảm dần",
+    },
+    {
+      key: "reviewCount",
+      label: "Số lượng sao đánh giá",
+    },
+    {
+      key: "totalRating",
+      label: "Tổng sao đánh giá",
     },
   ];
 
