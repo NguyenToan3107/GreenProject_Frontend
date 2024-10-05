@@ -1,6 +1,6 @@
 "use client";
 import React, {useEffect, useState} from "react";
-import { Button, InputNumber } from "antd";
+import {Button, InputNumber, message} from "antd";
 import Link from "next/link";
 import {handleApiRequest} from "@/app/util/utils";
 import {getMyCart,updateCart,deleteCart} from "@/apis/modules/item";
@@ -10,22 +10,22 @@ import {useOrderStore} from "@/app/store/OderStore";
 
 
 export default function Page() {
-  // Sử dụng useState để quản lý giỏ hàng
-  const [cartItems, setCartItems] = useState<any[]>([]);
+  const [cartItems, setCartItems] = useState([]);
+  const router=useRouter();
   useEffect(() => {
+    const fetchMyCart=async ()=>{
+      const apiCall=()=>getMyCart();
+      await handleApiRequest(apiCall,(response)=>{
+        setCartItems(response.data);
+
+      })
+    }
     fetchMyCart()
   }, []);
 
-  const fetchMyCart=async ()=>{
-    const apiCall=()=>getMyCart();
-    await handleApiRequest(apiCall,(response)=>{
-      console.log(response)
-      setCartItems(response.data);
-      console.log(cartItems)
-    })
-  }
 
-  // Hàm tính tổng số tiền cho mỗi sản phẩm
+
+
   const calculateTotal = (price: number, quantity: number) => {
     return price * quantity;
   };
@@ -33,27 +33,24 @@ export default function Page() {
 
 
   // Hàm xóa sản phẩm khỏi giỏ hàng
-  const handleRemoveItem =async (id: number) => {
-
-    const deleteCartItem=async ()=>{
-      const apiCall=()=>deleteCart(id);
-      await handleApiRequest(apiCall,(response)=>{
-        const updatedItems = cartItems.filter(item => item.id !== id);
-        setCartItems(updatedItems);
-      })
-    }
-    await deleteCartItem()
-  };
+  const deleteCartItem=async (id:number)=>{
+    const apiCall=()=>deleteCart(id);
+    await handleApiRequest(apiCall,(response)=>{
+      const updatedItems = cartItems.filter((item:any) => item.id !== id);
+      setCartItems(updatedItems);
+    })
+  }
 
 
   const updateCartQuantity=async (quantity:number,id:number)=>{
     const apiCall=()=>updateCart(quantity,id);
     await handleApiRequest(apiCall,(response)=>{
-      setCartItems((prevItems) =>
-          prevItems.map((item) =>
-              item.id === id ? { ...item, quantity: quantity } : item
+      console.log(response)
+      setCartItems(((prevItems:any) =>
+          prevItems.map((item:any) =>
+              item.id === id ? { ...item, quantity: quantity,totalPrice:response.data.totalPrice } : item
           )
-      );
+      ))
     })
   }
 
@@ -64,16 +61,27 @@ export default function Page() {
   const decreaseQuantity = async (id: number,quantity:number) => {
     await updateCartQuantity(quantity-1,id)
   };
-  const router=useRouter();
+
   const {setOrder}=useOrderStore(state => state);
 
-  async function handleCreateOrderByCart() {
+  const handleCreateOrderByCart = async ()=> {
+    if(cartItems.length === 0){
+      message.warning("Ko có sản phẩm nào trong giỏ hàng!")
+      return;
+
+    }
     const apiCall=()=>createOrderByCart();
     await handleApiRequest(apiCall,(response)=>{
-      console.log(response)
       setOrder(response.data);
-      router.replace("/payment")
+      router.push("/payment")
+
     })
+
+
+
+
+
+
   }
 
   return (
@@ -90,7 +98,7 @@ export default function Page() {
 
       {/* Danh sách sản phẩm trong giỏ hàng */}
       
-      {cartItems.map((item) => (
+      {cartItems.map((item:any) => (
         <div
           key={item.id}
           className="grid grid-cols-12 gap-6 items-center bg-white p-4 mt-4 rounded-lg border-b"
@@ -154,7 +162,7 @@ export default function Page() {
 
           {/* Nút xóa */}
           <div className="col-span-1 text-center text-red-700 text-lg cursor-pointer">
-            <p onClick={() => handleRemoveItem(item.id)}>Xóa</p>
+            <p onClick={() => deleteCartItem(item.id)}>Xóa</p>
           </div>
         </div>
       ))}
@@ -165,14 +173,14 @@ export default function Page() {
           Tổng tiền:{" "}
           {cartItems!
             .reduce(
-              (total, item) =>
+              (total, item:any) =>
                 total + calculateTotal(item.productItem.price, item.quantity),
               0
             )
             .toLocaleString("vi-VN")}{" "}
           đ
         </h2>
-        <Link href={"/payment"}>
+
           <Button
               onClick={handleCreateOrderByCart}
             type="primary"
@@ -185,7 +193,7 @@ export default function Page() {
           >
             Đặt hàng
           </Button>
-        </Link>
+
       </div>
     </div>
   );

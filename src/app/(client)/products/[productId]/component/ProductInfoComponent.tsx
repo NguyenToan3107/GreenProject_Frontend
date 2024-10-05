@@ -1,8 +1,6 @@
 "use client"
-import {useEffect, useState} from 'react';
-import React from 'react';
-import styles from '../Product.module.css'
-import {Flex, Rate, Button, Radio, message} from 'antd';
+import  {useEffect, useState} from 'react';
+import {Flex, message, Radio, Rate} from 'antd';
 import {MinusOutlined, PlusOutlined, ShoppingCartOutlined, StockOutlined, TagOutlined} from '@ant-design/icons';
 import {DeepSet} from "@/app/util/DeepSet";
 import {useReviewStore} from "@/app/store/ReviewStore";
@@ -99,14 +97,12 @@ const ProductInfoComponent:React.FC<any> = ({ product,productItems }) => {
     const handleOptionChange = (variationName: string, valueId: number) => {
 
         setOptionData((prev:any) => {
-            const newOptionData = prev.map((opt:any) => {
+            return prev.map((opt: any) => {
                 if (opt.name === variationName) {
-                    return { ...opt, id: valueId };
+                    return {...opt, id: valueId};
                 }
                 return opt;
             });
-
-            return newOptionData;
         });
 
     };
@@ -119,9 +115,8 @@ const ProductInfoComponent:React.FC<any> = ({ product,productItems }) => {
         }
         const data:any={productItemId:productItem.id,quantity:qty}
         const apiCall=()=> addCart(data);
-        await handleApiRequest(apiCall,(response:any)=>{
-            console.log(response)
-        })
+        await handleApiRequest(apiCall,(response:any)=>{  message.success("đã thêm giỏ hàng!");})
+
 
     }
     const router = useRouter();
@@ -250,7 +245,7 @@ const ProductInfoComponent:React.FC<any> = ({ product,productItems }) => {
                         }} style={{border: '1px solid #000', borderRadius: '8px', width: '40px', height: '40px'}}>
                             <MinusOutlined style={{fontSize: '0.8rem', color: '#ff4d4f'}}/>
                         </button>
-                        <input className={styles.numberInput} type='number' onChange={() => console.log("change quantity")} value={qty} style={{
+                        <input type='number' onChange={() => console.log("change quantity")} value={qty} style={{
                             border: '1px solid #000',
                             borderRadius: '8px',
                             width: '40px',
@@ -271,12 +266,12 @@ const ProductInfoComponent:React.FC<any> = ({ product,productItems }) => {
             </div>
             <Flex gap="middle" align="flex-start">
                 <button onClick={handleAddCart}
-                    className={styles.addToCartButton}>
+                    className="add_to_cart-button">
                     Thêm vào giỏ hàng
                 </button>
                 <button
                     onClick={handleByNow}
-                    className={styles.commonButton}>
+                    className="common-button">
                     Mua ngay
                 </button>
             </Flex>

@@ -1,8 +1,8 @@
 "use client"
 import {useEffect, useState} from 'react';
-// import './product_details.css'
+
 import styles from './Product.module.css'
-import {Image, PaginationProps, Spin} from 'antd';
+import {PaginationProps, Spin} from 'antd';
 import {getProductById, getAllProductsView} from "@/apis/modules/product";
 import ReviewComponent from './component/ReviewComponent';
 import ImageComponent from './component/ImageComponent';

@@ -17,3 +17,10 @@ export function deleteOrder(id:number){
 export function updateContactOrder(data:any){
     return api.post(`orders/set-contact`,data)
 }
+
+export function updateVoucherOrder(data:any){
+    return api.post(`orders/set-voucher`,data)
+}
+export function payment(data:any){
+    return api.post(`orders/pay`,data)
+}

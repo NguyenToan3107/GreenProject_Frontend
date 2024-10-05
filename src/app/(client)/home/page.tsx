@@ -1,6 +1,6 @@
 "use client";
 
-// import "./home.css";
+
 import styles from './Home.module.css'
 import "swiper/css";
 import "swiper/css/pagination";

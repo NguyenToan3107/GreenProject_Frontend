@@ -1,9 +1,8 @@
 "use client"
 import React from 'react';
 import {useEffect, useState} from 'react';
-import { Flex, Row, Col, Rate, Pagination, Input,Image ,Menu} from 'antd';
+import {Flex, Row, Col, Rate, Pagination, Input, Image, Menu, message} from 'antd';
 import {useReviewStore} from "@/app/store/ReviewStore";
-import styles from '../Product.module.css'
 
 
 const { TextArea } = Input;
@@ -17,108 +16,104 @@ const ReviewComponent = () => {
         reviews,
         current,
         totalElements,
-        alreadyReview,
         currentProductItem,
-        setCurrent,
         getAllReviewByProductItemId,
         createReview,
-        getReviewById,
-        deleteReviewById,
-    } = useReviewStore();
+    } = useReviewStore(state => state);
 
-    useEffect(() => {
-        console.log(currentProductItem)
-        if (currentProductItem) {
-            getAllReviewsByProductItemId()
-
-            fetchReviewById(currentProductItem.id)
-        }
-    }, [currentProductItem,current]);
-
-    const fetchReviewById=async (producItemId:any)=>{
-        const res = await getReviewById(producItemId);
+    const getAllReviewsByProductItemId=async (page:number)=>{
+        const res=await getAllReviewByProductItemId(page, currentProductItem.id);
         console.log(res)
     }
 
-    const getAllReviewsByProductItemId=async ()=>{
-        console.log(currentProductItem)
+    useEffect(() => {
+        if (currentProductItem) {
+            getAllReviewsByProductItemId(current)
+        }
+    }, [currentProductItem]);
 
-            const res:any = await getAllReviewByProductItemId(current, currentProductItem.id);
-            console.log(res)
-            if(res.code == 200){
-             console.log(reviews)
-            }
 
-     }
 
-     const handleSubmit = () => {
-        console.log('Rating:', rating);
-        console.log('Content:', content);
+     const handleSubmit =async () => {
+        if(rating==0||content.trim()==""){
+            message.warning("Data empty!")
+            return;
 
-        createReview({rating:rating,content:content,productItemId:currentProductItem.id},currentProductItem.id)
 
-        setRating(0)
-        setContent("")
+        }
+        const res:any=await createReview({rating:rating,content:content,productItemId:currentProductItem.id},currentProductItem.id)
+        if(res){
+            setRating(0)
+            setContent("")
+        }
+
     }
 
-     const onPageChange = (page: any) => {
-        setCurrent(page);
-        console.log(current)
-      }
+     const onPageChange =async (page: any) => {
+         await getAllReviewsByProductItemId(page)
+
+    }
+    if(!currentProductItem){
+        return <></>
+    }
+
 
     return (
         <div>
             <Flex gap={'middle'} vertical>
                 <h2 style={{ fontWeight: '600', fontSize: '1.5rem' }}>Đánh giá sản phẩm 
-                    {currentProductItem ? (
-                    (<span style={{ fontSize: '1.5rem', fontWeight: '700' }}> ({currentProductItem.reviewCount })</span>)
-                    ): (
-                        <p>Đang load</p> // Hiển thị thông báo khi chưa load được productItem hiện tại
-                    )}
-                </h2>
-                {currentProductItem ? (
-                    <Flex align="center" gap={'small'}>
-                        <span style={{ fontSize: '1.8rem', fontWeight: '700' }}>{currentProductItem.reviewCount != 0 ? (currentProductItem.totalRating / currentProductItem.reviewCount).toFixed(2) : 0}</span>
-                        <div className="star">
-                            <Rate
-                            value={currentProductItem.totalRating / currentProductItem.reviewCount} 
-                            disabled  />
-                        </div>
-                    </Flex>
-                ): (
-                    <p>Đang load</p> //  Hiển thị thông báo khi chưa load được productItem hiện tại
-                )}
 
-                                
-                {!alreadyReview ? (
+                    <span style={{ fontSize: '1.5rem', fontWeight: '700' }}> ({currentProductItem.reviewCount })</span>
+
+                </h2>
+
+
                 <>
-                    <Flex className="review-container" align='start' gap={'small'}>
-                        <div className={styles.avatarContainer}>
-                            <Image src="https://cdn-icons-png.flaticon.com/128/17286/17286792.png" alt="Avatar" className={styles.avatar} />
-                        </div>
-                        <Flex vertical style={{width:'100%'}} gap={"small"}>
-                            <div className="star">
-                            <Rate 
-                                allowHalf 
-                                value={rating} 
-                                onChange={setRating} 
-                            />
+                    <div className="review-container bg-white p-4 shadow-lg rounded-lg">
+                        <div className="flex items-start gap-4">
+                            <div className="avatar-container">
+                                <Image
+                                    width={48}
+                                    height={48}
+                                    src="/images/user_default.png"
+                                    alt="Avatar"
+                                    className="avatar rounded-full border border-gray-300"
+                                />
                             </div>
-                            <TextArea 
-                            placeholder="Nhập đánh giá" 
-                            className="custom-textarea"
-                            value={content} 
-                            onChange={(e) => setContent(e.target.value)} 
-                            />
-                        </Flex>
-                    </Flex>
-                    <button className={styles.reviewButton} onClick={handleSubmit}>Đánh giá</button>
+                            <div className="flex flex-col w-full gap-3">
+                                {/* Star rating */}
+                                <div className="star flex items-center">
+                                    <Rate
+                                        allowHalf
+                                        value={rating}
+                                        onChange={setRating}
+                                        className="text-yellow-400"
+                                    />
+                                </div>
+
+                                {/* TextArea for review */}
+                                <TextArea
+                                    placeholder="Nhập đánh giá của bạn..."
+                                    className="custom-textarea border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg"
+                                    rows={4}
+                                    value={content}
+                                    onChange={(e) => setContent(e.target.value)}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Submit button */}
+                        <div className="text-right mt-4">
+                            <button
+                                className="review-button bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out"
+                                onClick={handleSubmit}
+                            >
+                                Đánh giá
+                            </button>
+                        </div>
+                    </div>
                 </>
-                ) : (
-                <div className="already-reviewed-message">
-                    Bạn đã đánh giá rồi!
-                </div>
-                )}
+
 
                 <Flex vertical gap={"middle"}>
                     <Flex justify='space-between' align='center'>
@@ -129,21 +124,33 @@ const ReviewComponent = () => {
                     
                     {reviews && reviews.length > 0 ? (
                         reviews.map((review, index) => (
-                            <Row key={index} style={{ borderBottom: '1px solid #8c8b8b85', paddingBottom: '1rem' }}>
-                                <Col span={18} push={6}>
+                            <Row key={index} gutter={[8, 8]} style={{ borderBottom: '1px solid #8c8b8b85', paddingBottom: '1rem' }}>
+                                <Col span={4}>
+                                    <Image
+                                        src={review.user.imageUrl || "/images/user_default.png"}
+                                        width={48}
+                                        height={48}
+                                        alt="Avatar"
+                                        className="avatar"
+                                    />
+                                </Col>
+                                <Col span={20}>
                                     <Flex vertical gap={"small"}>
                                         <Flex justify='space-between'>
                                             <div>{review.user.username}</div>
-                                            <time>12:30 15/11/2024</time>
+                                            <time>{new Date(review.updatedAt).toLocaleString('vi-VN', {
+                                                day: '2-digit',
+                                                month: '2-digit',
+                                                year: 'numeric',
+                                                hour: '2-digit',
+                                                minute: '2-digit',
+                                            })}</time>
                                         </Flex>
                                         <Flex className="star" gap={'small'}>
                                             <Rate allowHalf value={review.rating} disabled />
                                         </Flex>
                                         <p>{review.content}</p>
                                     </Flex>
-                                </Col>
-                                <Col span={6} pull={18}>
-                                    <Image src="https://cdn-icons-png.flaticon.com/128/17286/17286792.png" alt="Avatar" className={styles.avatar} />
                                 </Col>
                             </Row>
                         ))
@@ -152,14 +159,14 @@ const ReviewComponent = () => {
                     )}
 
 
-                    <Pagination
+                    {reviews.length>0&&<Pagination
                         style={{ marginTop: '1rem' }}
                         align='end'
                         showSizeChanger
                         onChange={onPageChange}
                         defaultCurrent={3}
                         total={totalElements}
-                    />
+                    />}
                 </Flex>
             </Flex>
         </div>

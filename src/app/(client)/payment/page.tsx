@@ -1,7 +1,6 @@
 "use client";
 import React, {useEffect, useState} from "react";
-import {Button, Checkbox, Input, InputNumber, message, Modal} from "antd";
-import Link from "next/link";
+import {Button, Checkbox, message, Modal} from "antd";
 import {useOrderStore} from "@/app/store/OderStore";
 import {deleteOrder, getOrderByNow, updateContactOrder} from "@/apis/modules/order";
 import {handleApiRequest} from "@/app/util/utils";
@@ -9,39 +8,10 @@ import {useRouter} from "next/navigation";
 
 import ContactForm from "@/app/(client)/_components/ContactForm";
 import {useContactStore} from "@/app/store/ContactStore";
+import {useVoucherStore} from "@/app/store/VoucherStore";
 
 
 
-const vouchers = [
-  {
-    id: 1,
-    imageUrl: "/client/products/product2.png",
-    name: "Giảm giá 50%",
-    startDate: "01/09/2024",
-    endDate: "30/09/2024",
-  },
-  {
-    id: 2,
-    imageUrl: "/client/products/product2.png",
-    name: "Giảm giá 30%",
-    startDate: "05/09/2024",
-    endDate: "10/09/2024",
-  },
-  {
-    id: 3,
-    imageUrl: "/client/products/product2.png",
-    name: "Miễn phí vận chuyển",
-    startDate: "01/09/2024",
-    endDate: "15/09/2024",
-  },
-  {
-    id: 1,
-    imageUrl: "/client/products/product2.png",
-    name: "Giảm giá 50%",
-    startDate: "01/09/2024",
-    endDate: "30/09/2024",
-  },
-];
 
 const paymentMethods = [
   {
@@ -69,14 +39,25 @@ const paymentMethods = [
 
 
 export default function Page() {
-  const {order,setContactToOrder}=useOrderStore(state => state);
+  const {order,setContactToOrder,setVoucherToOrder}=useOrderStore(state => state);
   const {contacts,getAllContact}=useContactStore(state => state);
+  const {userVouchers,getMyVoucher}=useVoucherStore(state => state);
   const [isModalAddContactOpen,setIsModalAddContactOpen]=useState(false);
-
+  const [selectedAddressId, setSelectedAddressId] = useState<
+      number | null
+  >(0);
+  const [isVoucherModalVisible, setIsVoucherModalVisible] = useState(false); // For voucher modal
+  const [selectedVoucher, setSelectedVoucher] = useState<any>(null);
+  const [isModalVisibleAddress, setIsModalVisibleAddress] = useState(false);
   useEffect(() => {
     if(contacts.length==0){
       getAllContact();
     }
+    if(userVouchers.length==0){
+      getMyVoucher(0);
+    }
+
+
   }, []);
   console.log(order)
 
@@ -96,14 +77,10 @@ export default function Page() {
 
 
 
-  const [selectedAddressId, setSelectedAddressId] = useState<
-    number | null
-  >(0); // Quản lý địa chỉ được chọn
-  const [isModalVisibleAddress, setIsModalVisibleAddress] = useState(false);
 
 
-  const [isVoucherModalVisible, setIsVoucherModalVisible] = useState(false); // For voucher modal
-  const [selectedVoucher, setSelectedVoucher] = useState<number | null>(null);
+
+
 
   const [isPaymentModalVisible, setIsPaymentModalVisible] = useState(false); // For payment method modal
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<
@@ -145,7 +122,9 @@ export default function Page() {
   const showVoucherModal = () => setIsVoucherModalVisible(true);
   const handleVoucherModalCancel = () => setIsVoucherModalVisible(false);
 
-  const handleSelectVoucher = (index: number) => setSelectedVoucher(index);
+
+
+    const handleSelectVoucher = (voucher:any) => setSelectedVoucher(voucher);
 
   //////////////////////
 
@@ -168,7 +147,15 @@ export default function Page() {
     })
   }
 
-  return (
+    async function handleVoucherModalOk() {
+    console.log("selectedVoucher:"+selectedVoucher);
+        const res:any=await setVoucherToOrder(selectedVoucher.id,order.id)
+        if(res){
+          setIsVoucherModalVisible(false);
+        }
+    }
+
+    return (
     <div className="container p-10 my-10 mb-36">
       <h1 className="text-2xl font-bold mb-8">Thanh Toán Đơn Hàng</h1>
       <div className=" bg-[#F5F5F5] rounded-sm flex flex-row items-center justify-between p-6 mb-4">
@@ -278,7 +265,7 @@ export default function Page() {
               borderRadius: "6px",
             }}
           >
-            {vouchers[selectedVoucher!]?.name ?? "Miễn phí vận chuyển"}
+            {selectedVoucher?.name ?? "Chưa áp dụng khuyến mãi nào!"}
           </Button>
         </div>
         <p
@@ -322,7 +309,7 @@ export default function Page() {
             <h2 className="text-lg">Tổng tiền hàng:</h2>
             <span className="text-brand-primary">
               {
-                order.productTotalCost
+                order.productTotalCost.toLocaleString("vi-VN")
               }đ
             </span>
           </div>
@@ -330,19 +317,19 @@ export default function Page() {
           <div className="flex justify-between gap-36 w-full mb-2">
             <h2>Phí vận chuyển:</h2>
             <span className="text-brand-primary"> {
-              order.shippingCost
+              order.shippingCost.toLocaleString("vi-VN")
             }đ</span>
           </div>
 
           <div className="flex justify-between gap-36 w-full mb-2">
             <h2>Giảm giá:</h2>
-            <span className="text-brand-primary">-{order.discountAmount}đ</span>
+            <span className="text-brand-primary">-{order.discountAmount.toLocaleString("vi-VN")}đ</span>
           </div>
 
           <div className="flex justify-between gap-36 w-full font-bold mt-4">
             <h2 className="text-lg">Thành tiền:</h2>
             <span className="text-brand-primary">
-              {order.totalCost}đ
+              {order.totalCost.toLocaleString("vi-VN")}đ
             </span>
           </div>
         </div>
@@ -429,57 +416,74 @@ export default function Page() {
       {/* Voucher Modal */}
       <Modal
         open={isVoucherModalVisible}
-        onOk={handleVoucherModalCancel}
+        onOk={handleVoucherModalOk}
         onCancel={handleVoucherModalCancel}
         okText="OK"
         cancelText="Trở lại"
       >
         <h2 className="font-semibold">Chọn Mã Giảm Giá</h2>
         <div className="grid grid-cols-1 h-[250px] overflow-y-auto">
-          {vouchers.map((voucher, index) => (
-            <div
-              key={voucher.id}
-              className="flex p-2 shadow-lg items-center bg-white border-b"
-            >
-              <Checkbox
-                checked={selectedVoucher === index}
-                onChange={() => handleSelectVoucher(index)}
-              />
-              {/* Voucher Image */}
-              <img
-                src={voucher.imageUrl}
-                alt={voucher.name}
-                className="w-24 h-24 object-cover rounded-lg ml-3"
-              />
+          {userVouchers.map((voucher:any) => (
+              <div
+                  key={voucher.id}
+                  className="flex p-2 shadow-lg items-center bg-white border-b"
+              >
+                <Checkbox
+                    checked={selectedVoucher.id === voucher.id}
+                    onChange={() => handleSelectVoucher(voucher)}
+                />
+                {/* Voucher Image */}
+                <img
+                    src={
+                      voucher.type === 'FREE_SHIP'
+                          ? '/client/products/FREE_SHIP.png'
+                          : voucher.type === 'DISCOUNT_AMOUNT'
+                              ? '/client/products/DISCOUNT.png'
+                              : '/client/products/DISCOUNT.png'
+                    }
+                    alt={voucher.name}
+                    className="w-28 h-28 object-cover rounded-lg"/>
 
-              {/* Voucher Content */}
-              <div className="ml-10 flex flex-col justify-between">
-                <h4 className="text-lg font-semibold">{voucher.name}</h4>
-                <p className="text-gray-500 text-sm">
-                  Bắt đầu: {voucher.startDate}
-                </p>
-                <p className="text-gray-500 text-sm">
-                  Kết thúc: {voucher.endDate}
-                </p>
+                {/* Voucher Content */}
+                <div className="ml-10 flex flex-col justify-between">
+                  <h4 className="text-lg font-semibold">{voucher.name}</h4>
+                  <p className="text-gray-500 text-sm">
+                    Bắt đầu: {new Date(voucher.startDate).toLocaleString('vi-VN', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
+                  </p>
+                  <p className="text-gray-500 text-sm">
+                    Kết thúc:{new Date(voucher.endDate).toLocaleString('vi-VN', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
+                  </p>
+                </div>
               </div>
-            </div>
           ))}
         </div>
       </Modal>
 
       {/* Payment Modal */}
       <Modal
-        open={isPaymentModalVisible}
-        onOk={handlePaymentModalCancel}
-        onCancel={handlePaymentModalCancel}
-        okText="OK"
-        cancelText="Trở lại"
+          open={isPaymentModalVisible}
+          onOk={handlePaymentModalCancel}
+          onCancel={handlePaymentModalCancel}
+          okText="OK"
+          cancelText="Trở lại"
       >
         <h2 className="font-semibold">Chọn Phương Thức Thanh Toán</h2>
         <div>
           {paymentMethods.map((method, index) => (
-            <div
-              key={method.id}
+              <div
+                  key={method.id}
               className="flex flex-row justify-start gap-3 items-center p-2 border-b"
             >
               <Checkbox

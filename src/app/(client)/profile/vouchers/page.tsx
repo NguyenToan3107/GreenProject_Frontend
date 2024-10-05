@@ -63,32 +63,36 @@ export default function Page() {
           <div className="grid grid-cols-2 gap-6 mt-10 ml-6 h-[350px] overflow-y-auto">
             
             {userVouchers.map((voucher) => (
-              <div
-                key={voucher.id}
-                className="flex p-2 shadow-lg rounded-md items-center bg-white"
-              >
-                {/* Voucher Image */}
-                {/* <img
-                  src={voucher.imageUrl}
-                  alt={voucher.name}
-                  className="w-28 h-28 object-cover rounded-lg"
-                /> */}
+                <div
+                    key={voucher.id}
+                    className="flex p-2 shadow-lg rounded-md items-center bg-white"
+                >
+                  <img
+                      src={
+                        voucher.type === 'FREE_SHIP'
+                            ? '/client/products/FREE_SHIP.png'
+                            : voucher.type === 'DISCOUNT_AMOUNT'
+                                ? '/client/products/DISCOUNT.png'
+                                : '/client/products/DISCOUNT.png'
+                      }
+                      alt={voucher.name}
+                      className="w-28 h-28 object-cover rounded-lg"/>
 
-                {/* Voucher Content */}
-                <div className="ml-10 flex flex-col justify-between">
-                  <h4 className="text-lg font-semibold">{voucher.name}</h4>
-                  <p className="text-gray-500 text-sm">
-                    Bắt đầu: {voucher.startDate}
-                  </p>
-                  <p className="text-gray-500 text-sm">
-                    Kết thúc: {voucher.endDate}
-                  </p>
+                  {/* Voucher Content */}
+                  <div className="ml-10 flex flex-col justify-between">
+                    <h4 className="text-lg font-semibold">{voucher.name}</h4>
+                    <p className="text-gray-500 text-sm">
+                      Bắt đầu: {voucher.startDate}
+                    </p>
+                    <p className="text-gray-500 text-sm">
+                      Kết thúc: {voucher.endDate}
+                    </p>
 
-                  {/* <Button type="default" className="mt-2">
+                    {/* <Button type="default" className="mt-2">
                     Chọn
                   </Button> */}
+                  </div>
                 </div>
-              </div>
             ))}
           </div>
         </div>
@@ -108,10 +112,10 @@ export default function Page() {
                 <img
                   src={
                     voucher.type === 'FREE_SHIP' 
-                      ? './public/products/FREE_SHIP.png' 
+                      ? '/client/products/FREE_SHIP.png'
                       : voucher.type === 'DISCOUNT_AMOUNT' 
-                      ? './public/products/DISCOUNT.png' 
-                      : './public/products/DISCOUNT.png'
+                      ? '/client/products/DISCOUNT.png'
+                      : '/client/products/DISCOUNT.png'
                   }
                 alt={voucher.name}
                 className="w-28 h-28 object-cover rounded-lg" />
@@ -120,16 +124,29 @@ export default function Page() {
                 <div className="ml-10 flex flex-col justify-between">
                   <h4 className="text-lg font-semibold">{voucher.name}</h4>
                   <p className="text-gray-500 text-sm">
-                    Bắt đầu: {voucher.startDate}
+                    Bắt đầu: {new Date(voucher.startDate).toLocaleString('vi-VN', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
                   </p>
                   <p className="text-gray-500 text-sm">
-                    Kết thúc: {voucher.endDate}
+
+                    Kết thúc:  {new Date(voucher.endDate).toLocaleString('vi-VN', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
                   </p>
                   <p>
                     Số điểm cần để đổi: {voucher.pointsRequired}
                   </p>
-                  <Button onClick={ () =>handleRedeemVoucher(voucher.id)} type="default" className="mt-2">
-                    Chọn
+                  <Button onClick={() => handleRedeemVoucher(voucher.id)} type="default" className="mt-2">
+                    Đổi ngay
                   </Button>
                 </div>
               </div>

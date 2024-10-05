@@ -1,22 +1,21 @@
 import {create} from "zustand";
+import {updateVoucherOrder} from "@/apis/modules/order";
+import {handleApiRequest} from "@/app/util/utils";
 
 
 
 interface OrderState{
-    orderId:number,
     order:any,
-    setOrderId:(id:number)=>void
     setOrder:(order:any)=>void,
     setContactToOrder:(contact:any)=>void
+    setVoucherToOrder:(voucherId:any,orderId:number)=>Promise<void>
 
 }
 
 export const useOrderStore=create<OrderState>((set,get)=>({
-    orderId:0,
+
     order:null,
-    setOrderId:(id:number)=>{
-        set({orderId:id})
-    },
+
     setOrder:(order:any)=>{
         set({
             order:order
@@ -28,6 +27,14 @@ export const useOrderStore=create<OrderState>((set,get)=>({
                 ...get().order,
                 contact
             }
+        })
+    },
+    setVoucherToOrder:async (vId:number,orderId:number)=>{
+        const apiCall=()=>updateVoucherOrder({orderId:orderId,voucherId:vId})
+        return await handleApiRequest(apiCall,(response:any)=>{
+            set({
+                order:{...get().order,...response.data}
+            })
         })
     }
 
