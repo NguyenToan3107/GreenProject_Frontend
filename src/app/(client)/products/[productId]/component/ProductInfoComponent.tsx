@@ -9,6 +9,7 @@ import {handleApiRequest} from "@/app/util/utils";
 import {createOrderByNow} from "@/apis/modules/order";
 import {useOrderStore} from "@/app/store/OderStore";
 import {useRouter} from "next/navigation";
+import styles from '../Product.module.css'
 
 const ProductInfoComponent:React.FC<any> = ({ product,productItems }) => {
     const [qty,setQty]=useState(1);
@@ -245,7 +246,7 @@ const ProductInfoComponent:React.FC<any> = ({ product,productItems }) => {
                         }} style={{border: '1px solid #000', borderRadius: '8px', width: '40px', height: '40px'}}>
                             <MinusOutlined style={{fontSize: '0.8rem', color: '#ff4d4f'}}/>
                         </button>
-                        <input type='number' onChange={() => console.log("change quantity")} value={qty} style={{
+                        <input className={styles.numberInput} type='number' onChange={() => console.log("change quantity")} value={qty} style={{
                             border: '1px solid #000',
                             borderRadius: '8px',
                             width: '40px',
@@ -266,12 +267,12 @@ const ProductInfoComponent:React.FC<any> = ({ product,productItems }) => {
             </div>
             <Flex gap="middle" align="flex-start">
                 <button onClick={handleAddCart}
-                    className="add_to_cart-button">
+                    className={styles.addToCartButton}>
                     Thêm vào giỏ hàng
                 </button>
                 <button
                     onClick={handleByNow}
-                    className="common-button">
+                    className={styles.commonButton}>
                     Mua ngay
                 </button>
             </Flex>
