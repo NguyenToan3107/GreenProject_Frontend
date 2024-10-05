@@ -1,6 +1,7 @@
 "use client"
 import {useEffect, useState} from 'react';
-import './product_details.css'
+// import './product_details.css'
+import styles from './Product.module.css'
 import {Image, PaginationProps, Spin} from 'antd';
 import {getProductById, getAllProductsView} from "@/apis/modules/product";
 import ReviewComponent from './component/ReviewComponent';
@@ -70,7 +71,7 @@ export default function page({params}:any) {
                 </div>
             ) : (
                 <>
-                    <div className="grid-container">
+                    <div className={styles.gridContainer}>
                         <ImageComponent product={product} />
                         <ProductInfoComponent product={product} productItems={productItems} />
                         <ReviewComponent />

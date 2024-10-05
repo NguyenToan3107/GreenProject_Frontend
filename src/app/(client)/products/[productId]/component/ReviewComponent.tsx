@@ -3,6 +3,7 @@ import React from 'react';
 import {useEffect, useState} from 'react';
 import { Flex, Row, Col, Rate, Pagination, Input,Image ,Menu} from 'antd';
 import {useReviewStore} from "@/app/store/ReviewStore";
+import styles from '../Product.module.css'
 
 
 const { TextArea } = Input;
@@ -92,8 +93,8 @@ const ReviewComponent = () => {
                 {!alreadyReview ? (
                 <>
                     <Flex className="review-container" align='start' gap={'small'}>
-                        <div className="avatar-container">
-                            <Image src="https://cdn-icons-png.flaticon.com/128/17286/17286792.png" alt="Avatar" className="avatar" />
+                        <div className={styles.avatarContainer}>
+                            <Image src="https://cdn-icons-png.flaticon.com/128/17286/17286792.png" alt="Avatar" className={styles.avatar} />
                         </div>
                         <Flex vertical style={{width:'100%'}} gap={"small"}>
                             <div className="star">
@@ -111,7 +112,7 @@ const ReviewComponent = () => {
                             />
                         </Flex>
                     </Flex>
-                    <button className='review-button' onClick={handleSubmit}>Đánh giá</button>
+                    <button className={styles.reviewButton} onClick={handleSubmit}>Đánh giá</button>
                 </>
                 ) : (
                 <div className="already-reviewed-message">
@@ -142,7 +143,7 @@ const ReviewComponent = () => {
                                     </Flex>
                                 </Col>
                                 <Col span={6} pull={18}>
-                                    <Image src="https://cdn-icons-png.flaticon.com/128/17286/17286792.png" alt="Avatar" className="avatar" />
+                                    <Image src="https://cdn-icons-png.flaticon.com/128/17286/17286792.png" alt="Avatar" className={styles.avatar} />
                                 </Col>
                             </Row>
                         ))

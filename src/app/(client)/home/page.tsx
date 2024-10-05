@@ -1,6 +1,7 @@
 "use client";
 
-import "./home.css";
+// import "./home.css";
+import styles from './Home.module.css'
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
@@ -47,7 +48,7 @@ export default function page() {
   return (
     <div>
       <div
-        className="container"
+        className={styles.container}
         style={{ width: "1440px", marginRight: "auto", marginLeft: "auto",marginTop:'5rem',marginBottom:'4rem' }}
       >
         <div
@@ -89,9 +90,9 @@ export default function page() {
               Lorem ipsum dolor sit amet consectetur, adipisicing elit.
               Repudiandae eius dolor fugiat aperiam quas,
             </div>
-            <button className="common-button">Mua ngay</button>
+            <button className={styles.commonButton}>Mua ngay</button>
           </div>
-          <div className="grid-container">
+          <div className={styles.gridContainer}>
             <div
               style={{
                 display: "flex",
@@ -101,17 +102,17 @@ export default function page() {
                 gap: "16px",
               }}
             >
-              <div className="grid-item">
+              <div className={styles.gridItem}>
                 <img
                   src="/client/products/product2.png"
-                  className="image"
+                  className={styles.image}
                   alt="Product 1"
                 />
               </div>
-              <div className="grid-item">
+              <div className={styles.gridItem}>
                 <img
                   src="http://res.cloudinary.com/dji65jgy3/image/upload/v1726983442/df691db5-6830-41c0-8610-3529e9744e9c.jpg"
-                  className="image"
+                  className={styles.image}
                   alt="Product 2"
                 />
               </div>
@@ -125,24 +126,24 @@ export default function page() {
                 gap: "16px",
               }}
             >
-              <div className="grid-item">
+              <div className={styles.gridItem}>
                 <img
                   src="http://res.cloudinary.com/dji65jgy3/image/upload/v1726983614/615e6891-ade8-41dd-896e-f63a01c49ed9.jpg"
-                  className="image"
+                  className={styles.image}
                   alt="Product 3"
                 />
               </div>
-              <div className="grid-item">
+              <div className={styles.gridItem}>
                 <img
                   src="http://res.cloudinary.com/dji65jgy3/image/upload/v1726983785/965dbcf4-c2dc-4572-b328-bea636145a9c.jpg"
-                  className="image"
+                  className={styles.image}
                   alt="Product 4"
                 />
               </div>
-              <div className="grid-item">
+              <div className={styles.gridItem}>
                 <img
                   src="http://res.cloudinary.com/dji65jgy3/image/upload/v1726983884/a411ee9a-f8b0-4f59-ac2f-b3b151bc091b.webp"
-                  className="image"
+                  className={styles.image}
                   alt="Product 5"
                 />
               </div>
@@ -156,17 +157,17 @@ export default function page() {
                 gap: "16px",
               }}
             >
-              <div className="grid-item">
+              <div className={styles.gridItem}>
                 <img
                   src="http://res.cloudinary.com/dji65jgy3/image/upload/v1726983528/d701ef95-2370-44d7-ae9a-66d47cb5a670.jpg"
-                  className="image"
+                  className={styles.image}
                   alt="Product 6"
                 />
               </div>
-              <div className="grid-item">
+              <div className={styles.gridItem}>
                 <img
                   src="http://res.cloudinary.com/dji65jgy3/image/upload/v1726982744/33168c13-514e-46a9-9c59-e3d026713e3b.jpg"
-                  className="image"
+                  className={styles.image}
                   alt="Product 7"
                 />
               </div>
@@ -174,7 +175,7 @@ export default function page() {
           </div>
         </div>
 
-        <div className="service-container mt-15">
+        <div className={styles.serviceContainer}>
           <h2
             style={{
               textTransform: "uppercase",
@@ -186,13 +187,13 @@ export default function page() {
           >
             Our service
           </h2>
-          <div className="cards">
-            <div className="card-item">
+          <div className={styles.cards}>
+            <div className={styles.cardItem}>
               <div>
                 <img src="images/user.png" alt="User 1" />
               </div>
-              <p className="reviewer_name">Anna Launra</p>
-              <div className="reviewer-comment">
+              <p className={styles.reviewerName}>Anna Launra</p>
+              <div className={styles.reviewerComment}>
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse
                 obcaecati suscipit omnis unde accusamus quia, labore repellat
                 exercitationem porro est dolorum, molestiae voluptatum illum ad
@@ -202,12 +203,12 @@ export default function page() {
                 Know More &gt;&gt;
               </a>
             </div>
-            <div className="card-item">
+            <div className={styles.cardItem}>
               <div>
                 <img src="images/user.png" alt="User 1" />
               </div>
-              <p className="reviewer_name">Anna Launra</p>
-              <div className="reviewer-comment">
+              <p className={styles.reviewerName}>Anna Launra</p>
+              <div className={styles.reviewerComment}>
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse
                 obcaecati suscipit omnis unde accusamus quia, labore repellat
                 exercitationem porro est dolorum, molestiae voluptatum illum ad
@@ -217,12 +218,12 @@ export default function page() {
                 Know More &gt;&gt;
               </a>
             </div>
-            <div className="card-item">
+            <div className={styles.cardItem}>
               <div>
                 <img src="images/user.png" alt="User 1" />
               </div>
-              <p className="reviewer_name">Anna Launra</p>
-              <div className="reviewer-comment">
+              <p className={styles.reviewerName}>Anna Launra</p>
+              <div className={styles.reviewerComment}>
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse
                 obcaecati suscipit omnis unde accusamus quia, labore repellat
                 exercitationem porro est dolorum, molestiae voluptatum illum ad
@@ -232,12 +233,12 @@ export default function page() {
                 Know More &gt;&gt;
               </a>
             </div>
-            <div className="card-item">
+            <div className={styles.cardItem}>
               <div>
                 <img src="images/user.png" alt="User 1" />
               </div>
-              <p className="reviewer_name">Anna Launra</p>
-              <div className="reviewer-comment">
+              <p className={styles.reviewerName}>Anna Launra</p>
+              <div className={styles.reviewerComment}>
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse
                 obcaecati suscipit omnis unde accusamus quia, labore repellat
                 exercitationem porro est dolorum, molestiae voluptatum illum ad
@@ -251,7 +252,7 @@ export default function page() {
           </div>
         </div>
 
-        <div className="blog-info-container">
+        <div className={styles.blogInfoContainer}>
           <div
             style={{
               gridArea: "image1",
@@ -373,7 +374,7 @@ export default function page() {
           {/* Repeat other images */}
         </div>
 
-        <div className="best-seller-container">
+        <div className={styles.bestSellerContainer}>
           <div
             style={{
               display: "flex",
@@ -423,7 +424,7 @@ export default function page() {
             {productItemOnTopSold.map((product) => (
             <SwiperSlide key={product.id}>
               <Card hoverable>
-                <div className="best-seller-card-item">
+                <div className={styles.bestSellerCardItem}>
                   <a style={{ display: "flex" }}>
                     <img
                       src={product.imageCover}
@@ -451,10 +452,10 @@ export default function page() {
                     <div style={{ color: "#4BAF47", fontWeight: "600" }}>
                       {currencyFormat(product.minPrice)} - {currencyFormat(product.maxPrice)}
                     </div>
-                    <div className="item-description">
+                    <div className={styles.itemDescription}>
                       {product.description}
                     </div>
-                    <div className="star">
+                    <div className={styles.star}>
                       <Flex gap="middle" vertical>
                         <Rate value={product.avgRating} />
                       </Flex>
@@ -490,10 +491,10 @@ export default function page() {
         >
           <SwiperSlide>
             <Card hoverable>
-              <div className="box">
+              <div className={styles.box}>
                 <img src="/client/products/product2.png" alt="Developer 1" />
-                <div className="box-content">
-                  <div className="box-name">Anna Laura</div>
+                <div className={styles.boxContent}>
+                  <div className={styles.boxName}>Anna Laura</div>
                   <div>Developer</div>
                 </div>
               </div>
@@ -501,10 +502,10 @@ export default function page() {
           </SwiperSlide>
           <SwiperSlide>
             <Card hoverable>
-              <div className="box">
+              <div className={styles.box}>
                 <img src="/client/products/product2.png" alt="Developer 1" />
-                <div className="box-content">
-                  <div className="box-name">Anna Laura</div>
+                <div className={styles.boxContent}>
+                  <div className={styles.boxName}>Anna Laura</div>
                   <div>Developer</div>
                 </div>
               </div>
@@ -512,65 +513,21 @@ export default function page() {
           </SwiperSlide>
           <SwiperSlide>
             <Card hoverable>
-              <div className="box">
+              <div className={styles.box}>
                 <img src="/client/products/product2.png" alt="Developer 1" />
-                <div className="box-content">
-                  <div className="box-name">Anna Laura</div>
+                <div className={styles.boxContent}>
+                  <div className={styles.boxName}>Anna Laura</div>
                   <div>Developer</div>
                 </div>
               </div>
             </Card>
           </SwiperSlide>
           <SwiperSlide>
-            <Card hoverable>
-              <div className="box">
+          <Card hoverable>
+              <div className={styles.box}>
                 <img src="/client/products/product2.png" alt="Developer 1" />
-                <div className="box-content">
-                  <div className="box-name">Anna Laura</div>
-                  <div>Developer</div>
-                </div>
-              </div>
-            </Card>
-          </SwiperSlide>
-          <SwiperSlide>
-            <Card hoverable>
-              <div className="box">
-                <img src="/client/products/product2.png" alt="Developer 1" />
-                <div className="box-content">
-                  <div className="box-name">Anna Laura</div>
-                  <div>Developer</div>
-                </div>
-              </div>
-            </Card>
-          </SwiperSlide>
-          <SwiperSlide>
-            <Card hoverable>
-              <div className="box">
-                <img src="/client/products/product2.png" alt="Developer 1" />
-                <div className="box-content">
-                  <div className="box-name">Anna Laura</div>
-                  <div>Developer</div>
-                </div>
-              </div>
-            </Card>
-          </SwiperSlide>
-          <SwiperSlide>
-            <Card hoverable>
-              <div className="box">
-                <img src="/client/products/product2.png" alt="Developer 1" />
-                <div className="box-content">
-                  <div className="box-name">Anna Laura</div>
-                  <div>Developer</div>
-                </div>
-              </div>
-            </Card>
-          </SwiperSlide>
-          <SwiperSlide>
-            <Card hoverable>
-              <div className="box">
-                <img src="/client/products/product2.png" alt="Developer 1" />
-                <div className="box-content">
-                  <div className="box-name">Anna Laura</div>
+                <div className={styles.boxContent}>
+                  <div className={styles.boxName}>Anna Laura</div>
                   <div>Developer</div>
                 </div>
               </div>
