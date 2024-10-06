@@ -112,7 +112,7 @@ export default function Admin({
         getItem('Quản lý tùy chọn biến thể', '7', <SettingOutlined />),
         getItem('Quản lý sản phẩm', '3', <ShoppingOutlined />),
         getItem('Quản lý chi tiết sản phẩm', '8', <FileTextOutlined />),
-        getItem('Quản lý hóa đơn', '4', <SolutionOutlined />),
+        getItem('Quản lý đơn hàng', '4', <SolutionOutlined />),
         getItem('Quản lý voucher', '5', <GiftOutlined />),
     ];
 

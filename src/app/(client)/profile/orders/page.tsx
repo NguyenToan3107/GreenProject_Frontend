@@ -63,6 +63,13 @@ export default function Page() {
         {key: "CANCELED", label: "Đã huỷ"},
         {key: "RETURNED", label: "Trả hàng"},
     ];
+    const canReturnOrder = (order:any) => {
+        const currentDate = new Date();
+        const deliveredDate = new Date(order.updatedAt);
+        const differenceInTime = currentDate.getTime() - deliveredDate.getTime();
+        const differenceInDays = differenceInTime / (1000 * 3600 * 24); // Chuyển đổi từ milliseconds sang days
+        return order.status === "DELIVERED" && differenceInDays <= 15;
+    };
 
     return (
         <div className="w-4/5 bg-white p-12 shadow-lg h-[600px] overflow-auto">
@@ -168,11 +175,17 @@ export default function Page() {
 
                                                         <Button
                                                             type="primary"
-                                                            onClick={()=>getButtonAction(order.id)} // Gọi hàm xử lý tương ứng
+                                                            onClick={canReturnOrder(order) ? () => getButtonAction(order.id) : undefined}
                                                             className="mt-2"
-                                                            style={{ padding: "6px 20px", fontWeight: "bold" }}
+                                                            style={{
+                                                                padding: "6px 20px",
+                                                                fontWeight: "bold",
+                                                                backgroundColor: canReturnOrder(order) ? "#1890ff" : "#bfbfbf", // Màu nút
+                                                                cursor: canReturnOrder(order) ? "pointer" : "not-allowed" // Cursur
+                                                            }}
+                                                            disabled={!canReturnOrder(order)} // Vô hiệu hóa nút nếu không đủ điều kiện
                                                         >
-                                                            {getButtonLabel()} {/* Hiển thị nhãn nút tương ứng */}
+                                                            {getButtonLabel()}
                                                         </Button>
 
                                                     </div>
