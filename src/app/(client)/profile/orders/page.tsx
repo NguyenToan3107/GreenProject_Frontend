@@ -1,104 +1,194 @@
-import Sidebar from "@/app/(client)/_components/Sidebar";
-import React from "react";
-import { Form, Input, Button } from "antd";
-
-const products = [
-  {
-    id: 1,
-    imageUrl: "/client/products/product2.png",
-    name: "Giỏ đựng tre nứa",
-    category: "Loại 1",
-    quantity: 2,
-    price: 100000,
-  },
-  {
-    id: 2,
-    imageUrl: "/client/products/product2.png",
-    name: "Giỏ đựng tre nứa",
-    category: "Loại 1",
-    quantity: 2,
-    price: 100000,
-  },
-  {
-    id: 3,
-    imageUrl: "/client/products/product2.png",
-    name: "Giỏ đựng tre nứa",
-    category: "Loại 1",
-    quantity: 2,
-    price: 100000,
-  },
-];
+"use client";
+import React, {useEffect, useState} from "react";
+import {Button, Spin, Tabs} from "antd";
+import {handleApiRequest} from "@/app/util/utils";
+import {getOrderByStatus, updateOrderStatus} from "@/apis/modules/order";
 
 export default function Page() {
-  const totalPrice = products.reduce((total, product) => {
-    return total + product.price * product.quantity;
-  }, 0);
-  return (
-      <div className="w-4/5 bg-white p-12 shadow-lg h-[600px] overflow-auto">
-        <h1 className="text-2xl font-bold mb-3">Đơn Mua</h1>
-        <p className="mb-2">Quản lý thông tin đơn mua</p>
+    const [activeTab, setActiveTab] = useState("PENDING");
+    const [orders, setOrders] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const fetchOrderUserStatus = async (status: string) => {
+        setLoading(true);
+        await handleApiRequest(() => getOrderByStatus(status), (res) => {
+            setOrders(res.data);
+            console.log(res.data);
+        });
+        setLoading(false);
+    };
+    const getButtonLabel = () => {
+        switch (activeTab) {
+            case "PENDING":
+                return "Hủy";
+            case "DELIVERED":
+                return "Trả hàng";
+            case "CANCELED":
+            case "RETURNED":
+                return "Mua lại";
+            default:
+                return null; // Hoặc có thể trả về một giá trị khác nếu cần
+        }
+    };
 
-        <div className="flex flex-col mt-6">
-          <div className="flex justify-between">
-            <p className="text-xl ml-7">Đơn hàng #1</p>
-            <p className="font-thin text-xs">
-              Thời gian đặt hàng: 12:30 15/11/2024
-            </p>
-          </div>
-          <div className="flex flex-col space-y-4 ml-6 h-60 overflow-y-auto">
-            {products.map((product) => (
-              <div
-                key={product.id}
-                className="flex justify-between items-center p-2 border-b rounded-lg"
-              >
-                <img
-                  src={product.imageUrl}
-                  alt={product.name}
-                  className="w-24 h-24 object-cover"
-                />
-                <div className="ml-6 flex-grow items-start">
-                  <h4 className="text-lg font-semibold">{product.name}</h4>
-                  <p className="text-gray-500">{product.category}</p>
-                  <p className="text-gray-500">Số lượng: x{product.quantity}</p>
-                </div>
-                <div className="mt-2 flex items-center justify-between">
-                  <p className="font-semibold text-brand-primary">
-                    {product.price.toLocaleString()}đ
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+    const updateStatus=async (orderId:number,status:string)=>{
+        await handleApiRequest(()=>updateOrderStatus(orderId,{orderStatus:status}),(res)=>{
+            fetchOrderUserStatus(activeTab)
+        })
+    }
+    const getButtonAction = (id:number) => {
+        switch (activeTab) {
+            case "PENDING":
+                return updateStatus(id,"CANCELED"); // Hàm xử lý hủy
+            case "DELIVERED":
+                return updateStatus(id,"RETURNED"); // Hàm xử lý trả hàng
+            case "CANCELED":
+            case "RETURNED":
+                return null; // Hàm xử lý mua lại
+            default:
+                return null;
+        }
+    };
 
-        <div className="flex flex-col gap-6 justify-end mt-10">
-          <div className="space-y-2 fon text-right font-semibold">
-            Thành tiền:
-            <span className="ml-3 text-lg text-brand-primary">
-              {totalPrice.toLocaleString()}đ
-            </span>
-          </div>
-          <div className="flex space-x-2 justify-end">
-            <Button
-              type="primary"
-              style={{ padding: "10px 40px", borderRadius: "6px" }}
-            >
-              Mua lại
-            </Button>
-            <Button
-              className="mx-4"
-              type="default"
-              style={{
-                borderColor: "#4BAF47",
-                color: "#4BAF47",
-                padding: "10px 40px",
-                borderRadius: "6px",
-              }}
-            >
-              Thêm vào giỏ hàng
-            </Button>
-          </div>
+    useEffect(() => {
+
+        fetchOrderUserStatus(activeTab);
+
+    }, [activeTab]);
+
+    const tabs = [
+        {key: "PENDING", label: "Chờ xác nhận"},
+        {key: "PROCESSING", label: "Chờ lấy hàng"},
+        {key: "SHIPPED", label: "Chờ giao hàng"},
+        {key: "DELIVERED", label: "Đã giao"},
+        {key: "CANCELED", label: "Đã huỷ"},
+        {key: "RETURNED", label: "Trả hàng"},
+    ];
+
+    return (
+        <div className="w-4/5 bg-white p-12 shadow-lg h-[600px] overflow-auto">
+            <h1 className="text-2xl font-bold mb-3">Đơn Mua</h1>
+
+            <Tabs
+                activeKey={activeTab}
+                onChange={(key) => setActiveTab(key)}
+                items={tabs.map((tab) => ({
+                    key: tab.key,
+                    label: tab.label,
+                    children: (
+                        <div className="flex flex-col mt-6">
+                            {loading ? (
+                                <div className="flex justify-center items-center h-60">
+                                    <Spin size="large"/>
+                                </div>
+                            ) : (
+                                <>
+                                    {orders.length === 0 ? (
+                                        <p className="text-center">Không có đơn hàng nào</p>
+                                    ) : (
+                                        orders.map((order: any) => (
+                                            <div key={order.id}>
+                                                <div className="flex justify-between items-center mb-3">
+                                                    <p className="text-lg font-bold ml-5">Đơn hàng #{order.id}</p>
+                                                    <p className="font-thin text-xs text-gray-500">Thời gian đặt
+                                                        hàng: {new Date(order.createdAt).toLocaleDateString('vi-VN')}</p>
+                                                </div>
+                                                <div className="flex flex-col space-y-3 ml-4 h-40 overflow-y-auto">
+                                                    {order.items.map((item: any) => (
+                                                        <div key={item.id} className="grid grid-cols-12 gap-6 items-center bg-white p-4 mt-4 rounded-lg border-b">
+                                                            <div className="col-span-6">
+                                                                <div className="flex flex-row gap-8">
+                                                                    <img
+                                                                        src={item.productItem.product.images[0].url}
+                                                                        alt={item.productItem.product.name}
+                                                                        className="w-24 h-24 object-cover rounded-lg text-center"
+                                                                    />
+                                                                    <div className="flex flex-col">
+                                                                        <h3 className="text-lg font-semibold">{item.productItem.product.name}</h3>
+                                                                        <p className="text-sm text-gray-500">
+                                                                            Danh
+                                                                            mục: {item.productItem.product.category.name}
+                                                                        </p>
+                                                                        <p className="text-sm text-gray-500">
+                                                                            Phân loại
+                                                                            hàng: {item.productItem.variationOptions.map((option: any) => option.value).join(' ,')}
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="col-span-2 text-center">
+                                                                  <span className="font-semibold">
+                                                                     {item.productItem.price.toLocaleString("vi-VN")}đ
+                                                                  </span>
+
+                                                            </div>
+                                                            <div className="col-span-2 text-center flex items-center justify-center">
+                                                                <p>X{item.quantity}</p>
+
+                                                            </div>
+
+                                                            <div className="col-span-2 text-center">
+                                                                <span className="font-semibold text-brand-primary">
+                                                                  {item.totalPrice.toLocaleString(
+                                                                      "vi-VN"
+                                                                  )}{" "}
+                                                                    đ
+                                                                </span>
+                                                            </div>
+
+
+
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                                <div className="flex justify-end mt-3 mr-5">
+
+                                                    <div className=" text-right font-semibold text-sm">
+                                                        <p>Trạng thái: <span
+                                                            className="ml-2 text-brand-primary text-base">
+                                                                {tab.label}
+                                                            </span></p>
+
+                                                        {/*<p>Phí vận chuyển :
+                                                            <span className="ml-2 text-brand-primary text-base">
+                                                                {order.shippingCost.toLocaleString("vi-VN")}đ
+                                                            </span>
+                                                        </p>
+                                                        <p>Giảm giá :
+                                                            <span className="ml-2 text-brand-primary text-base">
+                                                                -{order.discountAmount.toLocaleString("vi-VN")}đ
+                                                            </span>
+                                                        </p>*/}
+                                                        <p>Tổng tiền:
+                                                            <span className="ml-2 text-brand-primary text-base">
+                                                                {order.totalCost.toLocaleString("vi-VN")}đ
+                                                            </span>
+                                                        </p>
+
+
+
+                                                        <Button
+                                                            type="primary"
+                                                            onClick={()=>getButtonAction(order.id)} // Gọi hàm xử lý tương ứng
+                                                            className="mt-2"
+                                                            style={{ padding: "6px 20px", fontWeight: "bold" }}
+                                                        >
+                                                            {getButtonLabel()} {/* Hiển thị nhãn nút tương ứng */}
+                                                        </Button>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        ))
+                                    )}
+                                </>
+                            )}
+                        </div>
+                    ),
+                }))}
+            />
+
+
         </div>
-      </div>
-  );
+    );
 }

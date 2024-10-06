@@ -24,3 +24,13 @@ export function updateVoucherOrder(data:any){
 export function payment(data:any){
     return api.post(`orders/pay`,data)
 }
+
+export function getOrderByStatus(status:string){
+    return api.get(`orders/user?status=${status}`)
+}
+
+export function updateOrderStatus(id:number,data:any){
+    return api.put(`orders/update-status/${id}`,data)
+}
+
+

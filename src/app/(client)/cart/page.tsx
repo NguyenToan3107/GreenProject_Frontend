@@ -99,11 +99,7 @@ export default function Page() {
       {/* Danh sách sản phẩm trong giỏ hàng */}
       
       {cartItems.map((item:any) => (
-        <div
-          key={item.id}
-          className="grid grid-cols-12 gap-6 items-center bg-white p-4 mt-4 rounded-lg border-b"
-        >
-          {/* Cột sản phẩm */}
+        <div key={item.id} className="grid grid-cols-12 gap-6 items-center bg-white p-4 mt-4 rounded-lg border-b">
           <div className="col-span-5">
             <div className="flex flex-row gap-8">
               <img
