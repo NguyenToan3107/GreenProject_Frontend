@@ -2,7 +2,7 @@
 import { message } from "antd";
 import Swal from "sweetalert2";
 
-const showAlert = async (message:string) => {
+export const showAlert = async (message:string) => {
     await Swal.fire({
         title: 'Thông báo!',
         text: message,
