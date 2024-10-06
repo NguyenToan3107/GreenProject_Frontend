@@ -73,7 +73,7 @@ export default function Page() {
     const apiCall=()=>createOrderByCart();
     await handleApiRequest(apiCall,(response)=>{
       setOrder(response.data);
-      router.push("/payment")
+      router.push(`/payment?orderId=${response.data.id}`)
 
     })
 

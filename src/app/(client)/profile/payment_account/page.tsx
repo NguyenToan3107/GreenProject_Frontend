@@ -36,32 +36,44 @@ export default function Page() {
                             paymentAccounts.map((item: any, index: any) => (
                                 <div
                                     key={index}
-                                    className="flex flex-row justify-between gap-6 mt-4 items-center p-2 border-b w-full"
+                                    className="flex flex-row justify-between items-center p-4 border-b w-full bg-white shadow-sm rounded-lg hover:bg-gray-50 transition duration-300"
                                 >
-                                    <div className="flex flex-col gap-1 flex-grow">
-                                        <h2 className="font-medium mb-1">{`${item.accountNumber} - ${item.fullName}`}</h2>
-                                        <p className="text-gray-500">
-                                            Số dư: {item.balance.toLocaleString("vi-VN")}
-                                        </p>
+                                    {/* Hiển thị ảnh của ngân hàng */}
+                                    <div className="flex items-center space-x-4">
+                                        <img
+                                            src={item.bank.imageCover}  // Đường dẫn đến ảnh của ngân hàng
+                                            alt={item.bank.name}    // Tên ngân hàng cho thuộc tính alt
+                                            className="w-12 h-12 object-contain rounded-full border border-gray-200"
+                                        />
+                                        <div className="flex flex-col">
+                                            <h2 className="font-semibold text-lg text-gray-900">{`${item.fullName}`}</h2>
+                                            <p className="text-gray-500">{`${item.accountNumber}`}</p>
+                                        </div>
                                     </div>
 
+                                    {/* Hiển thị thông tin số dư và tên ngân hàng */}
+                                    <div className="flex flex-col items-end text-right">
+                                        <p className="text-gray-700 font-medium">
+                                            Số dư: {item.balance.toLocaleString("vi-VN")} đ
+                                        </p>
+                                        <p className="text-gray-500">{item.bank.name}</p>
+                                    </div>
                                 </div>
+
                             ))
                         )}
                     </div>
                     <p
                         className="underline text-xl cursor-pointer text-brand-primary"
-                        onClick={() =>{
+                        onClick={() => {
                             setIsModalOpen(true)
                         }}
                     >
                         Thêm tài khoản thanh toán
                     </p>
                 </div>
-                <PaymentAccountForm  isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}/>
+                <PaymentAccountForm isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}/>
             </div>
-
-
 
 
     );

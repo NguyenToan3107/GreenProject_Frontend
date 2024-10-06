@@ -1,46 +1,27 @@
 "use client";
 import React, {useEffect, useState} from "react";
-import {Button, Checkbox, message, Modal} from "antd";
+import {Button, Checkbox, message, Modal, Spin} from "antd";
 import {useOrderStore} from "@/app/store/OderStore";
-import {deleteOrder, getOrderByNow, updateContactOrder} from "@/apis/modules/order";
+import {deleteOrder, updateContactOrder} from "@/apis/modules/order";
 import {handleApiRequest} from "@/app/util/utils";
-import {useRouter} from "next/navigation";
+import {useRouter, useSearchParams} from "next/navigation";
 
 import ContactForm from "@/app/(client)/_components/ContactForm";
 import {useContactStore} from "@/app/store/ContactStore";
 import {useVoucherStore} from "@/app/store/VoucherStore";
+import {usePaymentAccountStore} from "@/app/store/PaymentAccountStore";
 
 
 
 
-const paymentMethods = [
-  {
-    id: 1,
-    name: "Thanh toán qua ví MoMo",
-    image: "/client/products/product2.png",
-  },
-  {
-    id: 2,
-    name: "Thanh toán bằng Stripe",
-    image: "/client/products/product2.png",
-  },
-  {
-    id: 3,
-    name: "Thanh toán bằng VNPAY",
-    image: "/client/products/product2.png",
-  },
-  {
-    id: 4,
-    name: "Thanh toán khi nhận hàng",
-    image: "/client/products/product2.png",
-  },
-];
+
 
 
 
 export default function Page() {
-  const {order,setContactToOrder,setVoucherToOrder}=useOrderStore(state => state);
+  const {order,setContactToOrder,setVoucherToOrder,getOrderById}=useOrderStore(state => state);
   const {contacts,getAllContact}=useContactStore(state => state);
+  const {paymentAccounts,getAllPaymentAccounts}=usePaymentAccountStore(state => state)
   const {userVouchers,getMyVoucher}=useVoucherStore(state => state);
   const [isModalAddContactOpen,setIsModalAddContactOpen]=useState(false);
   const [selectedAddressId, setSelectedAddressId] = useState<
@@ -49,26 +30,40 @@ export default function Page() {
   const [isVoucherModalVisible, setIsVoucherModalVisible] = useState(false); // For voucher modal
   const [selectedVoucher, setSelectedVoucher] = useState<any>(null);
   const [isModalVisibleAddress, setIsModalVisibleAddress] = useState(false);
+  const [isPaymentModalVisible, setIsPaymentModalVisible] = useState(false); // For payment method modal
+  const [selectedPaymentAccount, setSelectedPaymentAccount] = useState<any>(null);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const orderId = searchParams.get('orderId');
+
   useEffect(() => {
+    if(order==null){
+      getOrderById(Number(orderId))
+
+    }
     if(contacts.length==0){
       getAllContact();
     }
     if(userVouchers.length==0){
       getMyVoucher(0);
     }
+    if(paymentAccounts.length==0){
+      getAllPaymentAccounts()
+    }
+
 
 
   }, []);
   console.log(order)
 
-  if(order==null){
-    return <>
-      <h1>Khong co don hang</h1>
-    </>
+  if(order==null) {
+    return <div className="flex items-center justify-center h-screen">
+      <Spin size="large"/>
+    </div>
   }
 
   function handlePayment() {
-    if(order.contact==null){
+    if (order.contact == null) {
       message.warning("No address!")
       return;
     }
@@ -76,16 +71,6 @@ export default function Page() {
   }
 
 
-
-
-
-
-
-
-  const [isPaymentModalVisible, setIsPaymentModalVisible] = useState(false); // For payment method modal
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<
-    number | null
-  >(null);
 
   // Xử lý modal address
   const showModalAddress = () => {
@@ -132,11 +117,13 @@ export default function Page() {
   const showPaymentModal = () => setIsPaymentModalVisible(true);
   const handlePaymentModalCancel = () => setIsPaymentModalVisible(false);
 
-  const handleSelectPaymentMethod = (index: number) =>
-    setSelectedPaymentMethod(index);
+  const handleSelectPaymentMethod = (account: any) =>{
+    setSelectedPaymentAccount(account)
+  }
 
 
-  const router = useRouter();
+
+
 
   async function handleDeleteOrder() {
     const apiCall=()=>deleteOrder(order.id);
@@ -281,18 +268,20 @@ export default function Page() {
         <div className="flex flex-row gap-2">
           <h2 className="font-semibold text-[17px]">Hình Thức Thanh Toán</h2>
           <Button
-            className="mx-4"
-            type="default"
-            style={{
-              borderColor: "#4BAF47",
-              color: "#4BAF47",
-              padding: "10px 30px",
-              borderRadius: "6px",
-            }}
+              className="mx-4"
+              type="default"
+              style={{
+                borderColor: "#4BAF47",
+                color: "#4BAF47",
+                padding: "10px 30px",
+                borderRadius: "6px",
+              }}
           >
-            {paymentMethods[selectedPaymentMethod!]?.name ??
-              "Thanh toán khi nhận hàng"}
+            {selectedPaymentAccount?.bank?.name && selectedPaymentAccount?.fullName
+                ? `${selectedPaymentAccount.bank.name} - ${selectedPaymentAccount.fullName}`
+                : "Chưa có phương thức thanh toán"}
           </Button>
+
         </div>
         <p
           className="underline cursor-pointer text-brand-primary"
@@ -475,25 +464,38 @@ export default function Page() {
       >
         <h2 className="font-semibold">Chọn Phương Thức Thanh Toán</h2>
         <div>
-          {paymentMethods.map((method, index) => (
-              <div
-                  key={method.id}
-              className="flex flex-row justify-start gap-3 items-center p-2 border-b"
-            >
-              <Checkbox
-                checked={selectedPaymentMethod === index}
-                onChange={() => handleSelectPaymentMethod(index)}
-              />
+          {paymentAccounts.length>0&& paymentAccounts.map((item: any, index: any) => (
+          <div
+              key={index}
+              className="flex flex-row justify-between items-center p-4 border-b w-full bg-white shadow-sm rounded-lg hover:bg-gray-50 transition duration-300"
+          >
+            <Checkbox
+                checked={selectedPaymentAccount?.id === item.id}
+                onChange={() => handleSelectPaymentMethod(item)}
+            />
+            {/* Hiển thị ảnh của ngân hàng */}
+            <div className="flex items-center space-x-4">
               <img
-                src={method.image}
-                alt={method.name}
-                style={{ width: "50px", height: "50px" }}
+                  src={item.bank.imageCover}  // Đường dẫn đến ảnh của ngân hàng
+                  alt={item.bank.name}    // Tên ngân hàng cho thuộc tính alt
+                  className="w-12 h-12 object-contain rounded-full border border-gray-200"
               />
-              <div>
-                <h3>{method.name}</h3>
+              <div className="flex flex-col">
+                <h2 className="font-semibold text-lg text-gray-900">{`${item.fullName}`}</h2>
+                <p className="text-gray-500">{`${item.accountNumber}`}</p>
               </div>
             </div>
+
+            {/* Hiển thị thông tin số dư và tên ngân hàng */}
+            <div className="flex flex-col items-end text-right">
+              <p className="text-gray-700 font-medium">
+                Số dư: {item.balance.toLocaleString("vi-VN")} đ
+              </p>
+            </div>
+          </div>
+
           ))}
+
         </div>
       </Modal>
     </div>

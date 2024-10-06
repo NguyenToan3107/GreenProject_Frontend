@@ -7,7 +7,7 @@ export function createOrderByCart(){
     return api.post("orders/createByCart")
 }
 
-export function getOrderByNow(id:number){
+export function getOrderById(id:number){
     return api.get(`orders/${id}`)
 }
 export function deleteOrder(id:number){

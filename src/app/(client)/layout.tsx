@@ -23,10 +23,9 @@ export default function HomeLayout({
       />
       <Header />
         <main className="flex-grow container mx-auto px-4">
-            <div className="flex w-full h-screen justify-between my-16 px-6">
-                <Sidebar />
+
                 {children}
-            </div>
+
         </main>
         <Footer/>
     </div>

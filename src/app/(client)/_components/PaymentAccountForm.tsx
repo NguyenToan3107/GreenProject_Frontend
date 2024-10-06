@@ -5,6 +5,7 @@ import {createContact} from "@/apis/modules/contact";
 import {handleApiRequest} from "@/app/util/utils";
 import {useContactStore} from "@/app/store/ContactStore";
 import {getAllBanks} from "@/apis/modules/bank";
+import {usePaymentAccountStore} from "@/app/store/PaymentAccountStore";
 
 class PaymentAccountProps {
 
@@ -15,6 +16,7 @@ class PaymentAccountProps {
 export default function PaymentAccountForm({isModalOpen, setIsModalOpen}: PaymentAccountProps){
     const [form] = Form.useForm();
     const [banks, setBanks] = useState([])
+    const {linkAccount}=usePaymentAccountStore(state => state);
     useEffect(() => {
         const fetchAllBanks=async ()=>{
             await handleApiRequest(()=>getAllBanks(),(res)=>{
@@ -25,7 +27,14 @@ export default function PaymentAccountForm({isModalOpen, setIsModalOpen}: Paymen
     }, []);
 
 
-    function handleOk() {
+    async function handleOk() {
+        const values = await form.validateFields();
+        const res:any = await linkAccount(values);
+        if(res&&setIsModalOpen){
+            setIsModalOpen(false);
+
+
+        }
 
     }
 

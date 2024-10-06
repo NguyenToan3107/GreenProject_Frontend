@@ -131,7 +131,7 @@ const ProductInfoComponent:React.FC<any> = ({ product,productItems }) => {
         await handleApiRequest(apiCall,(response:any)=>{
             console.log(response)
             setOrder(response.data);
-            router.replace("/payment")
+            router.replace(`/payment?orderId=${response.data.id}`)
         })
 
     }
