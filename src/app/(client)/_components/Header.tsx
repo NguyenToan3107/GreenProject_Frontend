@@ -8,10 +8,17 @@ import {useAuthStore} from "@/app/store/AuthStore";
 import {useEffect, useState} from "react";
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
+import {useCartStore} from "@/app/store/CartStore";
 
 export default function Header() {
   const {logout}=useAuthStore(state => state);
   const [notifications, setNotifications] = useState<string[]>([]);
+  const {cartItems,getAllCartItems}=useCartStore(state => state)
+  useEffect(() => {
+    if(cartItems.length==0){
+      getAllCartItems();
+    }
+  }, []);
   useEffect(() => {
     const userId=localStorage.getItem("userId");
     console.log(userId)
@@ -26,8 +33,14 @@ export default function Header() {
       })
     })
 
+
+
     return ()=>{
-      client.disconnect(()=>{})
+      if(client.connected){
+        client.disconnect(()=>{})
+      }
+
+
     }
 
 
@@ -120,9 +133,8 @@ export default function Header() {
           <Link href="/cart">
             <div className="relative cursor-pointer">
               <ShoppingCartOutlined className="text-xl"/>
-              <span
-                  className="absolute top-[-20px] right-[-20px] -translate-x-1/2 translate-y-1/2 bg-brand-primary text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-        5
+              <span className="absolute top-[-20px] right-[-20px] -translate-x-1/2 translate-y-1/2 bg-brand-primary text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+        {cartItems.length}
       </span>
             </div>
           </Link>
