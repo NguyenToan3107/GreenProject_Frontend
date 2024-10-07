@@ -4,6 +4,12 @@ import {Button, Spin, Tabs} from "antd";
 import {handleApiRequest} from "@/app/util/utils";
 import {getOrderByStatus, updateOrderStatus} from "@/apis/modules/order";
 
+import SockJS from "sockjs-client";
+import Stomp from "stompjs"
+import {useAuthStore} from "@/app/store/AuthStore";
+
+
+
 export default function Page() {
     const [activeTab, setActiveTab] = useState("PENDING");
     const [orders, setOrders] = useState([]);
@@ -36,6 +42,7 @@ export default function Page() {
         })
     }
     const getButtonAction = (id:number) => {
+        console.log(activeTab)
         switch (activeTab) {
             case "PENDING":
                 return updateStatus(id,"CANCELED"); // Hàm xử lý hủy
@@ -71,6 +78,8 @@ export default function Page() {
         const differenceInDays = differenceInTime / (1000 * 3600 * 24); // Chuyển đổi từ milliseconds sang days
         return order.status === "DELIVERED" && differenceInDays <= 15;
     };
+
+
 
     return (
         <div className="w-4/5 bg-white p-12 shadow-lg h-[600px] overflow-auto">

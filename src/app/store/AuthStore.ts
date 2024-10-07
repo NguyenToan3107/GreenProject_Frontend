@@ -4,6 +4,7 @@ import {handleApiRequest} from "@/app/util/utils";
 import {registerRequest,logoutRequest, loginRequest} from "@/apis/modules/auth";
 
 interface AuthState{
+    userId:number,
     pathname:string,
     loading:boolean,
     setPathname:(path:string)=>void,
@@ -14,6 +15,7 @@ interface AuthState{
 
 export const useAuthStore=create<AuthState>((set,get)=>({
     pathname:"/login",
+    userId:0,
     loading:false,
     setPathname:(path:string)=>{
         set({
@@ -24,6 +26,7 @@ export const useAuthStore=create<AuthState>((set,get)=>({
         const apiCall = () => loginRequest(data);
         const onSuccess = (response: any) => {
             const authorities: Array<string> = response.data.authorities;
+            localStorage.setItem('userId', response.data.id.toString());
             if (authorities[0] == "ADMIN") {
                 window.location.href = "/admin";
             } else if (authorities[0] == "USER") {
@@ -48,6 +51,7 @@ export const useAuthStore=create<AuthState>((set,get)=>({
         const apiCall = () => logoutRequest();
         const onSuccess = (response: any) => {
             console.log(response)
+            localStorage.removeItem('userId');
             window.location.href="/auth"
 
         };

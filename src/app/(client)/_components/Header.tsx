@@ -2,12 +2,37 @@
 import Link from "next/link";
 import Image from "next/image";
 
-import {LogoutOutlined, SearchOutlined, ShoppingCartOutlined, UserOutlined} from "@ant-design/icons";
-import {Dropdown} from "antd";
+import {BellOutlined, LogoutOutlined, SearchOutlined, ShoppingCartOutlined, UserOutlined} from "@ant-design/icons";
+import {Dropdown, Menu} from "antd";
 import {useAuthStore} from "@/app/store/AuthStore";
+import {useEffect, useState} from "react";
+import SockJS from "sockjs-client";
+import Stomp from "stompjs";
 
 export default function Header() {
   const {logout}=useAuthStore(state => state);
+  const [notifications, setNotifications] = useState<string[]>([]);
+  useEffect(() => {
+    const userId=localStorage.getItem("userId");
+    console.log(userId)
+
+    const socket=new SockJS("http:/localhost:7000/ws");
+    const client=Stomp.over(socket);
+    client.connect({},()=>{
+      client.subscribe(`/topic/order-status/${userId}`,message => {
+        const body = message.body;
+        console.log(body);
+        setNotifications(prev => [...prev, body]);
+      })
+    })
+
+    return ()=>{
+      client.disconnect(()=>{})
+    }
+
+
+
+  }, []);
 
   async function handleLogout() {
     await logout();
@@ -19,6 +44,21 @@ export default function Header() {
       label: <span  onClick={handleLogout}><LogoutOutlined /> Logout</span>, // Kết hợp icon và text trong một phần tử <span>
     },
   ];
+  const notificationMenu = (
+      <Menu>
+        {notifications.length > 0 ? (
+            notifications.map((notif, index) => (
+                <Menu.Item key={index}>
+                  {notif}
+                </Menu.Item>
+            ))
+        ) : (
+            <Menu.Item key="no-notifications">
+              Không có thông báo
+            </Menu.Item>
+        )}
+      </Menu>
+  );
 
   return (
     <header className="bg-white shadow-md px-2">
@@ -86,6 +126,16 @@ export default function Header() {
       </span>
             </div>
           </Link>
+          <Dropdown overlay={notificationMenu} trigger={['hover']}>
+            <div className="relative cursor-pointer ml-6">
+              <BellOutlined className="text-xl" />
+              {notifications.length > 0 && (
+                  <span className="absolute top-[-10px] right-[-10px] bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                  {notifications.length}
+                </span>
+              )}
+            </div>
+          </Dropdown>
           <Dropdown menu={{items}} trigger={['hover']}>
 
           <Link href="/profile/account">
