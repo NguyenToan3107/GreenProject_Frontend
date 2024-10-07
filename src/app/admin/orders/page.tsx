@@ -13,19 +13,10 @@ import OptionForm from "@/app/admin/_components/options/OptionForm";
 import {PAGE_SIZE} from "@/app/util/constant";
 import {useVariationStore} from "@/app/store/VariationStore";
 import {handleApiRequest} from "@/app/util/utils";
-import {getAllOrders} from "@/apis/modules/order";
+import {getAllOrders, updateOrderStatus} from "@/apis/modules/order";
 
 
 const { confirm } = Modal;
-enum OrderStatus {
-    INIT,
-    PENDING, // chờ xác nhận
-    PROCESSING, // đang xử lý
-    SHIPPED, // đang giao hàng
-    DELIVERED, // đã giao
-    CANCELED, // hủy
-    RETURNED // đã trả hàng
-}
 
 export default function Page() {
     const [orders,setOrders]=useState([]);
@@ -35,6 +26,7 @@ export default function Page() {
         current: 1,
         total: 0,
     });
+    const orderStatus=[ "PENDING", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELED", "RETURNED" ]
 
     const {
         token: { colorBgContainer, borderRadiusLG },
@@ -56,7 +48,7 @@ export default function Page() {
     useEffect(() => {
       fetchOrders(paginationOrder.current,status)
 
-    }, []);
+    }, [status]);
 
 
 
@@ -79,15 +71,15 @@ export default function Page() {
             render: (text: number) => <span>{text.toLocaleString('vi-VN')}đ</span>,
         },
         {
-            title: 'Total Cost',
-            dataIndex: 'totalCost',
-            key: 'totalCost',
-            render: (text: number) => <span>{text.toLocaleString('vi-VN')}đ</span>,
-        },
-        {
             title: 'Discount Amount',
             dataIndex: 'discountAmount',
             key: 'discountAmount',
+            render: (text: number) => <span>{text.toLocaleString('vi-VN')}đ</span>,
+        },
+        {
+            title: 'Total Cost',
+            dataIndex: 'totalCost',
+            key: 'totalCost',
             render: (text: number) => <span>{text.toLocaleString('vi-VN')}đ</span>,
         },
         {
@@ -99,29 +91,30 @@ export default function Page() {
         {
             title: 'Action',
             key: 'action',
-            align: 'right' as const,
             render: (_: any, record: any) => (
-                <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+                <div style={{ display: 'flex', gap: '8px' }}>
                     <Select
                         defaultValue={record.status}
                         onChange={(value) => handleUpdateStatus(record.id, value)}
                         style={{ width: 120 }}
                     >
-                        {Object.values(OrderStatus).map((status) => (
+                        {orderStatus.map((status) => (
                             <Select.Option key={status} value={status}>
                                 {status}
                             </Select.Option>
                         ))}
                     </Select>
+                    <Button type="primary">Xem chi tiết</Button>
                 </div>
             ),
         },
     ];
 
-    const handleUpdateStatus = async (orderId: number, status: any) => {
-        // Gọi API để cập nhật trạng thái đơn hàng ở đây
-        console.log(`Cập nhật trạng thái đơn hàng ID: ${orderId} với trạng thái: ${status}`);
-        // Thực hiện cập nhật trạng thái, sau đó có thể fetch lại dữ liệu đơn hàng
+    const handleUpdateStatus = async (orderId: number, orderStatus: any) => {
+        await handleApiRequest(()=>updateOrderStatus(orderId,{orderStatus:orderStatus}), (res)=>{
+             fetchOrders(paginationOrder.current,status)
+        })
+
     };
 
 
@@ -167,9 +160,9 @@ export default function Page() {
                         <Select
                             defaultValue={status}
                             onChange={(value) => {setStatus(value)}}
-                            style={{ width: 120 }}
+                            style={{ width: 220 }}
                         >
-                            {Object.values(OrderStatus).map((status) => (
+                            {orderStatus.map((status) => (
                                 <Select.Option key={status} value={status}>
                                     {status}
                                 </Select.Option>

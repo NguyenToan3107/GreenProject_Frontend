@@ -64,6 +64,7 @@ export default function Page() {
         {key: "RETURNED", label: "Trả hàng"},
     ];
     const canReturnOrder = (order:any) => {
+
         const currentDate = new Date();
         const deliveredDate = new Date(order.updatedAt);
         const differenceInTime = currentDate.getTime() - deliveredDate.getTime();
@@ -170,23 +171,37 @@ export default function Page() {
                                                                 {order.totalCost.toLocaleString("vi-VN")}đ
                                                             </span>
                                                         </p>
+                                                        {activeTab==="DELIVERED"&&
+                                                            <Button type="primary"
+                                                                    onClick={canReturnOrder(order) ? () => getButtonAction(order.id) : undefined}
+                                                                    className="mt-2"
+                                                                    style={{
+                                                                        padding: "6px 20px",
+                                                                        fontWeight: "bold",
+                                                                        backgroundColor: canReturnOrder(order) ? "#1890ff" : "#bfbfbf", // Màu nút
+                                                                        cursor: canReturnOrder(order) ? "pointer" : "not-allowed" // Cursur
+                                                                    }}
+                                                                    disabled={!canReturnOrder(order)}
+                                                            >
+                                                                {getButtonLabel()}
+                                                            </Button>}
 
+                                                        {activeTab!=="DELIVERED"&& <Button type="primary"
+                                                                onClick={ () => getButtonAction(order.id) }
+                                                                className="mt-2"
+                                                                style={{
+                                                                    padding: "6px 20px",
+                                                                    fontWeight: "bold",
+                                                                    backgroundColor: canReturnOrder(order) ? "#1890ff" : "#bfbfbf",
 
+                                                                }}
 
-                                                        <Button
-                                                            type="primary"
-                                                            onClick={canReturnOrder(order) ? () => getButtonAction(order.id) : undefined}
-                                                            className="mt-2"
-                                                            style={{
-                                                                padding: "6px 20px",
-                                                                fontWeight: "bold",
-                                                                backgroundColor: canReturnOrder(order) ? "#1890ff" : "#bfbfbf", // Màu nút
-                                                                cursor: canReturnOrder(order) ? "pointer" : "not-allowed" // Cursur
-                                                            }}
-                                                            disabled={!canReturnOrder(order)} // Vô hiệu hóa nút nếu không đủ điều kiện
                                                         >
                                                             {getButtonLabel()}
-                                                        </Button>
+                                                        </Button>}
+
+
+
 
                                                     </div>
                                                 </div>
