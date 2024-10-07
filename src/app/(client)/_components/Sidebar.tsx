@@ -32,11 +32,11 @@ export default function Sidebar() {
       <div className="w-1/5 bg-gray-200 p-5 shadow-lg h-[600px] mr-5">
         <div className="flex items-center mb-6">
           <img
-              src={user?.avatar || "/client/user/default_user.jpg"}
+              src={user?.imgUrl || "/client/user/default_user.jpg"}
               alt="Avatar"
               className="w-16 h-16 rounded-full object-cover"
           />
-          <span className="ml-4 font-bold text-gray-700">{user?.username}</span>
+          <span className="ml-4 font-bold text-gray-700">{user?.username} (point:{user?.points})</span>
         </div>
 
         <ul className="space-y-4">

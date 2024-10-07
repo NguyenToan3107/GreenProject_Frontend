@@ -3,6 +3,8 @@ import React from 'react';
 import {useEffect, useState} from 'react';
 import {Flex, Row, Col, Rate, Pagination, Input, Image, Menu, message} from 'antd';
 import {useReviewStore} from "@/app/store/ReviewStore";
+import SockJS from "sockjs-client";
+import Stomp from "stompjs";
 
 
 const { TextArea } = Input;
@@ -10,26 +12,57 @@ const { TextArea } = Input;
 const ReviewComponent = () => {
 
     const [rating, setRating] = useState(0); // Giá trị sao mặc định
-    const [content, setContent] = useState(''); // Nội dung đánh giá
+    const [content, setContent] = useState('');
+
 
     const {
+        current,totalElements,
         reviews,
-        current,
-        totalElements,
         currentProductItem,
         getAllReviewByProductItemId,
         createReview,
     } = useReviewStore(state => state);
 
     const getAllReviewsByProductItemId=async (page:number)=>{
-        const res=await getAllReviewByProductItemId(page, currentProductItem.id);
-        console.log(res)
+        await getAllReviewByProductItemId(page, currentProductItem.id);
+
     }
 
     useEffect(() => {
         if (currentProductItem) {
             getAllReviewsByProductItemId(current)
         }
+    }, [currentProductItem]);
+
+    useEffect(() => {
+        if(currentProductItem){
+            console.log(currentProductItem.id)
+            const socket=new SockJS("http:/localhost:7000/ws");
+            const client=Stomp.over(socket);
+            client.connect({},()=>{
+                client.subscribe(`/topic/reviews/productItem/${currentProductItem.id}`,message => {
+                    const body = message.body;
+                    if(body=="update"){
+                        getAllReviewsByProductItemId(current)
+                    }
+
+
+
+                })
+            })
+            return ()=>{
+                if(client.connected){
+                    client.disconnect(()=>{})
+                }
+
+            }
+        }
+
+
+
+
+
+
     }, [currentProductItem]);
 
 
@@ -84,7 +117,6 @@ const ReviewComponent = () => {
                                 {/* Star rating */}
                                 <div className="star flex items-center">
                                     <Rate
-                                        allowHalf
                                         value={rating}
                                         onChange={setRating}
                                         className="text-yellow-400"
@@ -123,7 +155,7 @@ const ReviewComponent = () => {
                     {/* List of reviews */}
                     
                     {reviews && reviews.length > 0 ? (
-                        reviews.map((review, index) => (
+                        reviews.map((review:any, index:any) => (
                             <Row key={index} gutter={[8, 8]} style={{ borderBottom: '1px solid #8c8b8b85', paddingBottom: '1rem' }}>
                                 <Col span={4}>
                                     <Image

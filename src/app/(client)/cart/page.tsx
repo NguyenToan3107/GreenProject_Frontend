@@ -7,20 +7,16 @@ import {getMyCart,updateCart,deleteCart} from "@/apis/modules/item";
 import {createOrderByCart} from "@/apis/modules/order";
 import {useRouter} from "next/navigation";
 import {useOrderStore} from "@/app/store/OderStore";
+import {useCartStore} from "@/app/store/CartStore";
 
 
 export default function Page() {
-  const [cartItems, setCartItems] = useState([]);
+  const {cartItems,getAllCartItems,deleteCartItem,updateCartQuantity}=useCartStore(state => state);
   const router=useRouter();
   useEffect(() => {
-    const fetchMyCart=async ()=>{
-      const apiCall=()=>getMyCart();
-      await handleApiRequest(apiCall,(response)=>{
-        setCartItems(response.data);
-
-      })
+    if(cartItems.length==0){
+      getAllCartItems();
     }
-    fetchMyCart()
   }, []);
 
 
@@ -31,28 +27,6 @@ export default function Page() {
   };
 
 
-
-  // Hàm xóa sản phẩm khỏi giỏ hàng
-  const deleteCartItem=async (id:number)=>{
-    const apiCall=()=>deleteCart(id);
-    await handleApiRequest(apiCall,(response)=>{
-      const updatedItems = cartItems.filter((item:any) => item.id !== id);
-      setCartItems(updatedItems);
-    })
-  }
-
-
-  const updateCartQuantity=async (quantity:number,id:number)=>{
-    const apiCall=()=>updateCart(quantity,id);
-    await handleApiRequest(apiCall,(response)=>{
-      console.log(response)
-      setCartItems(((prevItems:any) =>
-          prevItems.map((item:any) =>
-              item.id === id ? { ...item, quantity: quantity,totalPrice:response.data.totalPrice } : item
-          )
-      ))
-    })
-  }
 
   const increaseQuantity = async (id: number,quantity:number) => {
     await updateCartQuantity(quantity+1,id);
