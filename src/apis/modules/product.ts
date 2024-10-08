@@ -48,6 +48,9 @@ export function getAllProductsView(pageNum:number,search:string,categoryId:numbe
 }
 
 
+export function getProductByStarRating(pageNum:number,ratingPoint:number){
+    return api.get(`products/rating?=${pageNum}&pageSize=${PRODUCT_ITEM_PAGE_SIZE}&ratingPoint=${ratingPoint}`);
+}
 export function getProductById(productId:number){
     return api.get(`products/${productId}`);
 }

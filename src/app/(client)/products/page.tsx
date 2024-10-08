@@ -21,6 +21,7 @@ import { PRODUCT_ITEM_PAGE_SIZE } from "@/app/util/constant";
 import {
   getAllProductsSort,
   getAllProductsView,
+  getProductByStarRating,
   getProductOnTopSold,
 } from "@/apis/modules/product";
 import Link from "next/link";
@@ -43,6 +44,9 @@ export default function page() {
   const [selectedCategory, setSelectedCategory] = useState(0);
   const [sortByPrice, setSortByPrice] = useState(false);
   const [topSold, setTopSole] = useState(false);
+  const [rating, setRating] = useState(false);
+  const [starRating, setStarRating] = useState(1);
+  const [selectedRating, setSelectedRating] = useState<number | null>(null);
   const { getAllCategories, categoriesTree } = useCategoryStore(
     (state) => state
   );
@@ -194,6 +198,8 @@ export default function page() {
       }
     } else if (topSold) {
       await fetchProductOnTopSold(value);
+    } else if (rating) {
+      await getProductByStarRating(value, starRating);
     } else {
       if (selectedCategory && searchQuery) {
         await fetchProduct(value, selectedCategory, searchQuery);
@@ -242,6 +248,22 @@ export default function page() {
       label: "Tổng sao đánh giá",
     },
   ];
+
+  const handleSearchRating = async (e: any, star: number) => {
+    const isChecked = e.target.checked;
+    setSelectedRating(star === selectedRating ? null : star);
+    setStarRating(star);
+
+    if (isChecked) {
+      const res: any = await getProductByStarRating(1, star);
+      if (res.code == 200) {
+        setRating(true);
+        setProductsView(res.data.content);
+        setCurrentPage(res.data.currentPage);
+        setTotal(res.data.totalElements);
+      }
+    }
+  };
 
   return (
     <div className="mx-0 px-0">
@@ -298,7 +320,11 @@ export default function page() {
             <div className="space-y-2">
               {[5, 4, 3, 2, 1].map((star) => (
                 <div key={star} className="flex items-center space-x-2">
-                  <Checkbox className="mr-2" />
+                  <Checkbox
+                    className="mr-2"
+                    checked={selectedRating === star}
+                    onChange={(e) => handleSearchRating(e, star)}
+                  />
                   <div className="flex items-center">
                     <Rate value={star} disabled />
                   </div>
