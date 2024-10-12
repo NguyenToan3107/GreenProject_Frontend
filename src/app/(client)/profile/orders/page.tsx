@@ -4,9 +4,6 @@ import {Button, Spin, Tabs} from "antd";
 import {handleApiRequest} from "@/app/util/utils";
 import {getOrderByStatus, updateOrderStatus} from "@/apis/modules/order";
 
-import SockJS from "sockjs-client";
-import Stomp from "stompjs"
-import {useAuthStore} from "@/app/store/AuthStore";
 
 
 
@@ -26,13 +23,15 @@ export default function Page() {
         switch (activeTab) {
             case "PENDING":
                 return "Hủy";
+            case "SHIPPED":
+                return "Đã nhận được hàng";
             case "DELIVERED":
                 return "Trả hàng";
             case "CANCELED":
             case "RETURNED":
                 return "Mua lại";
             default:
-                return null; // Hoặc có thể trả về một giá trị khác nếu cần
+                return null;
         }
     };
 
@@ -41,13 +40,18 @@ export default function Page() {
             fetchOrderUserStatus(activeTab)
         })
     }
-    const getButtonAction = (id:number) => {
+    const getButtonAction = async (id:number) => {
         console.log(activeTab)
         switch (activeTab) {
             case "PENDING":
-                return updateStatus(id,"CANCELED"); // Hàm xử lý hủy
+                await updateStatus(id,"CANCELED");
+                return setActiveTab("CANCELED");
+            case "SHIPPED":
+                await updateStatus(id,"DELIVERED");
+                return setActiveTab("DELIVERED");
             case "DELIVERED":
-                return updateStatus(id,"RETURNED"); // Hàm xử lý trả hàng
+                await updateStatus(id,"RETURNED");
+                return setActiveTab("RETURNED");
             case "CANCELED":
             case "RETURNED":
                 return null; // Hàm xử lý mua lại
@@ -57,9 +61,7 @@ export default function Page() {
     };
 
     useEffect(() => {
-
         fetchOrderUserStatus(activeTab);
-
     }, [activeTab]);
 
     const tabs = [
@@ -75,7 +77,7 @@ export default function Page() {
         const currentDate = new Date();
         const deliveredDate = new Date(order.updatedAt);
         const differenceInTime = currentDate.getTime() - deliveredDate.getTime();
-        const differenceInDays = differenceInTime / (1000 * 3600 * 24); // Chuyển đổi từ milliseconds sang days
+        const differenceInDays = differenceInTime / (1000 * 3600 * 24);
         return order.status === "DELIVERED" && differenceInDays <= 15;
     };
 
@@ -195,14 +197,12 @@ export default function Page() {
                                                                 {getButtonLabel()}
                                                             </Button>}
 
-                                                        {activeTab!=="DELIVERED"&& <Button type="primary"
+                                                        {(activeTab!="DELIVERED"&&activeTab!="PROCESSING")&& <Button type="primary"
                                                                 onClick={ () => getButtonAction(order.id) }
                                                                 className="mt-2"
                                                                 style={{
                                                                     padding: "6px 20px",
                                                                     fontWeight: "bold",
-                                                                    backgroundColor: canReturnOrder(order) ? "#1890ff" : "#bfbfbf",
-
                                                                 }}
 
                                                         >

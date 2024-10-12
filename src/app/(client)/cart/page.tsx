@@ -1,6 +1,6 @@
 "use client";
 import React, {useEffect, useState} from "react";
-import {Button, InputNumber, message} from "antd";
+import {Button, Empty, InputNumber, message} from "antd";
 import Link from "next/link";
 import {handleApiRequest} from "@/app/util/utils";
 import {getMyCart,updateCart,deleteCart} from "@/apis/modules/item";
@@ -8,18 +8,32 @@ import {createOrderByCart} from "@/apis/modules/order";
 import {useRouter} from "next/navigation";
 import {useOrderStore} from "@/app/store/OderStore";
 import {useCartStore} from "@/app/store/CartStore";
+import {ShoppingCartOutlined} from "@ant-design/icons";
 
-
+const EmptyCart = () => {
+  return (
+      <div style={{
+        height: '300px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'column'
+      }}>
+        <Empty
+            image={<ShoppingCartOutlined style={{fontSize: '48px', color: '#1890ff'}}/>}
+            description={<span>Giỏ hàng trống</span>}
+        />
+      </div>
+  );
+};
 export default function Page() {
-  const {cartItems,getAllCartItems,deleteCartItem,updateCartQuantity}=useCartStore(state => state);
-  const router=useRouter();
+  const {cartItems, getAllCartItems, deleteCartItem, updateCartQuantity} = useCartStore(state => state);
+  const router = useRouter();
   useEffect(() => {
-    if(cartItems.length==0){
+    if (cartItems.length == 0) {
       getAllCartItems();
     }
   }, []);
-
-
 
 
   const calculateTotal = (price: number, quantity: number) => {
@@ -51,11 +65,10 @@ export default function Page() {
 
     })
 
+  }
 
-
-
-
-
+  if(cartItems.length==0){
+    return <EmptyCart/>
   }
 
   return (
