@@ -3,12 +3,12 @@ export function getDashBoard(){
     return api.get(`dashboard/statistics`);
 }
 
-export function getOrderDashBoard(){
-    return api.get(`dashboard/order`);
+export function getOrderDashBoard(quarter:number,year:number){
+    return api.get(`dashboard/order?quarter=${quarter}&year=${year}`);
 }
 
-export function getRevenueDashBoard(){
-    return api.get(`dashboard/revenue`);
+export function getRevenueDashBoard(quarter:number,year:number){
+    return api.get(`dashboard/revenue?quarter=${quarter}&year=${year}`);
 }
 
 export function getUserDashBoard(quarter:number,year:number){

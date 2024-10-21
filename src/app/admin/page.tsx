@@ -4,9 +4,12 @@ import { Table, Spin } from "antd";
 import "antd/dist/reset.css"; // Import Ant Design styles
 import {
   getDashBoard,
+  getOrderDashBoard,
   getRevenueDashBoard,
   getUserDashBoard,
 } from "@/apis/modules/dashboard";
+import RevenueChart from "@/app/admin/_components/RevenueChart";
+import OrderStatusChart from "@/app/admin/_components/OrderStatusChart";
 
 export default function page() {
   const [loading, setLoading] = useState(false);
@@ -45,9 +48,22 @@ export default function page() {
   const fetchRevenueDashBoard = async () => {
     setLoading(true);
     try {
-      const res: any = await getRevenueDashBoard(); // Call API
-      console.log(res);
+      const res: any = await getRevenueDashBoard(4, 2024); // Call API
       if (res?.code === 200) {
+      }
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchOrderDashBoard = async () => {
+    setLoading(true);
+    try {
+      const res: any = await getOrderDashBoard(3, 2024); // Call API
+      if (res?.code === 200) {
+        console.log(res);
       }
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
@@ -60,13 +76,13 @@ export default function page() {
     fetchDataDashBoard();
     fetchUserDataDashBoard();
     fetchRevenueDashBoard();
+    fetchOrderDashBoard();
   }, []);
 
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <Spin size="large" style={{ color: "#808080" }} />{" "}
-        {/* Spinner màu xám */}
       </div>
     );
   }
@@ -150,7 +166,7 @@ export default function page() {
     <div className="p-5 bg-gray-100 min-h-screen">
       <h1 className="text-3xl font-bold mb-5 text-blue-600">Dashboard</h1>
       {/* Hiển thị các ô ngang hàng */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <div className="cursor-pointer bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 shadow rounded-lg p-4 text-center text-white">
           <h2 className="text-xl font-semibold">Paid Orders Count</h2>
           <p className="text-2xl font-bold">
@@ -182,11 +198,12 @@ export default function page() {
             rowKey="id"
             pagination={false} */}
           {/* /> */}
+          <OrderStatusChart />
         </div>
 
         <div className="bg-white shadow rounded-lg p-4 col-span-3 md:col-span-6">
           <h2 className="text-xl font-semibold mb-4 text-green-600">
-            Sản phẩm bán chạy nhất
+            Đoanh thu theo quý
           </h2>
           {/* <Table
             dataSource={dashboardData.bestSellerProducts.content}
@@ -194,6 +211,7 @@ export default function page() {
             rowKey="id"
             pagination={false}
           /> */}
+          <RevenueChart />
         </div>
       </div>
     </div>
