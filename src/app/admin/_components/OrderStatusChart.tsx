@@ -21,23 +21,20 @@ const OrderStatusChart = () => {
     async function fetchData() {
       try {
         setLoading(true);
-        const result = await getOrderDashBoard(quarter, year); // Gọi API cho quý đã chọn
-        const statuses = result.data.orders.statuses || []; // Lấy danh sách trạng thái
-
+        const result = await getOrderDashBoard(quarter, year);
+        const statuses = result?.data?.orders?.statuses || [];
         // Chuyển đổi dữ liệu trạng thái thành định dạng phù hợp
         const newData = statuses.map(
           (status: { count: any; percentage: any; status: any }) => ({
-            count: status.count, // Số lượng đơn hàng
-            percentage: status.percentage, // Phần trăm
-            status: status.status, // Trạng thái
+            count: status.count ?? 0, // Số lượng đơn hàng
+            percentage: status.percentage ?? "0%", // Phần trăm
+            status: status.status ?? "Unknown", // Trạng thái
           })
-        ) as OrderStatus[]; // Gán kiểu OrderStatus
-
-        setData(newData); // Thiết lập lại dữ liệu mới cho quý đã chọn
+        ) as OrderStatus[];
+        setData(newData);
       } catch (error: any) {
         if (error.response) {
-          // Xử lý lỗi: trả về mảng trạng thái mặc định
-          setData([{ count: 0, percentage: "0%", status: "Unknown" }]); // Gán kiểu OrderStatus
+          setData([{ count: 0, percentage: "0%", status: "Unknown" }]);
         } else {
           setError("Failed to fetch order data.");
         }
@@ -46,54 +43,20 @@ const OrderStatusChart = () => {
       }
     }
 
-    fetchData(); // Gọi hàm fetchData
+    fetchData();
   }, [year, quarter]);
 
   useEffect(() => {
-    setQuarter(1); // Đảm bảo quý mặc định là 1 khi mounted
+    setQuarter(1);
   }, []);
 
   const config = {
     appendPadding: 10,
     data,
-    angleField: "count", // Số lượng đơn hàng
-    colorField: "status", // Trạng thái đơn hàng
+    angleField: "count",
+    colorField: "status",
     radius: 1,
-    innerRadius: 0.6, // Để tạo biểu đồ vòng tròn (donut chart)
-    label: {
-      content: "{name} {percentage}", // Hiển thị trạng thái và phần trăm bên trong
-      offset: "-30%", // Điều chỉnh vị trí của nhãn bên trong
-      style: {
-        fontSize: 14,
-        textAlign: "center",
-      },
-    },
-    interactions: [
-      {
-        type: "element-active",
-      },
-    ],
-    tooltip: {
-      formatter: (datum: {
-        status: string;
-        count: number;
-        percentage: string | number;
-      }) => {
-        const status = datum.status || "Unknown status";
-        const count = datum.count != null ? datum.count : "No orders";
-
-        // Nếu percentage là "NaN%" hoặc không hợp lệ, thay bằng "0%"
-        const percentage =
-          isNaN(Number(datum.percentage)) || datum.count === 0
-            ? "0%"
-            : datum.percentage;
-
-        return {
-          name: status,
-          value: `${count} orders (${percentage})`,
-        };
-      },
-    },
+    innerRadius: 0.6,
   };
 
   return (

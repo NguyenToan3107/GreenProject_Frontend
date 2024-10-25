@@ -19,8 +19,8 @@ export function getTopUserDashBoard(){
     return api.get(`dashboard/top-user`);
 }
 
-export function getProductDashBoard(){
-    return api.get(`dashboard/products`);
+export function getProductDashBoard(quarter:number,year:number){
+    return api.get(`dashboard/products?quarter=${quarter}&year=${year}`);
 }
 
 export function getPercentageDashBoard(){
