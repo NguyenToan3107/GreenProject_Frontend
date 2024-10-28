@@ -12,6 +12,7 @@ import {
 } from "@/apis/modules/dashboard";
 import RevenueChart from "@/app/admin/_components/RevenueChart";
 import OrderStatusChart from "@/app/admin/_components/OrderStatusChart";
+import TopUserTable from "@/app/admin/_components/TopUserTable";
 
 export default function page() {
   const [loading, setLoading] = useState(false);
@@ -49,20 +50,6 @@ export default function page() {
     }
   };
 
-  const fetchTopUserDataDashBoard = async () => {
-    setLoading(true);
-    try {
-      const res: any = await getTopUserDashBoard();
-      if (res?.code === 200) {
-        setTopUserData(res.data.users.content);
-      }
-    } catch (error) {
-      console.error("Error fetching dashboard data:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const fetchProductDashBoard = async () => {
     setLoading(true);
     try {
@@ -79,9 +66,8 @@ export default function page() {
 
   useEffect(() => {
     fetchDataDashBoard();
-
-    fetchTopUserDataDashBoard();
     fetchProductDashBoard();
+    fetchUserDataDashBoard();
   }, []);
 
   if (loading) {
@@ -95,41 +81,6 @@ export default function page() {
   if (!dashboardData) {
     return <div>No data available</div>;
   }
-
-  // Cột cho bảng Top 10 người dùng
-  const userColumns = [
-    {
-      title: "ID",
-      dataIndex: "id",
-      key: "id",
-      // sorter: (a: { id: number }, b: { id: number }) => a.id - b.id,
-    },
-    {
-      title: "Username",
-      dataIndex: "username",
-      key: "username",
-      // sorter: (a: { username: string }, b: { username: any }) =>
-      //   a.username.localeCompare(b.username),
-    },
-    {
-      title: "Image",
-      dataIndex: "imageUrl",
-      key: "imageUrl",
-      render: (
-        text: any,
-        record: { imageUrl: string | undefined; username: string | undefined }
-      ) =>
-        record.imageUrl ? (
-          <img
-            src={record.imageUrl}
-            alt={record.username}
-            style={{ width: 40, height: 40, borderRadius: "50%" }}
-          />
-        ) : (
-          "No Image"
-        ),
-    },
-  ];
 
   // Cột cho bảng Best Seller Products
   const productColumns = [
@@ -200,12 +151,6 @@ export default function page() {
           <h2 className="text-xl font-semibold mb-4 text-blue-600">
             Biểu đồ trạng thái đơn hàng
           </h2>
-          {/* <Table
-            dataSource={dashboardData.Top10UserOrderByTotalOrderValue.content}
-            columns={userColumns}
-            rowKey="id"
-            pagination={false} */}
-          {/* /> */}
           <OrderStatusChart />
         </div>
 
@@ -213,12 +158,6 @@ export default function page() {
           <h2 className="text-xl font-semibold mb-4 text-green-600">
             Biểu đồ doanh thu theo quý
           </h2>
-          {/* <Table
-            dataSource={dashboardData.bestSellerProducts.content}
-            columns={productColumns}
-            rowKey="id"
-            pagination={false}
-          /> */}
           <RevenueChart />
         </div>
       </div>
@@ -227,24 +166,13 @@ export default function page() {
           <h2 className="text-xl font-semibold mb-4 text-green-600">
             Biểu đồ doanh thu theo quý
           </h2>
-          {/* <Table
-            dataSource={dashboardData.bestSellerProducts.content}
-            columns={productColumns}
-            rowKey="id"
-            pagination={false}
-          /> */}
           <RevenueChart />
         </div>
         <div className="bg-white shadow rounded-lg p-4 col-span-3 md:col-span-4">
           <h2 className="text-xl font-semibold mb-4 text-blue-600">
-            Biểu đồ trạng thái đơn hàng
+            Danh sách người dùng hàng đầu
           </h2>
-          <Table
-            dataSource={Array.isArray(topUserData) ? topUserData : []}
-            columns={userColumns}
-            rowKey="id"
-            pagination={false}
-          />
+          <TopUserTable />
         </div>
       </div>
     </div>

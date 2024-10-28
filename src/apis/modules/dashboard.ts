@@ -15,14 +15,10 @@ export function getUserDashBoard(quarter:number,year:number){
     return api.get(`dashboard/user?quarter=${quarter}&year=${year}`);
 }
 
-export function getTopUserDashBoard(){
-    return api.get(`dashboard/top-user`);
+export function getTopUserDashBoard(quarter:number,year:number){
+    return api.get(`dashboard/top-user?quarter=${quarter}&year=${year}`);
 }
 
 export function getProductDashBoard(quarter:number,year:number){
     return api.get(`dashboard/products?quarter=${quarter}&year=${year}`);
-}
-
-export function getPercentageDashBoard(){
-    return api.get(`dashboard/percentage-returned-order`);
 }

@@ -43,7 +43,7 @@ api.interceptors.response.use(
     return response.data
   },
   (error: AxiosError) => {
-    console.log(error.response)
+    // console.log(error.response)
     const showAlert = async () => {
       await Swal.fire({
         title: 'Phiên đăng nhập hết hạn!',
