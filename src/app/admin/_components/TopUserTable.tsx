@@ -1,18 +1,21 @@
-import React, { useState, useEffect } from "react";
-import { Pie } from "@ant-design/charts";
+import { getTopUserDashBoard } from "@/apis/modules/dashboard";
 import { Select, Spin, Table } from "antd";
-import {
-  getOrderDashBoard,
-  getTopUserDashBoard,
-} from "@/apis/modules/dashboard";
+import React, { useEffect, useState } from "react";
+import DefaultUser from "../../../../public/admin/default_user.jpg";
 
-const TopUserTable = () => {
+interface UserData {
+  id: number;
+  username: string;
+  imageUrl?: string;
+}
+
+const TopUserTable: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [year, setYear] = useState<number>(2024);
   const [quarter, setQuarter] = useState<number>(1);
-  const [quarters, setQuarters] = useState<number[]>([1, 2, 3, 4]);
-  const [topUserData, setTopUserData] = useState<any>(null);
+  const [quarters] = useState<number[]>([1, 2, 3, 4]);
+  const [topUserData, setTopUserData] = useState<UserData[]>([]);
 
   useEffect(() => {
     async function fetchData() {
@@ -21,8 +24,11 @@ const TopUserTable = () => {
         const res: any = await getTopUserDashBoard(quarter, year);
         if (res?.code === 200) {
           setTopUserData(res.data.users.content);
+        } else {
+          setError("Failed to load data");
         }
-      } catch (error: any) {
+      } catch (error) {
+        setError("Failed to fetch data");
       } finally {
         setLoading(false);
       }
@@ -31,33 +37,26 @@ const TopUserTable = () => {
     fetchData();
   }, [year, quarter]);
 
-  useEffect(() => {
-    setQuarter(1);
-  }, []);
-
   // Cột cho bảng Top 10 người dùng
   const userColumns = [
     {
       title: "ID",
       dataIndex: "id",
       key: "id",
-      // sorter: (a: { id: number }, b: { id: number }) => a.id - b.id,
+      sorter: (a: UserData, b: UserData) => a.id - b.id,
     },
     {
       title: "Username",
       dataIndex: "username",
       key: "username",
-      // sorter: (a: { username: string }, b: { username: any }) =>
-      //   a.username.localeCompare(b.username),
+      sorter: (a: UserData, b: UserData) =>
+        a.username.localeCompare(b.username),
     },
     {
       title: "Image",
       dataIndex: "imageUrl",
       key: "imageUrl",
-      render: (
-        text: any,
-        record: { imageUrl: string | undefined; username: string | undefined }
-      ) =>
+      render: (text: any, record: UserData) =>
         record.imageUrl ? (
           <img
             src={record.imageUrl}
@@ -65,7 +64,15 @@ const TopUserTable = () => {
             style={{ width: 40, height: 40, borderRadius: "50%" }}
           />
         ) : (
-          "No Image"
+          <img
+            src={DefaultUser.src}
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: "50%",
+              border: "2px solid black",
+            }}
+          />
         ),
     },
   ];
@@ -78,23 +85,23 @@ const TopUserTable = () => {
           value={year}
           onChange={(value) => {
             setYear(value);
-            setQuarter(0);
+            setQuarter(1); // Đặt lại quý khi thay đổi năm
           }}
           style={{ width: 120, marginRight: 20 }}
         >
-          <Select.Option value={2022}>2022</Select.Option>
-          <Select.Option value={2023}>2023</Select.Option>
-          <Select.Option value={2024}>2024</Select.Option>
-          <Select.Option value={2025}>2025</Select.Option>
+          {[2022, 2023, 2024, 2025].map((year) => (
+            <Select.Option key={year} value={year}>
+              {year}
+            </Select.Option>
+          ))}
         </Select>
 
-        {/* Dropdown chọn quý (bị disable nếu chưa chọn năm) */}
         <Select
           placeholder="Select Quarter"
           value={quarter}
           onChange={(value) => setQuarter(value)}
           style={{ width: 120 }}
-          disabled={year === null} // Disable khi chưa chọn năm
+          disabled={year === null}
         >
           {quarters.map((q) => (
             <Select.Option key={q} value={q}>
@@ -104,7 +111,6 @@ const TopUserTable = () => {
         </Select>
       </div>
 
-      {/* Hiển thị biểu đồ hoặc loading */}
       {loading ? (
         <Spin />
       ) : (
@@ -112,7 +118,7 @@ const TopUserTable = () => {
           dataSource={Array.isArray(topUserData) ? topUserData : []}
           columns={userColumns}
           rowKey="id"
-          pagination={false}
+          pagination={{ pageSize: 5 }}
         />
       )}
       {error && <div style={{ color: "red" }}>{error}</div>}

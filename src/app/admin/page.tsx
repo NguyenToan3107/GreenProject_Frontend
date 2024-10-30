@@ -1,18 +1,16 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { Table, Spin } from "antd";
-import "antd/dist/reset.css"; // Import Ant Design styles
 import {
   getDashBoard,
-  getOrderDashBoard,
   getProductDashBoard,
-  getRevenueDashBoard,
-  getTopUserDashBoard,
   getUserDashBoard,
 } from "@/apis/modules/dashboard";
-import RevenueChart from "@/app/admin/_components/RevenueChart";
 import OrderStatusChart from "@/app/admin/_components/OrderStatusChart";
+import RevenueChart from "@/app/admin/_components/RevenueChart";
+import TopSoldProduct from "@/app/admin/_components/TopSoldProduct";
 import TopUserTable from "@/app/admin/_components/TopUserTable";
+import { Spin } from "antd";
+import "antd/dist/reset.css"; // Import Ant Design styles
+import { useEffect, useState } from "react";
 
 export default function page() {
   const [loading, setLoading] = useState(false);
@@ -66,8 +64,6 @@ export default function page() {
 
   useEffect(() => {
     fetchDataDashBoard();
-    fetchProductDashBoard();
-    fetchUserDataDashBoard();
   }, []);
 
   if (loading) {
@@ -81,45 +77,6 @@ export default function page() {
   if (!dashboardData) {
     return <div>No data available</div>;
   }
-
-  // Cột cho bảng Best Seller Products
-  const productColumns = [
-    {
-      title: "ID",
-      dataIndex: "id",
-      key: "id",
-    },
-    {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-    },
-    {
-      title: "Max Price",
-      dataIndex: "maxPrice",
-      key: "maxPrice",
-    },
-    {
-      title: "Min Price",
-      dataIndex: "minPrice",
-      key: "minPrice",
-    },
-    {
-      title: "Sold",
-      dataIndex: "sold",
-      key: "sold",
-    },
-    {
-      title: "Rating",
-      dataIndex: "sold",
-      key: "totalRating",
-    },
-    {
-      title: "Reviews",
-      dataIndex: "sold",
-      key: "totalReviews",
-    },
-  ];
 
   return (
     <div className="p-5 bg-gray-100 min-h-screen">
@@ -162,11 +119,11 @@ export default function page() {
         </div>
       </div>
       <div className="grid grid-cols-3 md:grid-cols-10 gap-4 mt-6">
-        <div className="bg-white shadow rounded-lg p-4 col-span-3 md:col-span-6">
+        <div className="bg-white shadow rounded-lg p-4 col-span-3 md:col-span-6 h-[500px]">
           <h2 className="text-xl font-semibold mb-4 text-green-600">
-            Biểu đồ doanh thu theo quý
+            Biểu đồ những sản phẩm bán chạy
           </h2>
-          <RevenueChart />
+          <TopSoldProduct />
         </div>
         <div className="bg-white shadow rounded-lg p-4 col-span-3 md:col-span-4">
           <h2 className="text-xl font-semibold mb-4 text-blue-600">
