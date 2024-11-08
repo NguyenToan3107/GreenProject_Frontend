@@ -3,6 +3,7 @@ import Header from "@/app/(client)/_components/Header";
 import type { Metadata } from "next";
 import React from "react";
 import "./client.css";
+import Sidebar from "@/app/(client)/_components/Sidebar";
 
 export const metadata: Metadata = {
   title: "trang chủ",
@@ -21,8 +22,12 @@ export default function HomeLayout({
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
       />
       <Header />
-      <main className="flex-grow container mx-auto px-4">{children}</main>
-      <Footer />
+        <main className="flex-grow container mx-auto px-4">
+
+                {children}
+
+        </main>
+        <Footer/>
     </div>
-  );
+);
 }

@@ -1,29 +1,39 @@
 "use client";
 import React, {useEffect, useState} from "react";
-import {Button, InputNumber, message} from "antd";
+import {Button, Empty, InputNumber, message} from "antd";
 import Link from "next/link";
 import {handleApiRequest} from "@/app/util/utils";
 import {getMyCart,updateCart,deleteCart} from "@/apis/modules/item";
 import {createOrderByCart} from "@/apis/modules/order";
 import {useRouter} from "next/navigation";
 import {useOrderStore} from "@/app/store/OderStore";
+import {useCartStore} from "@/app/store/CartStore";
+import {ShoppingCartOutlined} from "@ant-design/icons";
 
-
+const EmptyCart = () => {
+  return (
+      <div style={{
+        height: '300px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'column'
+      }}>
+        <Empty
+            image={<ShoppingCartOutlined style={{fontSize: '48px', color: '#1890ff'}}/>}
+            description={<span>Giỏ hàng trống</span>}
+        />
+      </div>
+  );
+};
 export default function Page() {
-  const [cartItems, setCartItems] = useState([]);
-  const router=useRouter();
+  const {cartItems, getAllCartItems, deleteCartItem, updateCartQuantity} = useCartStore(state => state);
+  const router = useRouter();
   useEffect(() => {
-    const fetchMyCart=async ()=>{
-      const apiCall=()=>getMyCart();
-      await handleApiRequest(apiCall,(response)=>{
-        setCartItems(response.data);
-
-      })
+    if (cartItems.length == 0) {
+      getAllCartItems();
     }
-    fetchMyCart()
   }, []);
-
-
 
 
   const calculateTotal = (price: number, quantity: number) => {
@@ -31,28 +41,6 @@ export default function Page() {
   };
 
 
-
-  // Hàm xóa sản phẩm khỏi giỏ hàng
-  const deleteCartItem=async (id:number)=>{
-    const apiCall=()=>deleteCart(id);
-    await handleApiRequest(apiCall,(response)=>{
-      const updatedItems = cartItems.filter((item:any) => item.id !== id);
-      setCartItems(updatedItems);
-    })
-  }
-
-
-  const updateCartQuantity=async (quantity:number,id:number)=>{
-    const apiCall=()=>updateCart(quantity,id);
-    await handleApiRequest(apiCall,(response)=>{
-      console.log(response)
-      setCartItems(((prevItems:any) =>
-          prevItems.map((item:any) =>
-              item.id === id ? { ...item, quantity: quantity,totalPrice:response.data.totalPrice } : item
-          )
-      ))
-    })
-  }
 
   const increaseQuantity = async (id: number,quantity:number) => {
     await updateCartQuantity(quantity+1,id);
@@ -73,15 +61,14 @@ export default function Page() {
     const apiCall=()=>createOrderByCart();
     await handleApiRequest(apiCall,(response)=>{
       setOrder(response.data);
-      router.push("/payment")
+      router.push(`/payment?orderId=${response.data.id}`)
 
     })
 
+  }
 
-
-
-
-
+  if(cartItems.length==0){
+    return <EmptyCart/>
   }
 
   return (
@@ -99,11 +86,7 @@ export default function Page() {
       {/* Danh sách sản phẩm trong giỏ hàng */}
       
       {cartItems.map((item:any) => (
-        <div
-          key={item.id}
-          className="grid grid-cols-12 gap-6 items-center bg-white p-4 mt-4 rounded-lg border-b"
-        >
-          {/* Cột sản phẩm */}
+        <div key={item.id} className="grid grid-cols-12 gap-6 items-center bg-white p-4 mt-4 rounded-lg border-b">
           <div className="col-span-5">
             <div className="flex flex-row gap-8">
               <img

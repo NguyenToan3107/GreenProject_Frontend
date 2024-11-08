@@ -1,8 +1,8 @@
 
 import {create} from "zustand";
 import {handleApiRequest} from "@/app/util/utils";
-import {getAllReviewByProductItemId,createReview,updateReviewById,deleteReviewById,getReviewById} from "@/apis/modules/review";
-import { Anybody } from "next/font/google";
+import {getAllReviewByProductItemId,createReview,deleteReviewById} from "@/apis/modules/review";
+
 
 interface ReviewState {
     reviews: any[];
@@ -45,7 +45,7 @@ export const useReviewStore=create<ReviewState>((set,get)=>({
     createReview: async (voucher:any,productItemId:any) => {
         const apiCall = () => createReview(voucher);
         const onSuccess = (response: any) => {
-            get().getAllReviewByProductItemId(get().current,productItemId);
+            //get().getAllReviewByProductItemId(get().current,productItemId);
         };
         return await handleApiRequest(apiCall, onSuccess);
     },

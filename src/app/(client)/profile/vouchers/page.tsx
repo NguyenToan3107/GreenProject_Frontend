@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "@/app/(client)/_components/Sidebar";
 import { Button } from "antd";
-import { useVoucherStore } from "@/app/store/VoucherStore";
+import {useVoucherStore} from "@/app/store/VoucherStore";
 
 export default function Page() {
   const {
@@ -14,154 +14,125 @@ export default function Page() {
     redeemVoucher,
   } = useVoucherStore((state) => state);
 
-  const fetchMyVoucher = async () => {
-    const res: any = await getMyVoucher(0);
+  const fetchMyVoucher=async ()=>{
+    const res:any = await getMyVoucher(0);
 
-    if (res.code == 200) {
+    if(res.code == 200){
+      
     }
-  };
+  }
 
-  const fetchValidVouchers = async () => {
-    const res: any = await getAllValidVoucher(0);
+  const fetchValidVouchers=async ()=>{
+    const res:any = await getAllValidVoucher(0);
 
-    if (res.code == 200) {
+    if(res.code == 200){
+      
     }
-  };
+  }
 
   useEffect(() => {
     if (!userVouchers || userVouchers.length === 0) {
-      fetchMyVoucher();
+      fetchMyVoucher(); 
     }
 
     if (!userVouchers || userVouchers.length === 0) {
-      fetchValidVouchers();
+      fetchValidVouchers(); 
     }
-  }, []);
+  }, []); 
 
-  const handleRedeemVoucher = async (id: number) => {
-    const res: any = await redeemVoucher(id);
-    console.log(res);
-    if (res.code == 200) {
+  const handleRedeemVoucher = async(id:number) =>{
+    const res:any = await redeemVoucher(id);
+    console.log(res)
+    if(res.code == 200){
       setUserVouchers([...userVouchers, res.data]);
     }
-  };
+  }
+
 
   return (
-    <div className="flex w-full h-auto justify-between my-16 mb-40 px-6">
-      {/* Sidebar */}
-      <Sidebar />
-
       <div className="w-4/5 flex flex-col gap-5">
-        {/* Voucher List */}
-        <div className="bg-white p-16 shadow-lg h-[600px] overflow-auto">
+
+        <div className="bg-white p-8 shadow-lg h-[1000px] overflow-y-auto">
           <h1 className="text-2xl font-bold mb-3">Voucher Của Tôi</h1>
           <p className="mb-2">Quản lý thông tin hồ sơ để bảo mật tài khoản</p>
 
-          <div className="grid grid-cols-2 gap-6 mt-10 ml-6 h-[350px] overflow-y-auto">
-            {userVouchers.map((voucher) => (
-              <div
-                key={voucher.id}
-                className="flex p-2 shadow-lg rounded-md items-center bg-white"
-              >
-                <img
-                  src={
-                    voucher.type === "FREE_SHIP"
-                      ? "/client/products/FREE_SHIP.png"
-                      : voucher.type === "DISCOUNT_AMOUNT"
-                      ? "/client/products/DISCOUNT.png"
-                      : "/client/products/DISCOUNT.png"
-                  }
-                  alt={voucher.name}
-                  className="w-28 h-28 object-cover rounded-lg"
-                />
+          <div className="grid grid-cols-2 gap-6 mt-10 ">
+            {userVouchers.length > 0 ? (
+                userVouchers.map((voucher) => (
+                    <div
+                        key={voucher.id}
+                        className="flex p-4 shadow-lg rounded-md items-center bg-white transition-transform transform hover:scale-105"
+                    >
+                      <img
+                          src={`/client/products/${voucher.type}.png`}
+                          alt={voucher.name}
+                          className="w-28 h-28 object-cover rounded-lg"/>
 
-                {/* Voucher Content */}
-                <div className="ml-10 flex flex-col justify-between">
-                  <h4 className="text-lg font-semibold">{voucher.name}</h4>
-                  <p className="text-gray-500 text-sm">
-                    Bắt đầu: {voucher.startDate}
-                  </p>
-                  <p className="text-gray-500 text-sm">
-                    Kết thúc: {voucher.endDate}
-                  </p>
-
-                  {/* <Button type="default" className="mt-2">
-                    Chọn
-                  </Button> */}
-                </div>
-              </div>
-            ))}
+                      {/* Voucher Content */}
+                      <div className="ml-4 flex flex-col justify-between">
+                        <h4 className="text-lg font-semibold">{voucher.name}</h4>
+                        <p className="text-gray-500 text-sm">
+                          Bắt đầu: {new Date(voucher.startDate).toLocaleDateString('vi-VN')}
+                        </p>
+                        <p className="text-gray-500 text-sm">
+                          Kết thúc: {new Date(voucher.endDate).toLocaleDateString('vi-VN')}
+                        </p>
+                      </div>
+                    </div>
+                ))
+            ) : (
+                <p className="text-gray-500">Bạn chưa có voucher nào.</p>
+            )}
           </div>
         </div>
 
-        {/*Hot Voucher */}
-        <div className="bg-white p-16 shadow-lg h-[600px] overflow-auto">
+        {/* Hot Voucher */}
+        <div className="bg-white p-8 shadow-lg h-[600px] overflow-y-auto">
           <h1 className="text-2xl font-bold mb-3">Kho Voucher Hot</h1>
           <p className="mb-2">Quản lý thông tin hồ sơ để bảo mật tài khoản</p>
 
-          <div className="grid grid-cols-2 gap-6 mt-10 ml-6 h-[350px] overflow-y-auto">
-            {validVouchers.map((voucher) => (
-              <div
-                key={voucher.id}
-                className="flex p-2 shadow-lg rounded-md items-center bg-white"
-              >
-                {/* Voucher Image */}
-                <img
-                  src={
-                    voucher.type === "FREE_SHIP"
-                      ? "/client/products/FREE_SHIP.png"
-                      : voucher.type === "DISCOUNT_AMOUNT"
-                      ? "/client/products/DISCOUNT.png"
-                      : "/client/products/DISCOUNT.png"
-                  }
-                  alt={voucher.name}
-                  className="w-28 h-28 object-cover rounded-lg"
-                />
+          <div className="grid grid-cols-2 gap-6 mt-10">
+            {validVouchers.length > 0 ? (
+                validVouchers.map((voucher) => (
+                    <div
+                        key={voucher.id}
+                        className="flex p-4 shadow-lg rounded-md items-center bg-white transition-transform transform hover:scale-105"
+                    >
+                      {/* Voucher Image */}
+                      <img
+                          src={`/client/products/${voucher.type}.png`}
+                          alt={voucher.name}
+                          className="w-28 h-28 object-cover rounded-lg"/>
 
-                {/* Voucher Content */}
-                <div className="ml-10 flex flex-col justify-start flex-1">
-                  <h4 className="text-lg font-semibold">{voucher.name}</h4>
-                  <div className="flex flex-row justify-between">
-                    <div className="flex flex-col">
-                      <p className="text-gray-500 text-sm">
-                        Bắt đầu:{" "}
-                        {new Date(voucher.startDate).toLocaleString("vi-VN", {
-                          day: "2-digit",
-                          month: "2-digit",
-                          year: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </p>
-                      <p className="text-gray-500 text-sm">
-                        Kết thúc:{" "}
-                        {new Date(voucher.endDate).toLocaleString("vi-VN", {
-                          day: "2-digit",
-                          month: "2-digit",
-                          year: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </p>
+                      {/* Voucher Content */}
+                      <div className="ml-4 flex flex-col justify-between">
+                        <h4 className="text-lg font-semibold">{voucher.name}</h4>
+                        <p className="text-gray-500 text-sm">
+                          Bắt đầu: {new Date(voucher.startDate).toLocaleDateString('vi-VN')}
+                        </p>
+                        <p className="text-gray-500 text-sm">
+                          Kết thúc: {new Date(voucher.endDate).toLocaleDateString('vi-VN')}
+                        </p>
+                        <p className="text-gray-500 text-sm">
+                          Số điểm cần để đổi: {voucher.pointsRequired}
+                        </p>
+                        <Button
+                            onClick={() => handleRedeemVoucher(voucher.id)}
+                            type="default"
+                            className="mt-2"
+                        >
+                          Đổi ngay
+                        </Button>
+                      </div>
                     </div>
-                    <div className="flex flex-col justify-center items-center rounded-full border border-red-500 px-4 pt-1 mr-2">
-                      <p className="text-xs text-gray-400">Điểm đổi</p>
-                      <p> {voucher.pointsRequired}</p>
-                    </div>
-                  </div>
-                  <Button
-                    onClick={() => handleRedeemVoucher(voucher.id)}
-                    type="default"
-                    className="mt-2 w-[160px]"
-                  >
-                    Đổi ngay
-                  </Button>
-                </div>
-              </div>
-            ))}
+                ))
+            ) : (
+                <p className="text-gray-500">Hiện chưa có voucher hot nào.</p>
+            )}
           </div>
         </div>
       </div>
-    </div>
+
+
   );
 }

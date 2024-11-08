@@ -1,5 +1,5 @@
 "use client"
-import  {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Flex, message, Radio, Rate} from 'antd';
 import {MinusOutlined, PlusOutlined, ShoppingCartOutlined, StockOutlined, TagOutlined} from '@ant-design/icons';
 import {DeepSet} from "@/app/util/DeepSet";
@@ -10,6 +10,7 @@ import {createOrderByNow} from "@/apis/modules/order";
 import {useOrderStore} from "@/app/store/OderStore";
 import {useRouter} from "next/navigation";
 import styles from '../Product.module.css'
+import {useCartStore} from "@/app/store/CartStore";
 
 const ProductInfoComponent:React.FC<any> = ({ product,productItems }) => {
     const [qty,setQty]=useState(1);
@@ -21,7 +22,6 @@ const ProductInfoComponent:React.FC<any> = ({ product,productItems }) => {
 
     /*------------------------------------- */
     const {
-        currentProductItem,
         setCurrentProductItem,
       } = useReviewStore((state) => state);
     /*------------------------------------- */
@@ -107,6 +107,7 @@ const ProductInfoComponent:React.FC<any> = ({ product,productItems }) => {
         });
 
     };
+    const {addToCart}=useCartStore(state => state);
 
 
     async function handleAddCart() {
@@ -115,8 +116,8 @@ const ProductInfoComponent:React.FC<any> = ({ product,productItems }) => {
             return;
         }
         const data:any={productItemId:productItem.id,quantity:qty}
-        const apiCall=()=> addCart(data);
-        await handleApiRequest(apiCall,(response:any)=>{  message.success("đã thêm giỏ hàng!");})
+        await addToCart(data);
+
 
 
     }
@@ -132,7 +133,7 @@ const ProductInfoComponent:React.FC<any> = ({ product,productItems }) => {
         await handleApiRequest(apiCall,(response:any)=>{
             console.log(response)
             setOrder(response.data);
-            router.replace("/payment")
+            router.replace(`/payment?orderId=${response.data.id}`)
         })
 
     }

@@ -1,5 +1,5 @@
 import {create} from "zustand";
-import {updateVoucherOrder} from "@/apis/modules/order";
+import {getOrderById, updateVoucherOrder} from "@/apis/modules/order";
 import {handleApiRequest} from "@/app/util/utils";
 
 
@@ -9,6 +9,7 @@ interface OrderState{
     setOrder:(order:any)=>void,
     setContactToOrder:(contact:any)=>void
     setVoucherToOrder:(voucherId:any,orderId:number)=>Promise<void>
+    getOrderById:(id:number)=>Promise<void>
 
 }
 
@@ -34,6 +35,14 @@ export const useOrderStore=create<OrderState>((set,get)=>({
         return await handleApiRequest(apiCall,(response:any)=>{
             set({
                 order:{...get().order,...response.data}
+            })
+        })
+    },
+    getOrderById:async (id:number)=>{
+        const apiCall=()=>getOrderById(id)
+        return await handleApiRequest(apiCall,(response:any)=>{
+            set({
+                order:response.data
             })
         })
     }
