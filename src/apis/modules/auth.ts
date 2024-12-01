@@ -36,11 +36,11 @@ export function verifyOtp(email: string, otp: number) {
   return api.post(`forgotPassword/verifyOtp/${otp}/${email}`);
 }
 
-export interface ResetPasswordParams {
+export interface ResetPasswordRequest {
   newPassword: string;
   confirmPassword: string;
 }
 
-export function changePassword(params: ResetPasswordParams, email: string) {
-  return api.put(`forgotPassword/changePassword/${email}`, { params });
+export function changePassword(params: ResetPasswordRequest, email: string) {
+  return api.put(`forgotPassword/changePassword/${email}`,params);
 }

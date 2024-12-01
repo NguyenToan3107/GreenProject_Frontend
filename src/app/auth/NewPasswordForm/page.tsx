@@ -5,7 +5,7 @@ import { LockOutlined, SafetyOutlined } from "@ant-design/icons"; // Ant Design 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCommonStore } from "@/app/store/CommonStore";
-import { changePassword, ResetPasswordParams } from "@/apis/modules/auth";
+import { changePassword, ResetPasswordRequest } from "@/apis/modules/auth";
 import Swal from "sweetalert2";
 
 export default function NewPasswordForm() {
@@ -27,7 +27,7 @@ export default function NewPasswordForm() {
 
   const resetPassword = async () => {
     try {
-      const params: ResetPasswordParams = {
+      const params: ResetPasswordRequest = {
         newPassword: newPassword,
         confirmPassword: confirmPassword,
       };
