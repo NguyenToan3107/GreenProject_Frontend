@@ -1,17 +1,30 @@
 "use client";
 import React, { useState } from "react";
 import { Input, Button } from "antd";
-import { MailOutlined, KeyOutlined } from "@ant-design/icons"; 
+import { MailOutlined, KeyOutlined } from "@ant-design/icons";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { verifyOtp } from "@/apis/modules/auth";
+import Swal from "sweetalert2";
+import { useCommonStore } from "@/app/store/CommonStore";
 
 export default function OTPForm() {
-  const [otp, setOtp] = useState("");
+  const [otp, setOtp] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const router = useRouter();
+  const { emailForgotPassword } = useCommonStore();
 
   const handleOtpChange = (event: any) => {
     setOtp(event.target.value);
+  };
+
+  const sendOTP = async (otp: number) => {
+    setLoading(true);
+    const res: any = await verifyOtp(emailForgotPassword, otp);
+    setLoading(false);
+    router.push("/auth/NewPasswordForm");
   };
 
   const handleVerifyOTP = async (event: any) => {
@@ -19,6 +32,7 @@ export default function OTPForm() {
     setLoading(true);
     setError("");
     setSuccess("");
+    sendOTP(otp);
   };
 
   return (
