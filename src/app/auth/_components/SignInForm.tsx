@@ -6,6 +6,7 @@ import { faUser } from "@fortawesome/free-regular-svg-icons";
 import { faKey } from "@fortawesome/free-solid-svg-icons";
 import {useAuthStore} from "@/app/store/AuthStore";
 import { Input, Button } from "antd";
+import Link from "next/link";
 import {LockOutlined, UserOutlined} from "@ant-design/icons";  // Import Ant Design components
 
 
@@ -15,6 +16,7 @@ export default function SignInForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const { login ,setPathname} = useAuthStore();
+
 
   const loginUser = async (event: any) => {
     event.preventDefault();
@@ -69,8 +71,10 @@ export default function SignInForm() {
             />
           </div>
 
-          <p className="mt-5 text-xs cursor-pointer text-brand-blue">
-            Quên mật khẩu
+          <p className="mt-5 text-xs text-brand-blue">
+            <Link href="/auth/ForgotPasswordForm" className="cursor-pointer">
+             Quên mật khẩu
+            </Link>
           </p>
 
           <Button

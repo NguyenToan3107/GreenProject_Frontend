@@ -27,3 +27,20 @@ export function logoutRequest() {
 export function getUserInfo() {
   return api.get(`user-info`);
 }
+
+export function verityEmail(email: string) {
+  return api.post(`forgotPassword/verifyMail/${email}`);
+}
+
+export function verifyOtp(email: string, otp: number) {
+  return api.post(`forgotPassword/verifyOtp/${otp}/${email}`);
+}
+
+export interface ResetPasswordParams {
+  newPassword: string;
+  confirmPassword: string;
+}
+
+export function changePassword(params: ResetPasswordParams, email: string) {
+  return api.put(`forgotPassword/changePassword/${email}`, { params });
+}
