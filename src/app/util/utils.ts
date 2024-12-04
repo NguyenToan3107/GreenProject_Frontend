@@ -12,7 +12,7 @@ export const showAlert = async (message:string) => {
 }
 
 export const handleApiRequest = async (
-apiCall: () => Promise<any>, onSuccess: (response: any) => void, p0: (loading: boolean) => void,
+apiCall: () => Promise<any>, onSuccess: (response: any) => void
 
 ) => {
     try {

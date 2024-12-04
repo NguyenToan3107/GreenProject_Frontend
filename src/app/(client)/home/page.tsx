@@ -11,6 +11,8 @@ import { register } from "swiper/element/bundle";
 import { Pagination, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import {useProductStore} from "@/app/store/ProductStore";
+import Link from "next/link";
+
 // register Swiper custom elements
 register();
 
@@ -185,19 +187,18 @@ export default function page() {
               marginBottom: "2rem",
             }}
           >
-            Our service
+            Our Benefit
           </h2>
           <div className={styles.cards}>
             <div className={styles.cardItem}>
               <div>
                 <img src="images/user.png" alt="User 1" />
               </div>
-              <p className={styles.reviewerName}>Anna Launra</p>
+              <p className={styles.reviewerName}>Nguyễn Minh Tuấn</p>
               <div className={styles.reviewerComment}>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse
-                obcaecati suscipit omnis unde accusamus quia, labore repellat
-                exercitationem porro est dolorum, molestiae voluptatum illum ad
-                rerum deserunt voluptatem nostrum enim.
+              Sản phẩm bảo vệ môi trường giúp giảm ô nhiễm, bảo vệ sức khỏe cộng đồng, 
+              và giảm thiểu bệnh tật liên quan đến môi trường, 
+              từ đó tạo ra một không gian sống lành mạnh cho thế hệ tương lai
               </div>
               <a href="#" style={{ fontWeight: "600", color: "#4BAF47" }}>
                 Know More &gt;&gt;
@@ -207,12 +208,10 @@ export default function page() {
               <div>
                 <img src="images/user.png" alt="User 1" />
               </div>
-              <p className={styles.reviewerName}>Anna Launra</p>
+              <p className={styles.reviewerName}>Lê Thu Hương</p>
               <div className={styles.reviewerComment}>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse
-                obcaecati suscipit omnis unde accusamus quia, labore repellat
-                exercitationem porro est dolorum, molestiae voluptatum illum ad
-                rerum deserunt voluptatem nostrum enim.
+              Sử dụng sản phẩm bảo vệ môi trường giúp tiết kiệm tài nguyên thiên nhiên, 
+              giảm sự khai thác quá mức, bảo vệ hệ sinh thái, đồng thời thúc đẩy sự phát triển bền vững cho tương lai.
               </div>
               <a href="#" style={{ fontWeight: "600", color: "#4BAF47" }}>
                 Know More &gt;&gt;
@@ -222,12 +221,10 @@ export default function page() {
               <div>
                 <img src="images/user.png" alt="User 1" />
               </div>
-              <p className={styles.reviewerName}>Anna Launra</p>
+              <p className={styles.reviewerName}>Phạm Thuỳ Dương</p>
               <div className={styles.reviewerComment}>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse
-                obcaecati suscipit omnis unde accusamus quia, labore repellat
-                exercitationem porro est dolorum, molestiae voluptatum illum ad
-                rerum deserunt voluptatem nostrum enim.
+              Sản phẩm bảo vệ môi trường nâng cao ý thức cộng đồng về bảo vệ thiên nhiên. 
+              Nó khuyến khích mọi người thay đổi thói quen tiêu dùng và hiểu rõ hơn về tầm quan trọng của việc bảo vệ hành tinh.
               </div>
               <a href="#" style={{ fontWeight: "600", color: "#4BAF47" }}>
                 Know More &gt;&gt;
@@ -237,12 +234,10 @@ export default function page() {
               <div>
                 <img src="images/user.png" alt="User 1" />
               </div>
-              <p className={styles.reviewerName}>Anna Launra</p>
+              <p className={styles.reviewerName}>Trần Quang Huy</p>
               <div className={styles.reviewerComment}>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse
-                obcaecati suscipit omnis unde accusamus quia, labore repellat
-                exercitationem porro est dolorum, molestiae voluptatum illum ad
-                rerum deserunt voluptatem nostrum enim.
+              Sản phẩm bảo vệ môi trường thúc đẩy đổi mới sáng tạo, giúp phát triển công nghệ mới, 
+              tiết kiệm năng lượng và giảm thiểu chất thải, góp phần vào ngành công nghiệp xanh và bền vững.
               </div>
               <a href="#" style={{ fontWeight: "600", color: "#4BAF47" }}>
                 Know More &gt;&gt;
@@ -424,44 +419,47 @@ export default function page() {
             {productItemOnTopSold.map((product) => (
             <SwiperSlide key={product.id}>
               <Card hoverable>
-                <div className={styles.bestSellerCardItem}>
-                  <a style={{ display: "flex" }}>
-                    <img
-                      src={product.imageCover}
-                      style={{
-                        borderRadius: "6px",
-                        objectFit: "contain",
-                        width: "100%",
-                        height: "250px",
-                      }}
-                      alt={product.name}
-                    />
-                  </a>
-                  <Flex vertical align="start">
-                    <div
-                      style={{
-                        fontSize: "1.2rem",
-                        fontWeight: "600",
-                        whiteSpace: "nowrap",
-                        textOverflow: "ellipsis",
-                        overflow: "hidden",
-                      }}
-                    >
-                      {product.name}
-                    </div>
-                    <div style={{ color: "#4BAF47", fontWeight: "600" }}>
-                      {currencyFormat(product.minPrice)} - {currencyFormat(product.maxPrice)}
-                    </div>
-                    <div className={styles.itemDescription}>
-                      {product.description}
-                    </div>
-                    <div className={styles.star}>
-                      <Flex gap="middle" vertical>
-                        <Rate value={product.avgRating} />
-                      </Flex>
-                    </div>
-                  </Flex>
-                </div>
+                <Link key={product.id} href={`/products/${product.id}`}>
+                  <div className={styles.bestSellerCardItem}>
+                    <a style={{ display: "flex" }}>
+                      <img
+                        src={product.imageCover}
+                        style={{
+                          borderRadius: "6px",
+                          objectFit: "contain",
+                          width: "100%",
+                          height: "250px",
+                        }}
+                        alt={product.name}
+                      />
+                    </a>
+                    <Flex vertical align="start">
+                      <div
+                        style={{
+                          fontSize: "1.2rem",
+                          fontWeight: "600",
+                          whiteSpace: "nowrap",
+                          textOverflow: "ellipsis",
+                          overflow: "hidden",
+                          color: "#000" 
+                        }}
+                      >
+                        {product.name}
+                      </div>
+                      <div style={{ color: "#4BAF47", fontWeight: "600" }}>
+                        {currencyFormat(product.minPrice)} - {currencyFormat(product.maxPrice)}
+                      </div>
+                      <div className={styles.itemDescription}>
+                        {product.description}
+                      </div>
+                      <div className={styles.star}>
+                        <Flex gap="middle" vertical>
+                          <Rate value={product.avgRating} />
+                        </Flex>
+                      </div>
+                    </Flex>
+                  </div>
+                </Link>
               </Card>
             </SwiperSlide>))}
           </Swiper>
@@ -481,7 +479,7 @@ export default function page() {
         <Swiper
           style={{ marginBottom: "2rem", padding: "1rem" }}
           spaceBetween={20}
-          slidesPerView={4}
+          slidesPerView={5}
           navigation={true}
           pagination={{
             clickable: true,
@@ -494,8 +492,8 @@ export default function page() {
               <div className={styles.box}>
                 <img src="/client/products/product2.png" alt="Developer 1" />
                 <div className={styles.boxContent}>
-                  <div className={styles.boxName}>Anna Laura</div>
-                  <div>Developer</div>
+                  <div className={styles.boxName}>Cường</div>
+                  <div>Backend Developer</div>
                 </div>
               </div>
             </Card>
@@ -505,8 +503,8 @@ export default function page() {
               <div className={styles.box}>
                 <img src="/client/products/product2.png" alt="Developer 1" />
                 <div className={styles.boxContent}>
-                  <div className={styles.boxName}>Anna Laura</div>
-                  <div>Developer</div>
+                  <div className={styles.boxName}>Linh</div>
+                  <div>Tester</div>
                 </div>
               </div>
             </Card>
@@ -516,8 +514,8 @@ export default function page() {
               <div className={styles.box}>
                 <img src="/client/products/product2.png" alt="Developer 1" />
                 <div className={styles.boxContent}>
-                  <div className={styles.boxName}>Anna Laura</div>
-                  <div>Developer</div>
+                  <div className={styles.boxName}>Minh</div>
+                  <div>Backend Developer</div>
                 </div>
               </div>
             </Card>
@@ -527,8 +525,19 @@ export default function page() {
               <div className={styles.box}>
                 <img src="/client/products/product2.png" alt="Developer 1" />
                 <div className={styles.boxContent}>
-                  <div className={styles.boxName}>Anna Laura</div>
-                  <div>Developer</div>
+                  <div className={styles.boxName}>Toàn</div>
+                  <div>Frontend Developer</div>
+                </div>
+              </div>
+            </Card>
+          </SwiperSlide>
+          <SwiperSlide>
+          <Card hoverable>
+              <div className={styles.box}>
+                <img src="/client/products/product2.png" alt="Developer 1" />
+                <div className={styles.boxContent}>
+                  <div className={styles.boxName}>Thành</div>
+                  <div>Manager</div>
                 </div>
               </div>
             </Card>
