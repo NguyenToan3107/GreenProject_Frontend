@@ -59,6 +59,12 @@ export default function Page() {
             key: 'id',
         },
         {
+            title: 'Customer',
+            dataIndex: 'username',
+            key: 'username',
+
+        },
+        {
             title: 'Product Total Cost',
             dataIndex: 'productTotalCost',
             key: 'productTotalCost',
